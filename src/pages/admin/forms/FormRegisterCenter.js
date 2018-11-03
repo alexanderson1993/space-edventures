@@ -4,7 +4,7 @@ NOTES:
 	- Form for Space Center Directors to register their space centers
 *******************************************************************/
 import React from 'react';
-import {Button} from '../../widget';
+import {Button} from '../../../components';
 /**
  * props: function setPage, string cancelPage, string submitPage
  */

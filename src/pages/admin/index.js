@@ -5,7 +5,7 @@ NOTES:
     - Sort of a starting point for the Admin (Space Center Directory) Pages
 *************************************************************************/
 import React from "react";
-import {Button,Link} from '../widget';
+import {Button,Link} from '../../components';
 import {AdminSignInForm, AdminSignUpForm} from './forms';
 import {PageRegisterCenter} from './pages';
 
