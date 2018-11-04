@@ -1,5 +1,7 @@
-html, body {
+html,
+body {
   font-family: sans-serif;
   background-color: black;
   color: white;
+  padding: 0;
 }
