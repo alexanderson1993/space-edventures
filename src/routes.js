@@ -6,7 +6,7 @@ import Admin from './pages/admin';
 const Routes = () => {
     return <Router>
         <Splash path="/" />
-        <Admin path="admin" />
+        <Admin path="admin/*" />
     </Router>
 }
 export default Routes;

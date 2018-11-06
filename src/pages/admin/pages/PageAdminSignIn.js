@@ -6,7 +6,7 @@ class PageAdminSignIn extends React.Component {
     render() {
         return <React.Fragment>
             <h1>Director Sign In</h1>
-            <p>or <Link to='signup'>Sign Up</Link></p>
+            <p>or <Link to='../signup'>Sign Up</Link></p>
             <FormAdminSignIn />
         </React.Fragment>
     }
