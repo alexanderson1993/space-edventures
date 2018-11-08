@@ -5,30 +5,163 @@ $alert2: #cc7926;
 $alert1: #ca2a2a;
 $alertp: #7a24cf;
 
+html, body {
+  overflow: hidden;
+}
 .layout-line {
   position: fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  //Layout
+  .layout-images {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1000;
+    pointer-events: none;
+  div {
+      position: absolute;
+
+  }
+    .top-corner {
+      width: 65px;
+      height: 61px;
+      background-size: 100%;
+
+      background-image: url("./img/corner.png");
+      top: 30px;
+      left: -20px;
+      transform: scaleX(-1);
+    }
+    .top-horizontal-1 {
+      background-image: url("./img/side.png");
+      background-size: 100% 67px;
+      width: 135px;
+      height: 67px;
+      left: 45px;
+      top: 28px;
+    }
+    .top-slant {
+      // background-image: url('./img/slant.png');
+      background-size: 100%;
+      width: 73px;
+      height: 89px;
+      left: 180px;
+      top: 5px;
+      transform: scaleY(-1);
+    }
+    .top-horizontal-2 {
+      background-image: url("./img/side.png");
+      background-size: 100% 67px;
+      width: calc(100% - 323px);
+      height: 67px;
+      left: 253px;
+      top: 3px;
+    }
+    .top-right {
+      background-image: url("./img/slant-corner2.png");
+      background-size: 100%;
+      width: 92px;
+      height: 85px;
+      left: calc(100% - 70px);
+      top: 1px;
+      transform: scaleX(-1);
+    }
+    .side-left {
+      background-size: 100%;
+      width:64px;
+      height: calc(100% - 158px);
+      top: 90px;
+      left: -19px;
+      transform: translate( -0.5px,0.5px) rotate(180deg)
+    }
+    .side-right {
+      background-size: 100%;
+      width:64px;
+      height: calc(100% - 133px);
+      top: 86px;
+      right: -22px;
+      transform: translate( -0.5px,0) rotate(180deg)
+    }
+    .bottom-right {
+      width: 65px;
+      height: 61px;
+      background-size: 100%;
+
+      background-image: url("./img/corner.png");
+      bottom: -14px;
+      right: -21px;
+      transform: translate( -0.5px,-0.5px) scaleY(-1);
+    }
+       .bottom-left {
+      background-image: url("./img/slant-corner2.png");
+      background-size: 100%;
+      width: 92px;
+      height: 85px;
+      left: -21px;
+      bottom: -18px;
+      transform: translate( -0.25px,-0.5px) scaleY(-1);
+    }
+    .bottom-horizontal {
+      background-image: url("./img/side.png");
+      background-size: 100% 67px;
+      width: calc(100% - 115px);
+      height: 67px;
+      left: 71px;
+      bottom: -18px;
+      transform: translate( -0.35px,-0.55px)
+    }
+  }
+
   header {
     margin: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-.logo svg {
-  max-width: 200px;
-  transition: filter 0.2s ease;
-  &:hover {
-    filter: hue-rotate(-120deg)
+  .logo svg {
+    max-width: 200px;
+    transition: filter 0.2s ease;
+    &:hover {
+      filter: hue-rotate(-120deg);
+    }
   }
-}
   menu {
-    flex:1;
+    flex: 1;
     display: flex;
     justify-content: space-around;
-    margin-top:0;
+    margin-top: 0;
+  }
+  main.content {
+    position: fixed;
+    width: calc(100% - 50px);
+    left: 50%;
+    top: 65px;
+    height: calc(100% - 90px);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    overflow-y: auto;
+    max-width: 960px;
+    transform: translate(-50%, 0);
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 5%,
+      rgba(0, 0, 0, 1) 95%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 5%,
+      rgba(0, 0, 0, 1) 95%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
   @mixin colors($color) {
     & {
@@ -40,13 +173,14 @@ $alertp: #7a24cf;
       );
     }
     .frame-container {
-      filter: drop-shadow(0px 0px 5px $color) drop-shadow(0px 0px 10px $color) drop-shadow(0px 0px 2px $color);
+      filter: drop-shadow(0px 0px 5px $color) drop-shadow(0px 0px 10px $color)
+        drop-shadow(0px 0px 2px $color);
     }
     .frame-outer {
       background-color: $color;
     }
   }
-    &.alertColor5 {
+  &.alertColor5 {
     @include colors($alert5);
   }
   &.alertColor4 {

@@ -7,7 +7,21 @@ const Splash = () => {
     <div className="App">
       <h1>Hello CodeSandbox</h1>
       <h2>Start editing to see some magic happen!</h2>
-      <Button color="primary">Hello There!</Button>
+      <Link to="/admin">View Admin Pages</Link>
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <Link to="/admin">View Admin Pages</Link>
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <Link to="/admin">View Admin Pages</Link>
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <Link to="/admin">View Admin Pages</Link>
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <Link to="/admin">View Admin Pages</Link>
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
       <Link to="/admin">View Admin Pages</Link>
     </div>
   );
