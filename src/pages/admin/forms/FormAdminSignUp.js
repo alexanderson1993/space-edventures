@@ -6,7 +6,7 @@ NOTES:
 *************************************************************************/
 import React from 'react';
 
-class AdminSignUpForm extends React.Component {
+class FormAdminSignUp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,4 +35,4 @@ class AdminSignUpForm extends React.Component {
     }
 }
 
-export default AdminSignUpForm
+export default FormAdminSignUp;

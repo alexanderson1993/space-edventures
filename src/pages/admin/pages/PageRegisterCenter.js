@@ -5,7 +5,7 @@ NOTES:
     - Screen the new Directors will see after choosing an email and password
 *************************************************************************/
 import React from 'react';
-import {FormRegisterCenter} from '../forms';
+import FormRegisterCenter from '../forms/FormRegisterCenter';
 
 /**
  * Props: array Pages, function setPages
