@@ -1,29 +1,19 @@
-/*************************************************************************
-Button.js
-CREATED: 2018.11.3 (TarronLane)
-NOTES:
-    - A button styled to look like a button, with a prop that allows you to specify a string parameter to get passed to the onClick function (useful for routing)
-*************************************************************************/
-import React from 'react';
-/**
- * @param {string text, function onClick, varient onClickParam} props 
- */
-class Button extends React.Component {
-    handleClick () {
-        this.props.onClick(this.props.onClickParam);
-    }
+import React from "react";
+import { Button, Words } from "@arwes/arwes";
+import AnimateContext from "../helpers/animateContext";
 
-    render() {
-        let style_button = {
-            marginBottom: '5px',
-            marginTop: '5px',
-            marginRight: '5px'
-        }
-
-        return (
-            <button style={style_button} onClick={this.handleClick.bind(this)}>{this.props.text}</button>
-        );
-    }
-}
-
-export default Button;
+export default ({ children, ...props }) => {
+  return (
+    <AnimateContext.Consumer>
+      {({ show }) => (
+        <Button animate show={show} {...props}>
+          {anim2 => (
+            <Words animate show={anim2.entered}>
+              {children}
+            </Words>
+          )}
+        </Button>
+      )}
+    </AnimateContext.Consumer>
+  );
+};

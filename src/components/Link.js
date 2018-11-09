@@ -1,34 +1,66 @@
-/*************************************************************************
-Link.js
-CREATED: 2018.11.3 (TarronLane)
-NOTES:
-    - A button styled to look like a link, with a prop that allows you to specify a string parameter to get passed to the onClick function (useful for routing)
-*************************************************************************/
-import React from 'react';
-/**
- * @param {string text, function onClick, varient onClickParam} props 
- */
-class Link extends React.Component {
-    handleClick () {
-        this.props.onClick(this.props.onClickParam);
-    }
+import React from "react";
+import { navigate } from "@reach/router";
+import { withStyles } from "@arwes/arwes";
+import { withSounds } from "@arwes/sounds";
+import AnimateContext from "../helpers/animateContext";
 
-    render () {
-        let style_link = {
-            background: 'none',
-            color: 'blue',
-            border: 'none', 
-            padding: '0',
-            font: 'inherit',
-            /*border is optional*/
-            borderBottom: '1px solid blue',
-            cursor: 'pointer',
+const isExtern = /^https?:\/\//;
+
+export const Navigator = withStyles(() => {})(
+  withSounds()(({ theme, sounds, children, ...etc }) => {
+    const linkTrigger = (href, target, hide, reveal) => {
+      sounds.click && sounds.click.play();
+
+      const { pathname, search } = window.location;
+      if (pathname + search === href) {
+        return;
+      }
+
+      if (!target) {
+        hide();
+      }
+
+      setTimeout(() => {
+        if (target) {
+          window.open(href);
+        } else if (isExtern.test(href)) {
+          window.location.href = href;
+        } else {
+          navigate(href).then(reveal);
         }
+      }, theme.animTime);
+    };
+    return (
+      <AnimateContext.Consumer>
+        {({ hide, reveal }) =>
+          children((href, target) => linkTrigger(href, target, hide, reveal))
+        }
+      </AnimateContext.Consumer>
+    );
+  })
+);
 
-        return (
-            <button style={style_link} onClick={this.handleClick.bind(this)}>{this.props.text}</button>
-        );
-    }
-}
+const Link = props => {
+  const { to, href, target, children, ...etc } = props;
+  const path = to || href;
 
-export default Link;
+  return (
+    <Navigator>
+      {navigate => (
+        <a
+          {...etc}
+          href={path}
+          target={target}
+          onClick={e => {
+            e.preventDefault();
+            navigate(path, target);
+          }}
+        >
+          {children}
+        </a>
+      )}
+    </Navigator>
+  );
+};
+
+export default withStyles(() => {})(withSounds()(Link));
