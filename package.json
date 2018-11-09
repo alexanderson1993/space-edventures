@@ -9,6 +9,7 @@
     "@arwes/sounds": "1.0.0-alpha.1",
     "@reach/router": "1.2.1",
     "bootstrap": "4.1.3",
+    "node-sass": "^4.10.0",
     "react": "16.5.2",
     "react-dom": "16.5.2",
     "react-scripts": "2.0.3",
