@@ -5,6 +5,7 @@ import SignUp from "./signUp";
 import SignIn from "./signIn";
 import Details from "./details";
 import Register from "./register";
+import Dashboard from "./dashboard";
 export default () => {
   return (
     <Router>
@@ -13,6 +14,7 @@ export default () => {
       <SignIn path="signIn" />
       <Details path="details" />
       <Register path="register" />
+      <Dashboard path="dashboard" />
     </Router>
   );
 };
