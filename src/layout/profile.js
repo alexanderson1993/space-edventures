@@ -2,10 +2,19 @@ import React, { Component } from "react";
 import UserContext from "../helpers/userContext";
 import { Appear, Button as ArwesButton } from "@arwes/arwes";
 import { Words, Button, Link, Image } from "../components";
+import {subscribe} from '../helpers/pubsub';
 import "./profile.scss";
 
 class Profile extends Component {
   state = { open: false };
+  componentDidMount() {
+    this.sub = subscribe("routeChanged", () => {
+      this.setState({open:false})
+    })
+  }
+  componentWillUnmount() {
+    this.sub && this.sub();
+  }
   render() {
     const { open } = this.state;
     return (
@@ -38,9 +47,11 @@ class Profile extends Component {
               >
                 <Appear animate show={open} style={{ width: "100%" }}>
                   <div className="profile-extra">
+                  <Link to="/profile">
                     <ArwesButton animate show={open} style={{ width: "100%" }}>
-                      Hello
+                      Profile
                     </ArwesButton>
+                    </Link>
                     <ArwesButton
                       animate
                       show={open}
