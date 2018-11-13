@@ -1,0 +1,46 @@
+.profile-container {
+    position: relative;
+}
+.profile {
+    max-width: 300px;
+    display: flex;
+    cursor: pointer;
+    .profile-image {
+        max-width: 60px;
+        max-height: 60px;
+        object-fit: contain;
+        margin:0;
+        // border-radius: 50%;
+        // padding: 2px;
+        // border: solid 1px;
+    }
+    .profile-info {
+        display: flex;
+        flex-direction:column;
+        p {
+            margin: 0 5px;
+        }
+    }
+    .profile-rank {
+        font-weight: 800;
+        font-size: 24px;
+        text-align: right;
+    }
+    .profile-hours {
+        display: flex;
+    }
+
+    p {
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+}
+.profile-extra-frame {
+    position: absolute;
+    right: 0px;
+    width:100%;
+}
+    .profile-extra {
+        display:flex;
+        flex-direction: column;
+    }

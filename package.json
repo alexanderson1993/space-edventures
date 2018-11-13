@@ -5,6 +5,8 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@arwes/arwes": "1.0.0-alpha.8",
+    "@arwes/sounds": "1.0.0-alpha.1",
     "@reach/router": "1.2.1",
     "bootstrap": "4.1.3",
     "react": "16.5.2",
