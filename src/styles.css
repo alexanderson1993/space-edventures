@@ -5,3 +5,10 @@ body {
   color: white;
   padding: 0;
 }
+button + button,
+a + a {
+  margin-right: 10px;
+}
+.splashPoints {
+  margin: 30px 0;
+}

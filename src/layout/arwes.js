@@ -14,8 +14,7 @@ import {
 } from "@arwes/arwes";
 
 import AnimateContext from "../helpers/animateContext";
-
-import Button from "../components/Button";
+import { Button } from "../components";
 
 const resources = {
   background: {

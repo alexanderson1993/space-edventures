@@ -5,7 +5,7 @@ NOTES:
     - Sort of a starting point for the Admin (Space Center Directory) Pages
 *************************************************************************/
 import React from "react";
-import { Button, Link } from "../../components";
+import { Button, Link, Center } from "../../components";
 
 export default () => {
   let style = {
@@ -15,24 +15,34 @@ export default () => {
   };
 
   return (
-    <>
-      <h1>Connect Your Space Center to the Space EdVentures Community</h1>
+    <Center>
+      <h1 className="text-center">
+        Connect Your Space Center to the Space EdVentures Community
+      </h1>
+
       <div>
         <Link to="/director/signUp">
           <Button>Join Now</Button>
         </Link>
       </div>
-      <div id="splashPoints">
+      <div className="splashPoints">
         <ul>
           <li>Integrate with Thorium Controls</li>
           <li>Award badges and Commendations</li>
           <li>Give your participants access to the space EdVentures Portal</li>
         </ul>
       </div>
-      <div>
+      <div style={{ marginBottom: "20px" }}>
         <Link to="/director/details">See More Details</Link>
       </div>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          maxWidth: "50%",
+          width: "60vw"
+        }}
+      >
         <Link to="/director/signUp">
           <Button>Sign Up</Button>
         </Link>
@@ -40,11 +50,11 @@ export default () => {
           <Button>Sign In</Button>
         </Link>
       </div>
-      <div>
+      <div style={{ marginTop: "30px" }}>
         <p>
-          Don't have a Space Center? <Link to="/">Sign in Here</Link>
+          Don't have a Space Center? <Link to="/">Sign Up Here</Link>
         </p>
       </div>
-    </>
+    </Center>
   );
 };
