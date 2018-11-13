@@ -5,13 +5,13 @@ import { Input, Button, Navigator } from "../../components";
 const Register = () => {
   return (
     <div style={{ maxWidth: "540px" }}>
-      <h1>Register</h1>
+      <h1>Register a Space Center</h1>
       <Navigator>
         {navigate => (
           <form
             onSubmit={e => {
               e.preventDefault();
-              navigate("/");
+              navigate("./dashboard");
             }}
           >
             <div>
