@@ -1,7 +1,4 @@
 import React from "react";
-import { Link } from "@reach/router";
-import Profile from "./profile";
-import { ReactComponent as Logo } from "./logo.svg";
 import "./style.scss";
 import PropTypes from "prop-types";
 

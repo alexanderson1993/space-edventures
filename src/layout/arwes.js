@@ -14,7 +14,6 @@ import {
 } from "@arwes/arwes";
 
 import AnimateContext from "../helpers/animateContext";
-import { Button } from "../components";
 
 const resources = {
   background: {
@@ -58,7 +57,7 @@ class ArwesContainer extends Component {
   }
 
   render() {
-    const { data, children } = this.props;
+    const { children } = this.props;
     const { show, loaded } = this.state;
 
     return (

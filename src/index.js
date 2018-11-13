@@ -46,7 +46,7 @@ class App extends Component {
 
     this.state = {
       user: localStorage.getItem("spaceEdventures_login") ? userObj : null,
-      login: user => {
+      login: () => {
         this.setState({ user: userObj });
         localStorage.setItem("spaceEdventures_login", "true");
       },
