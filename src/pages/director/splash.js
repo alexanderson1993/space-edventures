@@ -19,6 +19,7 @@ export default () => {
       <h1 className="text-center">
         Connect Your Space Center to the Space EdVentures Community
       </h1>
+
       <div>
         <Link to="/director/signUp">
           <Button>Join Now</Button>
