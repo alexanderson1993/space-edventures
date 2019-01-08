@@ -13,7 +13,7 @@
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --watch",
     "lint": "jest --config test/jest.lint.js",
     "format": "npm run prettier -- --write",
-    "validate": "npm run lint && npm run test && npm run prettier -- --list-different",
+    "validate": "npm run test && npm run prettier -- --list-different",
     "prettier": "prettier \"**/*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|mdx|graphql|vue)\"",
     "precommit": "lint-staged"
   },
