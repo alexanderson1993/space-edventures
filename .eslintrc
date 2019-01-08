@@ -1,0 +1,9 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "extends": ["eslint:recommended", "react-app", "eslint-config-prettier"],
+  "env": {
+    "browser": true
+  }
+}
