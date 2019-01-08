@@ -3,7 +3,7 @@ import { Router } from "@reach/router";
 import Splash from "./pages/splash";
 import Admin from "./pages/director";
 import Login from "./pages/accounts/login";
-import Participant from './pages/participant';
+import Participant from "./pages/participant";
 
 const NotFound = () => <div>Sorry, nothing here.</div>;
 

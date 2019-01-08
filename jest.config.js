@@ -7,12 +7,6 @@ module.exports = {
       branches: 4,
       functions: 20,
       lines: 17
-    },
-    "./src/shared/utils.js": {
-      statements: 100,
-      branches: 80,
-      functions: 100,
-      lines: 100
     }
   },
   coveragePathIgnorePatterns: [
