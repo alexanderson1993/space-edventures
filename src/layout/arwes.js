@@ -8,7 +8,6 @@ import {
   createResponsive,
   utils,
   withStyles,
-  Loading,
   Content,
   Footer
 } from "@arwes/arwes";
@@ -58,19 +57,11 @@ class ArwesContainer extends Component {
 
   render() {
     const { children } = this.props;
-    const { show, loaded } = this.state;
+    const { show } = this.state;
 
     return (
       <AnimateContext.Provider value={this.state}>
         <>
-          <Loading
-            full
-            animate
-            show={!show && !loaded}
-            animation={{
-              unmountOnExit: true
-            }}
-          />
           <Arwes
             animate
             show={show}

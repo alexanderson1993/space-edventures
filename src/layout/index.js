@@ -28,13 +28,19 @@ const sounds = {
   }
 };
 
-const Layout = ({ children }) => (
+// const normalTheme = createAppTheme({});
+const adminTheme = createAppTheme({
+  colorPrimary: "#C395EE",
+  colorHeader: "#CBA0FA",
+  colorControl: "#DBACFA"
+});
+const Layout = ({ children, isAdmin }) => (
   <>
     <link
       href="https://fonts.googleapis.com/css?family=Electrolize|Titillium+Web"
       rel="stylesheet"
     />
-    <ThemeProvider theme={createTheme(createAppTheme())}>
+    <ThemeProvider theme={createTheme(adminTheme)}>
       <SoundsProvider sounds={createSounds(sounds)}>
         <ArwesContainer>{children}</ArwesContainer>
       </SoundsProvider>

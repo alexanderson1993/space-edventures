@@ -16,11 +16,13 @@ const generateBackground = color => ({
 export default (theme = {}) => ({
   ...theme,
   color: {
-    primary: generateColor("#30fffe"),
+    primary: generateColor(theme.colorPrimary || "#30fffe"),
+    header: generateColor(theme.colorHeader || "#a1ecfb"),
+    control: generateColor(theme.colorControl || "#acf9fb"),
     ...theme.color
   },
   background: {
-    primary: generateBackground("#031212"),
+    primary: generateBackground(theme.backgroundPrimary || "#031212"),
     ...theme.background
   }
 });

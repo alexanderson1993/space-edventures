@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Link, Input, Button, Navigator } from "../../components";
+import { Link, Button } from "../../components";
 
 const Dashboard = () => {
   return (

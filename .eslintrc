@@ -5,5 +5,8 @@
   "extends": ["eslint:recommended", "react-app", "eslint-config-prettier"],
   "env": {
     "browser": true
+  },
+  "rules": {
+    "no-console":"warn"
   }
 }
