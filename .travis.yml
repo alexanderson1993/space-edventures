@@ -9,5 +9,9 @@ node_js: "10"
 install: npm install
 script: npm run validate
 after_script: npx codecov@3
+deploy:
+  provider: firebase
+  token:
+    secure: "FIREBASE_KEY"
 branches:
   only: master
