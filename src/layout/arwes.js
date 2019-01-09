@@ -76,8 +76,6 @@ class ArwesContainer extends Component {
                 minHeight: "100vh"
               }}
             >
-              <Header show={show} />
-
               <Content style={{ flex: 1 }}>
                 <div
                   style={{
@@ -90,7 +88,6 @@ class ArwesContainer extends Component {
                   {children}
                 </div>
               </Content>
-              <Footer>Copyright © 2018</Footer>
             </div>
           </Arwes>
         </>

@@ -1,45 +1,38 @@
-import React from "react";
-import { Link, Center, Button } from "../../components";
-
+import React, { useContext } from "react";
+import styled from "@emotion/styled";
+import { Words } from "../../components";
+import AnimateContext from "../../helpers/animateContext";
+import { ReactComponent as Icon } from "../../layout/icon.svg";
+const Center = styled("div")`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+const Header = styled("h1")`
+  font-size: 8vmin !important;
+`;
 const Splash = () => {
+  const { show } = useContext(AnimateContext);
   return (
-    <Center>
-      <h1 className="text-center">
-        Join the Space Center community and track your rank!
-      </h1>
-      <div>
-        <Link to="/login">
-          <Button>Join Now</Button>
-        </Link>
-      </div>
-      <div className="splashPoints">
-        <ul>
-          <li>Earn Class Points</li>
-          <li>Transfer Ranks between Centers</li>
-          <li>Earn Badges and Commendations</li>
-        </ul>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          maxWidth: "50%",
-          width: "60vw"
-        }}
-      >
-        <Link to="/login">
-          <Button>Sign Up</Button>
-        </Link>
-        <Link to="/login">
-          <Button>Sign In</Button>
-        </Link>
-      </div>
-      <div style={{ marginTop: "30px" }}>
-        <p>
-          Are you a Space Center Director{" "}
-          <Link to="/director">Sign in Here</Link>
-        </p>
-      </div>
+    <Center
+      css={{
+        height: "90vh"
+      }}
+    >
+      <Center css={{ width: "32vmin" }}>
+        <Icon />
+      </Center>
+      <Header>
+        <Words animate show={show}>
+          Space Edventures
+        </Words>
+      </Header>
+      <h4>
+        <Words animate show={show}>
+          Coming Soon
+        </Words>
+      </h4>
     </Center>
   );
 };
