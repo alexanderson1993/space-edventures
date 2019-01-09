@@ -15,7 +15,8 @@
     "format": "npm run prettier -- --write",
     "validate": "npm run test && npm run prettier -- --list-different",
     "prettier": "prettier \"**/*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|mdx|graphql|vue)\"",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "postinstall": "npm install --prefix functions"
   },
   "dependencies": {
     "@arwes/arwes": "1.0.0-alpha.8",
