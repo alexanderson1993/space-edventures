@@ -1,6 +1,6 @@
-import React from "react";
+import React, { lazy } from "react";
 import { Router } from "@reach/router";
-import Profile from "./profile";
+const Profile = lazy(() => import("./profile"));
 export default () => {
   return (
     <Router>

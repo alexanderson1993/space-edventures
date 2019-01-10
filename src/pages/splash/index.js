@@ -1,12 +1,17 @@
 import React from "react";
 import { Link, Center, Button } from "../../components";
+import styled from "@emotion/styled";
+
+const Header = styled("h1")`
+  text-align: center;
+`;
 
 const Splash = () => {
   return (
     <Center>
-      <h1 className="text-center">
+      <Header className="text-center">
         Join the Space Center community and track your rank!
-      </h1>
+      </Header>
       <div>
         <Link to="/login">
           <Button>Join Now</Button>
@@ -36,7 +41,7 @@ const Splash = () => {
       </div>
       <div style={{ marginTop: "30px" }}>
         <p>
-          Are you a Space Center Director{" "}
+          Are you a Space Center Director?{" "}
           <Link to="/director">Sign in Here</Link>
         </p>
       </div>

@@ -1,9 +1,9 @@
-import React from "react";
+import React, { lazy } from "react";
 import { Router } from "@reach/router";
-import Splash from "./pages/splash";
-import Admin from "./pages/director";
-import Login from "./pages/accounts/login";
-import Participant from "./pages/participant";
+const Splash = lazy(() => import("./pages/splash"));
+const Admin = lazy(() => import("./pages/director"));
+const Login = lazy(() => import("./pages/accounts/login"));
+const Participant = lazy(() => import("./pages/participant"));
 
 const NotFound = () => <div>Sorry, nothing here.</div>;
 

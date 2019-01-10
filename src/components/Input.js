@@ -12,6 +12,7 @@ const Input = styled("input")`
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+  width: 100%;
 `;
 export default withStyles(() => {})(({ style, theme, block, ...props }) => {
   return (

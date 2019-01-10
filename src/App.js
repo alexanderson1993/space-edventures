@@ -1,5 +1,6 @@
-import React, { Component } from "react";
-
+import React, { Component, Suspense } from "react";
+import { Loading } from "@arwes/arwes";
+import ErrorBoundary from "./helpers/errorBoundary";
 import Routes from "./routes";
 import Layout from "./layout";
 import UserContext from "./helpers/userContext";
@@ -100,7 +101,11 @@ export default class App extends Component {
     return (
       <UserContext.Provider value={this.state}>
         <Layout>
-          <Routes />
+          <ErrorBoundary>
+            <Suspense fallback={<Loading animate />}>
+              <Routes />
+            </Suspense>
+          </ErrorBoundary>
         </Layout>
       </UserContext.Provider>
     );

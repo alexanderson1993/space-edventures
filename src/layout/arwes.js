@@ -13,6 +13,11 @@ import {
 } from "@arwes/arwes";
 
 import AnimateContext from "../helpers/animateContext";
+import styled from "@emotion/styled";
+
+const Center = styled("div")`
+  text-align: center;
+`;
 
 const resources = {
   background: {
@@ -90,7 +95,9 @@ class ArwesContainer extends Component {
                   {children}
                 </div>
               </Content>
-              <Footer>Copyright © 2018</Footer>
+              <Footer animate>
+                <Center>Copyright © 2018</Center>
+              </Footer>
             </div>
           </Arwes>
         </>
