@@ -3,6 +3,7 @@ import { navigate } from "@reach/router";
 import { withStyles } from "@arwes/arwes";
 import { withSounds } from "@arwes/sounds";
 import AnimateContext from "../helpers/animateContext";
+import { publish } from "../helpers/pubsub";
 
 const isExtern = /^https?:\/\//;
 
@@ -19,6 +20,7 @@ export const Navigator = withStyles(() => {})(
       if (!target) {
         hide();
       }
+      publish("routeChanged");
 
       setTimeout(() => {
         if (target) {

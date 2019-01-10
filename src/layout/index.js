@@ -1,7 +1,4 @@
 import React from "react";
-import { Link } from "@reach/router";
-import Profile from "./profile";
-import { ReactComponent as Logo } from "./logo.svg";
 import "./style.scss";
 import PropTypes from "prop-types";
 
@@ -31,13 +28,22 @@ const sounds = {
   }
 };
 
-const Layout = ({ children }) => (
+const normalTheme = createAppTheme({
+  typography: {
+    headerSizes: {
+      h1: 44
+    }
+  }
+});
+
+console.log(createTheme(normalTheme));
+const Layout = ({ children, isAdmin }) => (
   <>
     <link
       href="https://fonts.googleapis.com/css?family=Electrolize|Titillium+Web"
       rel="stylesheet"
     />
-    <ThemeProvider theme={createTheme(createAppTheme())}>
+    <ThemeProvider theme={createTheme(normalTheme)}>
       <SoundsProvider sounds={createSounds(sounds)}>
         <ArwesContainer>{children}</ArwesContainer>
       </SoundsProvider>

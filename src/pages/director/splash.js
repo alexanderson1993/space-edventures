@@ -8,12 +8,6 @@ import React from "react";
 import { Button, Link, Center } from "../../components";
 
 export default () => {
-  let style = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  };
-
   return (
     <Center>
       <h1 className="text-center">

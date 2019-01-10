@@ -8,13 +8,16 @@ import {
   createResponsive,
   utils,
   withStyles,
-  Loading,
   Content,
   Footer
 } from "@arwes/arwes";
 
 import AnimateContext from "../helpers/animateContext";
-import { Button } from "../components";
+import styled from "@emotion/styled";
+
+const Center = styled("div")`
+  text-align: center;
+`;
 
 const resources = {
   background: {
@@ -58,20 +61,12 @@ class ArwesContainer extends Component {
   }
 
   render() {
-    const { data, children } = this.props;
-    const { show, loaded } = this.state;
+    const { children } = this.props;
+    const { show } = this.state;
 
     return (
       <AnimateContext.Provider value={this.state}>
         <>
-          <Loading
-            full
-            animate
-            show={!show && !loaded}
-            animation={{
-              unmountOnExit: true
-            }}
-          />
           <Arwes
             animate
             show={show}
@@ -100,7 +95,9 @@ class ArwesContainer extends Component {
                   {children}
                 </div>
               </Content>
-              <Footer>Copyright © 2018</Footer>
+              <Footer animate>
+                <Center>Copyright © 2018</Center>
+              </Footer>
             </div>
           </Arwes>
         </>
