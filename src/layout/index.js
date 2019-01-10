@@ -36,7 +36,6 @@ const normalTheme = createAppTheme({
   }
 });
 
-console.log(createTheme(normalTheme));
 const Layout = ({ children, isAdmin }) => (
   <>
     <link
