@@ -22,7 +22,7 @@ jobs:
     - stage: schema
       install: npm install
       script:
-        - npx firebase-tools serve --only functions
+        - npx firebase-tools serve --only functions --token $FIREBASE_KEY
         - sleep 10
         - npx apollo service:check
           --endpoint=http://localhost:5000/space-edventures/us-central1/graphql

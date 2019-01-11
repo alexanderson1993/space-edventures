@@ -4,3 +4,4 @@ build
 coverage
 *.cache
 .env
+*.log
