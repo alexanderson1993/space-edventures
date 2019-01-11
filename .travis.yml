@@ -25,9 +25,9 @@ jobs:
       script:
         - sleep 20
         - npx apollo service:check
-          --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
+          --endpoint=http://localhost:5000/space-edventures/us-central1/api/graphql
         - npx apollo service:push
-          --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
+          --endpoint=http://localhost:5000/space-edventures/us-central1/api/graphql
         - npx apollo client:push --key $ENGINE_API_KEY --clientName react-web
           --includes="src/**/*.{ts,js,gql,graphql}"
     - stage: deploy
