@@ -27,7 +27,8 @@ function configureServer() {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    engine: process.env.ENGINE_API_KEY
+    engine: process.env.ENGINE_API_KEY,
+    tracing: process.env.NODE_ENV !== "production"
   });
   // now we take our newly instantiated ApolloServer and apply the
   // previously configured express application

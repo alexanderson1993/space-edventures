@@ -1,13 +1,13 @@
 import React, { Component, Suspense } from "react";
 import { Loading } from "@arwes/arwes";
-import { ApolloProvider } from "react-apollo";
-import gql from "graphql-tag";
+import { ApolloProvider, Query } from "react-apollo";
 import ErrorBoundary from "./helpers/errorBoundary";
 import Routes from "./routes";
 import Layout from "./layout";
 import UserContext from "./helpers/userContext";
 import graphqlClient from "./helpers/graphqlClient";
 import "./styles.css";
+import QUERY from "./queries/hello.graphql";
 
 // TODO: Replace with the appropriate data structure
 const userObj = {
@@ -107,7 +107,7 @@ export default class App extends Component {
           <Layout>
             <ErrorBoundary>
               <Suspense fallback={<Loading animate />}>
-                <Routes />
+                <Query query={QUERY}>{({ loading, data }) => <Routes />}</Query>
               </Suspense>
             </ErrorBoundary>
           </Layout>
