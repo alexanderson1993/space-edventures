@@ -19,10 +19,10 @@ jobs:
       install: npm install
       script: npm run validate
       after_script: npx codecov@3
-    - stags: schema
+    - stage: schema
       install: npm install
       script:
-        - npm run graphql
+        - npx firebase-tools serve --only functions
         - sleep 10
         - npx apollo service:check
           --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
