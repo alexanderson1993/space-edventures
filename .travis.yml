@@ -9,8 +9,9 @@ node_js: "10"
 
 stages:
   - test
+  - schema
   - name: deploy
-    if: branch = master
+    if: type != pull_request
 
 jobs:
   include:
@@ -18,6 +19,15 @@ jobs:
       install: npm install
       script: npm run validate
       after_script: npx codecov@3
+    - stags: schema
+      install: npm install
+      script:
+        - npm run graphql
+        - sleep 10
+        - npx apollo service:check
+          --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
+        - npx apollo service:push
+          --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
     - stage: deploy
       install: npm install
       script: npm run build

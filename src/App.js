@@ -1,9 +1,12 @@
 import React, { Component, Suspense } from "react";
 import { Loading } from "@arwes/arwes";
+import { ApolloProvider } from "react-apollo";
+import gql from "graphql-tag";
 import ErrorBoundary from "./helpers/errorBoundary";
 import Routes from "./routes";
 import Layout from "./layout";
 import UserContext from "./helpers/userContext";
+import graphqlClient from "./helpers/graphqlClient";
 import "./styles.css";
 
 // TODO: Replace with the appropriate data structure
@@ -99,15 +102,17 @@ export default class App extends Component {
   }
   render() {
     return (
-      <UserContext.Provider value={this.state}>
-        <Layout>
-          <ErrorBoundary>
-            <Suspense fallback={<Loading animate />}>
-              <Routes />
-            </Suspense>
-          </ErrorBoundary>
-        </Layout>
-      </UserContext.Provider>
+      <ApolloProvider client={graphqlClient}>
+        <UserContext.Provider value={this.state}>
+          <Layout>
+            <ErrorBoundary>
+              <Suspense fallback={<Loading animate />}>
+                <Routes />
+              </Suspense>
+            </ErrorBoundary>
+          </Layout>
+        </UserContext.Provider>
+      </ApolloProvider>
     );
   }
 }
