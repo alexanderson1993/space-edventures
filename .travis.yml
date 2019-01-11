@@ -23,7 +23,8 @@ jobs:
       install: npm install
       script:
         - node functions/printSchema.js
-        - npx apollo service:push --localSchemaFile=typeDefs.graphql
+        - npx apollo service:push --key $ENGINE_API_KEY
+          --localSchemaFile=typeDefs.graphql
         - npx apollo client:push --key $ENGINE_API_KEY --clientName react-web
           --includes="src/**/*.{ts,js,gql,graphql}"
     - stage: deploy
