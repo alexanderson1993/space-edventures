@@ -22,12 +22,9 @@ jobs:
     - stage: schema
       install: npm install
       script:
-        - npx firebase-tools serve --only functions --token $FIREBASE_KEY &
-        - sleep 10
-        - npx apollo service:check
-          --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
-        - npx apollo service:push
-          --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
+        - node functions/printSchema.js
+        - npx apollo service:check --localSchemaFile=typeDefs.json
+        - npx apollo service:push --localSchemaFile=typeDefs.json
         - npx apollo client:push --key $ENGINE_API_KEY --clientName react-web
           --includes="src/**/*.{ts,js,gql,graphql}"
     - stage: deploy

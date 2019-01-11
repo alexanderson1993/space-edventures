@@ -4,6 +4,14 @@ const { ApolloServer, gql } = require("apollo-server-express");
 // cors allows our server to accept requests from different origins
 const cors = require("cors");
 
+// Simple graphql schema
+const typeDefs = gql`
+  type Query {
+    # "A simple type for getting started!"
+    hello: String
+  }
+`;
+
 function configureServer() {
   // invoke express to create our server
   const app = express();
@@ -11,13 +19,6 @@ function configureServer() {
   //use the cors middleware
   app.use(cors());
 
-  // Simple graphql schema
-  const typeDefs = gql`
-    type Query {
-      # "A simple type for getting started!"
-      hello: String
-    }
-  `;
   // Very simple resolver that returns "world" for the hello query
   const resolvers = {
     Query: {
@@ -39,3 +40,4 @@ function configureServer() {
 }
 
 module.exports = configureServer;
+module.exports.typeDefs = typeDefs;

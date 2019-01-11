@@ -43,3 +43,10 @@ _Director_
 - Remove Flight Type
 
 _Administrator_ **All Permissions**
+
+## Implementation
+
+On the backend, roles are enforced using a
+[custom directive](https://www.apollographql.com/docs/apollo-server/features/authentication.html#directives-auth).
+
+On the frontend, roles are enforced using a custom component.
