@@ -9,8 +9,9 @@ node_js: "10"
 
 stages:
   - test
+  - schema
   - name: deploy
-    if: branch = master
+    if: type != pull_request
 
 jobs:
   include:
@@ -18,6 +19,17 @@ jobs:
       install: npm install
       script: npm run validate
       after_script: npx codecov@3
+    - stage: schema
+      install: npm install
+      before_script: npx firebase-tools serve --only functions --token $FIREBASE_KEY&
+      script:
+        - sleep 20
+        - npx apollo service:check
+          --endpoint=http://localhost:5000/space-edventures-beta/us-central1/api/graphql
+        - npx apollo service:push
+          --endpoint=http://localhost:5000/space-edventures-beta/us-central1/api/graphql
+        - npx apollo client:push --key $ENGINE_API_KEY --clientName react-web
+          --includes="src/**/*.{ts,js,gql,graphql}"
     - stage: deploy
       install: npm install
       script: npm run build

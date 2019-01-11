@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "graphql": "firebase serve --only functions",
     "test": "is-ci \"test:coverage\" \"test:watch\"",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
@@ -24,9 +25,17 @@
     "@emotion/core": "^10.0.6",
     "@emotion/styled": "^10.0.6",
     "@reach/router": "1.2.1",
+    "apollo-cache-inmemory": "^1.3.12",
+    "apollo-client": "^2.4.8",
+    "apollo-link": "^1.2.6",
+    "apollo-link-error": "^1.1.5",
+    "apollo-link-http": "^1.5.9",
     "emotion": "^10.0.6",
+    "graphql": "^14.0.2",
+    "graphql-tag": "^2.10.0",
     "node-sass": "^4.10.0",
     "react": "^16.8.0-alpha.0",
+    "react-apollo": "^2.3.3",
     "react-dom": "^16.8.0-alpha.0"
   },
   "devDependencies": {
