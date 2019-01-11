@@ -23,6 +23,7 @@ jobs:
       install: npm install
       before_script: npx firebase-tools serve --only functions --token $FIREBASE_KEY&
       script:
+        - sleep 20
         - npx apollo service:check
           --endpoint=http://localhost:5000/space-edventures/us-central1/graphql
         - npx apollo service:push
