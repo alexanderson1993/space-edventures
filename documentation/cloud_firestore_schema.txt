@@ -1,0 +1,34 @@
+// =============================================================================
+// Objects
+// =============================================================================
+
+Users
+    - Directors
+        - name
+        - registed date
+        - 
+    - Volunteers
+    - Participants
+
+Space Center
+        - director id
+        - name
+        - registered date
+        - description
+    - mission
+        - title
+        - description
+        - space center id
+        ### Would this be stored as a collection on the mission object? Or as a collection on the user object for all the missions they've done?
+        - collection: users who have achieved it
+    - badge
+        - name
+        - description
+        - space center id
+        - collection: users who have achieved it
+
+class
+
+rank
+
+message
