@@ -9,6 +9,10 @@ Users
         - 
     - Volunteers
     - Participants
+        - display name
+        - rank id
+        - flight hours
+        - class hours
 
 Space Center
         - director id
@@ -19,16 +23,25 @@ Space Center
         - title
         - description
         - space center id
-        ### Would this be stored as a collection on the mission object? Or as a collection on the user object for all the missions they've done?
-        - collection: users who have achieved it
+        ### Would this be stored as a list on the mission object? Or as a list on the user object for all the missions they've done?
+        - list: users who have achieved it
     - badge
         - name
         - description
         - space center id
-        - collection: users who have achieved it
+        - list: user ids for users who have achieved it
 
 class
+    - name
+    - description
+    - location
 
 rank
+    - name
+    - description
+    - order
 
 message
+    - from
+    - list: user ids who the message is to
+    - content
