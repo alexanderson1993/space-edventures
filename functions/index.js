@@ -2,7 +2,7 @@
 // behavior and your local server config function
 require("dotenv").config();
 const functions = require("firebase-functions");
-const configureServer = require("./server");
+const configureServer = require("./graphql");
 
 //initialize the server
 const server = configureServer();
