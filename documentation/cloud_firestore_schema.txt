@@ -6,42 +6,57 @@ Users
     - Directors
         - name
         - registed date
-        - 
+        - UserId
     - Volunteers
+        - UserId
     - Participants
         - display name
         - rank id
         - flight hours
         - class hours
+        - Collection : [Badges] # So that we have the historical view of the mission when they took it
+        - Collection : [FlightRecord] 
 
-Space Center
-        - director id
-        - name
-        - registered date
-        - description
-    - mission
-        - title
-        - description
-        - space center id
-        ### Would this be stored as a list on the mission object? Or as a list on the user object for all the missions they've done?
-        - list: users who have achieved it
-    - badge
-        - name
-        - description
-        - space center id
-        - list: user ids for users who have achieved it
-
-class
+Badges - Assigned to a user at arbitary times
     - name
     - description
-    - location
-
-rank
+    - image/logo
+    - space center id
+    - flight id                
+    - date
+    
+Flight Type - A type of flight that can be experienced by a participant
+    - space center id
     - name
-    - description
-    - order
+    - flight hours
+    - class hours    
 
-message
-    - from
+Flight Record - When a particpant goes on a flight
+    - flight type id
+    - participant id
+    - simulator id
+    - station id
+    - date
+    (no mission - that is stored as a badge)            
+
+Simulator
+    - Id
+    - Name
+
+SpaceCenter
+    - DirectorId
+    - Name
+    - RegisteredDate
+    - Description
+
+Rank
+    - Name
+    - Description
+    - Order
+
+Message
+    - From
     - list: user ids who the message is to
+    - list: users who have opened and read the message
     - content
+    - SentDate
