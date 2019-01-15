@@ -107,7 +107,7 @@ export default class App extends Component {
           <Layout>
             <ErrorBoundary>
               <Suspense fallback={<Loading animate />}>
-                <Query query={QUERY}>{({ loading, data }) => <Routes />}</Query>
+                <Routes />
               </Suspense>
             </ErrorBoundary>
           </Layout>
