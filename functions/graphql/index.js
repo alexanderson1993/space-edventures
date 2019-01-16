@@ -16,7 +16,11 @@ function configureServer() {
   const server = new ApolloServer({
     schema,
     engine: process.env.ENGINE_API_KEY,
-    tracing: process.env.NODE_ENV !== "production"
+    tracing: process.env.NODE_ENV !== "production",
+    uploads: {
+      maxFileSize: 10000000, // 10 MB
+      maxFiles: 20
+    }
   });
 
   // now we take our newly instantiated ApolloServer and apply the
