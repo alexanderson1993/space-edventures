@@ -4,6 +4,7 @@ const Splash = lazy(() => import("./pages/splash"));
 const Admin = lazy(() => import("./pages/director"));
 const Login = lazy(() => import("./pages/accounts/login"));
 const Participant = lazy(() => import("./pages/participant"));
+const GraphQL = lazy(() => import("./pages/test/graphql"));
 
 const NotFound = () => <div>Sorry, nothing here.</div>;
 
@@ -14,6 +15,7 @@ const Routes = () => {
       <Participant path="/*" />
       <Admin path="/director/*" />
       <Login path="login" />
+      <GraphQL path="graphql" />
       <NotFound default />
     </Router>
   );

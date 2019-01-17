@@ -21,6 +21,13 @@ const {
   resolver: SimulatorResolver
 } = require("./simulator");
 
+const {
+  schema: TestingSchema,
+  resolver: TestingResolver
+} = require("./testing");
+
+const { schema: directivesSchema, schemaDirectives } = require("./directives");
+
 const { merge } = require("lodash");
 
 const MainSchema = gql`
@@ -52,8 +59,9 @@ module.exports = makeExecutableSchema({
     FlightRecordSchema,
     FlightTypeSchema,
     StationSchema,
-    SimulatorSchema
-  ],
+    SimulatorSchema,
+    TestingSchema
+  ].concat(directivesSchema),
   resolvers: merge(
     MainResolver,
     AuthResolver,
@@ -64,6 +72,8 @@ module.exports = makeExecutableSchema({
     FlightRecordResolver,
     FlightTypeResolver,
     StationResolver,
-    SimulatorResolver
-  )
+    SimulatorResolver,
+    TestingResolver
+  ),
+  schemaDirectives
 });

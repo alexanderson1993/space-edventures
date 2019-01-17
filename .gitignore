@@ -7,3 +7,4 @@ coverage
 *.log
 typeDefs.json
 typeDefs.graphql
+serviceAccountKey.json
