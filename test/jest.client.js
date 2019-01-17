@@ -23,6 +23,7 @@ module.exports = {
     "^.+setupTests\\.js$": "<rootDir>/node_modules/babel-jest",
     "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
     "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+    "\\.(gql|graphql)$": "jest-transform-graphql",
     "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)":
       "<rootDir>/config/jest/fileTransform.js"
   },

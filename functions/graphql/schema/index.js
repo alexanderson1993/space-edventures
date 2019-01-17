@@ -1,6 +1,26 @@
 const { makeExecutableSchema, gql } = require("apollo-server-express");
 const { schema: AuthSchema, resolver: AuthResolver } = require("./auth");
 const { schema: UserSchema, resolver: UserResolver } = require("./user");
+const { schema: ScalarSchema, resolver: ScalarResolver } = require("./scalars");
+const { schema: BadgesSchema, resolver: BadgesResolver } = require("./badges");
+const { schema: CenterSchema, resolver: CenterResolver } = require("./center");
+const {
+  schema: FlightRecordSchema,
+  resolver: FlightRecordResolver
+} = require("./flightRecord");
+const {
+  schema: FlightTypeSchema,
+  resolver: FlightTypeResolver
+} = require("./flightType");
+const {
+  schema: StationSchema,
+  resolver: StationResolver
+} = require("./station");
+const {
+  schema: SimulatorSchema,
+  resolver: SimulatorResolver
+} = require("./simulator");
+
 const { merge } = require("lodash");
 
 const MainSchema = gql`
@@ -22,6 +42,28 @@ const MainResolver = {};
 // functionally-separated files, and merge them together into
 // a single schema.
 module.exports = makeExecutableSchema({
-  typeDefs: [MainSchema, AuthSchema, UserSchema],
-  resolvers: merge(MainResolver, AuthResolver, UserResolver)
+  typeDefs: [
+    MainSchema,
+    AuthSchema,
+    UserSchema,
+    ScalarSchema,
+    BadgesSchema,
+    CenterSchema,
+    FlightRecordSchema,
+    FlightTypeSchema,
+    StationSchema,
+    SimulatorSchema
+  ],
+  resolvers: merge(
+    MainResolver,
+    AuthResolver,
+    UserResolver,
+    ScalarResolver,
+    BadgesResolver,
+    CenterResolver,
+    FlightRecordResolver,
+    FlightTypeResolver,
+    StationResolver,
+    SimulatorResolver
+  )
 });
