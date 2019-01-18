@@ -38,37 +38,40 @@ function manageDatabase (req, res) {
     let db = admin.firestore()
     //////////////////////////////////////////////
 
-    const admin = require('firebase-admin');
+    // const admin = require('firebase-admin');
 
-    var serviceAccount = require('path/to/serviceAccountKey.json');
+    // var serviceAccount = require('../Space_Edventures_Beta-dfbb4cd91042.json');
 
-    admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-    });
+    // admin.initializeApp({
+    //     credential: admin.credential.cert(serviceAccount)
+    // });
 
-    var db = admin.firestore();
+    // var db = admin.firestore();
 
     // =========================================================================
-    // Delete current collections
+    // Delete all current collections
     // =========================================================================
     db.getCollections().then((collections) => {
-        console.log('This is a test');
-        console.log(collections);
         for (let collection of collections) {
-            console.log(`Found collection with id: ${collection.id}`);
+            deleteCollection(db, collection.path, 500);
+            //console.log(collection.path);
         }
     });
 
     // =========================================================================
-    // Add data
+    // Add User
     // =========================================================================
-    // db.collection('Users').add({
-    //     FirstName: 'Tarron',
-    //     LastName: 'Lane',
-    //     Age: '24'
-    // }).then((docRef) => {
-    //     console.log('The inserted id is ' + docRef.id)
-    // });
+    let users = [
+        ['Tarron', 'Lane', '24']
+    ]
+    
+    db.collection('Users').add({
+        FirstName: 'Tarron',
+        LastName: 'Lane',
+        Age: '24'
+    }).then((docRef) => {
+        console.log('The inserted id is ' + docRef.id)
+    });
 
     // Example: how to return a value to the sender
     return res.status(200).send(JSON.stringify({Success: 'Function was called successfully'}));
