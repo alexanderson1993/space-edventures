@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "analyze": "source-map-explorer build/static/js/main.*js",
     "graphql": "firebase serve --only functions",
     "test": "is-ci \"test:coverage\" \"test:watch\"",
     "test:coverage": "jest --coverage",
@@ -32,6 +33,7 @@
     "apollo-link-error": "^1.1.5",
     "apollo-link-http": "^1.5.9",
     "emotion": "^10.0.6",
+    "firebase": "^5.7.3",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
     "node-sass": "^4.10.0",
@@ -95,6 +97,7 @@
     "react-testing-library": "^5.4.4",
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
+    "source-map-explorer": "^1.6.0",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.1.0",
     "url-loader": "1.1.1",
