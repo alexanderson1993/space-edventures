@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Blockquote, Loading } from "@arwes/arwes";
 import { Input, Words, Button, Navigator } from "../../components";
-import UserContext from "../../helpers/userContext";
+import AuthContext from "../../helpers/authContext";
 import styled from "@emotion/styled";
 
 const Container = styled("div")`
@@ -26,7 +26,7 @@ function validateEmail(email) {
 }
 
 const Login = ({ signingUp = false, to = "/" }) => {
-  const { login, signUp: signUpMethod, magicLink } = useContext(UserContext);
+  const { login, signUp: signUpMethod, magicLink } = useContext(AuthContext);
   const [signUp, setSignUp] = useState(signingUp);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

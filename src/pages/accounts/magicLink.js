@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import UserContext from "../../helpers/userContext";
+import AuthContext from "../../helpers/authContext";
 import { Blockquote, Loading } from "@arwes/arwes";
 import { Words, Link, Navigator } from "../../components";
 
 const MagicLink = ({ location, navigate }) => {
-  const { completeMagicLinkSignin } = useContext(UserContext);
+  const context = useContext(AuthContext);
+  const { completeMagicLinkSignin } = context;
   const [error, setError] = useState(null);
   useEffect(
     () => {

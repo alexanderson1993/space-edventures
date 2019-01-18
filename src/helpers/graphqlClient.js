@@ -4,15 +4,16 @@ import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import { setContext } from "apollo-link-context";
 import { ApolloLink } from "apollo-link";
+import { auth } from "./firebase";
 
 const uri =
   process.env.NODE_ENV === "production"
     ? ""
     : "http://localhost:5000/space-edventures/us-central1/api/graphql";
 
-const AuthLink = setContext((_, { headers }) => {
+const AuthLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = localStorage.getItem("token");
+  const token = await auth.currentUser.getIdToken();
   // return the headers to the context so httpLink can read them
   return {
     headers: {

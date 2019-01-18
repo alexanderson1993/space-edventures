@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
-import UserContext from "../helpers/userContext";
+import { css } from "@emotion/core";
+import AuthContext from "../helpers/authContext";
+import ProfileContext from "../helpers/profileContext";
 import { Appear, Button as ArwesButton } from "@arwes/arwes";
-import { Words, Button, Link, Image } from "../components";
+import { Words, Button, Link, ProfilePicture } from "../components";
 import { subscribe } from "../helpers/pubsub";
 import "./profile.scss";
 
@@ -12,8 +14,11 @@ const Profile = () => {
       setOpen(false);
     })
   );
-  const { user, logout } = useContext(UserContext);
-  return user ? (
+  const { user: authUser, logout } = useContext(AuthContext);
+  const context = useContext(ProfileContext);
+  console.log(context);
+  const { user } = context;
+  return authUser ? (
     <div className="profile-container">
       <div className="profile" onClick={() => setOpen(!open)}>
         <div className="profile-info">
@@ -25,7 +30,14 @@ const Profile = () => {
             <p>Class: {user.classHours}</p>
           </div>
         </div>
-        <Image className="profile-image" src={user.profile} alt="Profile" />
+        <ProfilePicture
+          css={css`
+            max-width: 60px;
+            max-height: 60px;
+            object-fit: contain;
+            margin: 0;
+          `}
+        />
       </div>
       <div
         className="profile-extra-frame"

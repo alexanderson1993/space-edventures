@@ -7,21 +7,18 @@ module.exports = class User {
   }
   static async getUser(token) {
     try {
-      const { uid } = await auth().verifyIdToken(token);
+      const user = await auth().verifyIdToken(token);
+
+      const dbUser = await firestore()
+        .collection("Users")
+        .doc(user.uid)
+        .get()
+        .then(user => ({ ...user.data(), id: user.id }));
+
+      return { ...user, ...dbUser };
     } catch (err) {
       throw new AuthenticationError(err.message);
     }
-    const [authUser, dbUser] = await Promise.all([
-      auth().getUser(uid),
-      firestore()
-        .collection("Users")
-        .doc(uid)
-        .get()
-        .then(user => ({ ...user.data(), id: user.uid }))
-    ]);
-
-    console.log(authUser, dbUser);
-    return null;
   }
   static async createUser({ email, password, displayName }) {
     const userRecord = await auth().createUser({
