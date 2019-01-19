@@ -20,54 +20,6 @@ const AuthProvider = ({ children }) => {
     });
   }, []);
 
-  const actions = {
-    login: ({ email, password }) => {
-      return auth.signInWithEmailAndPassword(email, password);
-    },
-    signUp: ({ email, password }) => {
-      return auth.createUserWithEmailAndPassword(email, password);
-    },
-    logout: () => {
-      return auth.signOut();
-    },
-    magicLink: ({ email }) => {
-      var actionCodeSettings = {
-        // URL must be whitelisted in the Firebase Console.
-        url: `${window.location.origin}/magicLink`,
-        // This must be true.
-        handleCodeInApp: true
-      };
-      return auth.sendSignInLinkToEmail(email, actionCodeSettings).then(() => {
-        // The link was successfully sent. Inform the user.
-        // Save the email locally so you don't need to ask the user for it again
-        // if they open the link on the same device.
-        window.localStorage.setItem("emailForSignIn", email);
-      });
-    },
-    completeMagicLinkSignin: href => {
-      // Confirm the link is a sign-in with email link.
-      if (auth.isSignInWithEmailLink(href)) {
-        // Additional state parameters can also be passed via URL.
-        // This can be used to continue the user's intended action before triggering
-        // the sign-in operation.
-        // Get the email if available. This should be available if the user completes
-        // the flow on the same device where they started it.
-        let email = window.localStorage.getItem("emailForSignIn");
-        if (!email) {
-          // User opened the link on a different device. To prevent session fixation
-          // attacks, ask the user to provide the associated email again. For example:
-          email = window.prompt("Please provide your email for confirmation");
-        }
-        // The client SDK will parse the code from the link for you.
-        return auth.signInWithEmailLink(email, href).then(function(result) {
-          // Clear email from storage.
-          window.localStorage.removeItem("emailForSignIn");
-          return result;
-        });
-      }
-    }
-  };
-
   return (
     <Query query={ME_QUERY} skip={!user} key={user && user.uid}>
       {graphqlHelper(({ me }) => (

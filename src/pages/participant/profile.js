@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
 import { Words, Button, Input, Link, ProfilePicture } from "../../components";
 import "./profile.scss";
 import ProfileContext from "../../helpers/profileContext";
