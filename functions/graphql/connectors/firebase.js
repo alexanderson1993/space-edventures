@@ -16,7 +16,6 @@ const serviceAccount = {
     "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-qq8ce%40space-edventures-beta.iam.gserviceaccount.com"
 };
 
-console.log(serviceAccount);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://space-edventures-beta.firebaseio.com"
