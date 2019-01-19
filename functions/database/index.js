@@ -59,19 +59,70 @@ function manageDatabase (req, res) {
     });
 
     // =========================================================================
-    // Add User
+    // Create some Directors (and store their Id's so we can attach the Space Centers to them)
     // =========================================================================
-    let users = [
-        ['Tarron', 'Lane', '24']
+    spaceDirectorIds = []
+    spaceDirectorPromises = []
+    spaceDirectors = [
+        ['DirectorA LastNameA', Date('10 October 2010')],
+        ['DirectorB LastNameB', Date('11 November 2011')]
     ]
-    
-    db.collection('Users').add({
-        FirstName: 'Tarron',
-        LastName: 'Lane',
-        Age: '24'
-    }).then((docRef) => {
-        console.log('The inserted id is ' + docRef.id)
+
+    for (let director of directors) {
+        spaceDirectorPromises.push(db.collection('Users').add({
+            name: director[0],
+            registeredDate: director[1],
+        }).then((ref) => {
+            spaceDirectorIds.push(ref.id);
+        }));
+    }
+
+    // =============================================================================
+    // Create the Space Centers (and keep ID's so we can add badges to them)
+    // =============================================================================
+    Promise.all(spaceDirectorPromises).then(() => {
+        // create the space centers, using the ids from the space director array
     });
+    function addSpaceCenters() {
+
+    }
+
+    // =========================================================================
+    // Add Badges (and keep ID's so we can add them to users)
+    // =========================================================================
+    // let badges = [
+    //     []
+    // ]
+
+    // badgesPromise = db.collection('Badges').add({
+    //     Name: 'BadgeA',
+    //     Description: 'The first test badge that Tarron created.',
+    //     ImageOrLogo: 'path/to/image',
+    //     SpaceCenterId: ''
+    //     FlightId:           
+    //     Date: Date()
+    // });
+
+    // =========================================================================
+    // Add Users
+    // =========================================================================
+    // let users = [
+    //     ['Tarron', 'Lane', '24']
+    // ]
+    
+    // db.collection('Users').add({
+    //     Name: 'Tarron Lane',
+    //     RegisteredDate: new Date('December 10, 1815'),
+    //     Age: '24',
+    //     DisplayName: '',
+    //     RankId: '',
+    //     FlightHours: '',
+    //     ClassHours: '',
+    //     Badges: [10,11,12,13]
+    //     //- Collection : [FlightRecord] 
+    // }).then((docRef) => {
+    //     console.log('The inserted id is ' + docRef.id)
+    // });
 
     // Example: how to return a value to the sender
     return res.status(200).send(JSON.stringify({Success: 'Function was called successfully'}));
