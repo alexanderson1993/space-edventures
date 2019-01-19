@@ -18,7 +18,9 @@
     "validate": "npm run test && npm run prettier -- --list-different",
     "prettier": "prettier \"**/*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|mdx|graphql|vue)\"",
     "precommit": "lint-staged",
-    "postinstall": "npm install --prefix functions"
+    "postinstall": "npm install --prefix functions",
+    "schema:check": "npx apollo service:check --endpoint=http://localhost:5000/space-edventures-beta/us-central1/api/graphql",
+    "schema:update": "npx apollo service:push --endpoint=http://localhost:5000/space-edventures-beta/us-central1/api/graphql"
   },
   "dependencies": {
     "@arwes/arwes": "1.0.0-alpha.8",
