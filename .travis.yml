@@ -22,8 +22,7 @@ jobs:
     - stage: schema
       install: npm install
       before_script:
-        - npx firebase-tools list
-        - npx firebase-tools serve --only functions&
+        - npx firebase-tools serve --only functions --token="$FIREBASE_TOKEN"&
       script:
         - sleep 20
         - npx apollo service:check
