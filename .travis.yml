@@ -21,7 +21,9 @@ jobs:
       after_script: npx codecov@3
     - stage: schema
       install: npm install
-      before_script: npx firebase-tools serve --only functions&
+      before_script:
+        - npx firebase-tools list
+        - npx firebase-tools serve --only functions&
       script:
         - sleep 20
         - npx apollo service:check
