@@ -6,3 +6,4 @@ export { default as Center } from "./Center";
 export { default as Image } from "./Image";
 export { default as Words } from "./Words";
 export { default as Table } from "./Table";
+export { default as ProfilePicture } from "./ProfilePicture";

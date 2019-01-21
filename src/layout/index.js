@@ -1,57 +1,108 @@
-import React from "react";
-import "./style.scss";
-import PropTypes from "prop-types";
+import React, { Component } from "react";
 
-import { ThemeProvider, createTheme } from "@arwes/arwes";
-import { SoundsProvider, createSounds } from "@arwes/sounds";
-import createAppTheme from "../helpers/createAppTheme";
+import Header from "./header";
 
-import ArwesContainer from "./arwes";
+import {
+  Arwes,
+  createLoader,
+  createResponsive,
+  utils,
+  withStyles,
+  Content,
+  Footer
+} from "@arwes/arwes";
 
-const sounds = {
-  shared: {
-    volume: 0.6
+import AnimateContext from "../helpers/animateContext";
+import styled from "@emotion/styled";
+
+const Center = styled("div")`
+  text-align: center;
+`;
+
+const resources = {
+  background: {
+    small: require("../assets/img/background-small.jpg"),
+    medium: require("../assets/img/background-medium.jpg"),
+    large: require("../assets/img/background-large.jpg"),
+    xlarge: require("../assets/img/background-xlarge.jpg")
   },
-  players: {
-    click: {
-      sound: { src: [require("../assets/sound/click.mp3")] },
-      settings: { oneAtATime: true }
-    },
-    typing: {
-      sound: { src: [require("../assets/sound/typing.mp3")] },
-      settings: { oneAtATime: true }
-    },
-    deploy: {
-      sound: { src: [require("../assets/sound/deploy.mp3")] },
-      settings: { oneAtATime: true }
-    }
-  }
+  pattern: require("../assets/img/glow.png")
 };
 
-const normalTheme = createAppTheme({
-  typography: {
-    headerSizes: {
-      h1: 44
-    }
+class ArwesContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      show: false,
+      loaded: false,
+      hide: () => this.setState({ show: false }),
+      reveal: () => this.setState({ show: true })
+    };
   }
-});
 
-const Layout = ({ children, isAdmin }) => (
-  <>
-    <link
-      href="https://fonts.googleapis.com/css?family=Electrolize|Titillium+Web"
-      rel="stylesheet"
-    />
-    <ThemeProvider theme={createTheme(normalTheme)}>
-      <SoundsProvider sounds={createSounds(sounds)}>
-        <ArwesContainer>{children}</ArwesContainer>
-      </SoundsProvider>
-    </ThemeProvider>
-  </>
-);
+  componentDidMount() {
+    this.loader = createLoader();
+    this.responsive = createResponsive({
+      getTheme: () => this.props.theme
+    });
+    this.startLoading();
+  }
 
-Layout.propTypes = {
-  children: PropTypes.node.isRequired
-};
+  startLoading() {
+    const responsive = this.responsive.get();
+    const background = utils.getResponsiveResource(
+      resources.background,
+      responsive
+    );
+    this.loader
+      .load({ images: [background, this.profile] }, { timeout: 5 * 1000 })
+      .then(() => {}, () => {})
+      .then(() => this.setState({ show: true, loaded: true }));
+  }
 
-export default Layout;
+  render() {
+    const { children } = this.props;
+    const { show } = this.state;
+
+    return (
+      <AnimateContext.Provider value={this.state}>
+        <>
+          <Arwes
+            animate
+            show={show}
+            showResources={true}
+            background={resources.background}
+            pattern={resources.pattern}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                minHeight: "100vh"
+              }}
+            >
+              <Header show={show} />
+
+              <Content style={{ flex: 1 }}>
+                <div
+                  style={{
+                    margin: "0 auto",
+                    maxWidth: 960,
+                    padding: "0px 1.0875rem 1.45rem",
+                    paddingTop: 0
+                  }}
+                >
+                  {children}
+                </div>
+              </Content>
+              <Footer animate>
+                <Center>Copyright © 2018</Center>
+              </Footer>
+            </div>
+          </Arwes>
+        </>
+      </AnimateContext.Provider>
+    );
+  }
+}
+export default withStyles(() => {})(ArwesContainer);

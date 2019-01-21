@@ -1,5 +1,5 @@
 const { gql } = require("apollo-server-express");
-
+const { User } = require("../models");
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -17,7 +17,9 @@ module.exports.schema = gql`
 module.exports.resolver = {
   Mutation: {
     login: (_, { email, password }, context) => {},
-    signUp: (_, { email, password }, context) => {},
+    signUp: (_, { email, password }, context) => {
+      return User.createUser({ email, password });
+    },
     logout: (_, __, context) => {}
   }
 };

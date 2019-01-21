@@ -6,18 +6,18 @@ module.exports.schema = gql`
     user(id: ID!): User
   }
 
-  type Profile {
-    age: Int!
-    name: String!
+  type Profile @auth(requires: [self]) {
+    age: Int
+    name: String
     displayName: String
-    profilePicture: String!
+    profilePicture: String
   }
 
   type User {
     id: ID!
-    email: String!
-    username: String!
-    profile: Profile!
+    email: String
+    username: String @auth(requires: [self])
+    profile: Profile
     dateJoined: Date
 
     # Badges, flight records, and flight and class hours will be added
@@ -36,8 +36,10 @@ module.exports.schema = gql`
 `;
 module.exports.resolver = {
   Query: {
-    me: (_, __, context) => {},
-    user: (_, { id }, context) => {}
+    me: (_, __, context) => context.user,
+    user: (_, { id }, context) => {
+      return {};
+    }
   },
   Badge: {
     user: (badge, args, context) => {}
