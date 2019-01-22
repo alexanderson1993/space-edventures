@@ -36,7 +36,8 @@ module.exports.schema = gql`
 `;
 module.exports.resolver = {
   Query: {
-    me: (_, __, context) => context.user,
+    me: (_, __, context) =>
+      console.log("CONTEXT", context.user) || context.user,
     user: (_, { id }, context) => {
       return {};
     }
