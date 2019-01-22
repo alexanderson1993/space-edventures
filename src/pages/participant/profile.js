@@ -37,7 +37,7 @@ const Profile = () => {
   const { user } = useContext(ProfileContext);
   if (user)
     return user.loading ? (
-      <Loading animated />
+      <Loading animate />
     ) : (
       <Container className="profile-page">
         <Header>
