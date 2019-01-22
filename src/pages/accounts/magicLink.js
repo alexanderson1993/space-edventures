@@ -9,8 +9,10 @@ const MagicLink = ({ location, navigate }) => {
   const [error, setError] = useState(null);
   useEffect(
     () => {
+      const to = localStorage.getItem("postLoginPath") || "/";
+
       completeMagicLinkSignin(location.href)
-        .then(() => navigate("/"))
+        .then(() => navigate(to))
         .catch(error => setError(error));
     },
     [location.href]

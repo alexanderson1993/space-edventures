@@ -16,7 +16,6 @@ const Profile = () => {
   );
   const { user: authUser, logout } = useContext(AuthContext);
   const context = useContext(ProfileContext);
-  console.log(context);
   const { user } = context;
   return authUser ? (
     <div className="profile-container">

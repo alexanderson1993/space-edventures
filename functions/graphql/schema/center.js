@@ -10,6 +10,11 @@ module.exports.schema = gql`
     name: String
     description: String
     registeredDate: Date
+    website: String
+    email: String
+    # These Stripe properties might change to a type someday, if necessary
+    stripeCustomer: String
+    isSubscribed: Boolean
   }
 
   # We can extend other graphQL types using the "extend" keyword.
@@ -23,6 +28,9 @@ module.exports.schema = gql`
   }
 
   extend type FlightRecord {
+    center: Center
+  }
+  extend type User {
     center: Center
   }
 `;
@@ -40,5 +48,11 @@ module.exports.resolver = {
   },
   FlightRecord: {
     center: (flightRecord, args, context) => {}
+  },
+  User: {
+    center: (user, args, context) => {
+      // Returns a since center for which the user is a director
+      return null;
+    }
   }
 };

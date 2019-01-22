@@ -34,7 +34,6 @@ const Table = styled("table")`
 
 const Profile = () => {
   const { user } = useContext(ProfileContext);
-  console.log(user);
   return user ? (
     <Container className="profile-page">
       <Header>

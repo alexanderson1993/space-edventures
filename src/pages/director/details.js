@@ -12,7 +12,7 @@ export default () => {
           <Link to="https://thoriumsim.com">View Website</Link>
         </li>
       </ul>
-      <Link to="/director/signUp">
+      <Link to="/director/signIn">
         <Button>Join Now</Button>
       </Link>
     </>
