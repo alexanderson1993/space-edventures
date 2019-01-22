@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import styled from "@emotion/styled";
+import { Loading } from "@arwes/arwes";
 import { Words, Button, Input, Link, ProfilePicture } from "../../components";
 import "./profile.scss";
 import ProfileContext from "../../helpers/profileContext";
@@ -34,55 +35,57 @@ const Table = styled("table")`
 
 const Profile = () => {
   const { user } = useContext(ProfileContext);
-  console.log(user);
-  return user ? (
-    <Container className="profile-page">
-      <Header>
-        <Words>Profile</Words>
-      </Header>
-      <ProfilePictureGrid>
-        <ProfilePicture />
-        <Button>Edit Profile Picture</Button>
-      </ProfilePictureGrid>
-      <UserData>
-        <FormGroup>
-          <Label>
-            Name
-            <Input block type="text" defaultValue={user.name} />
-          </Label>
-        </FormGroup>
-        <FormGroup>
-          <Label>
-            Display Name
-            <Input block type="text" defaultValue={user.displayName} />
-          </Label>
-        </FormGroup>
-        <FormGroup>
-          <Label>Rank</Label>
-          <h3>{user.rank}</h3>
-          <div>Flight Hours: {user.flightHours}</div>
-          <div>Class Hours: {user.classHours}</div>
-        </FormGroup>
-        <Link to="/profile/certificate">
-          <Button>View Rank Certificate</Button>
-        </Link>
-      </UserData>
-      <History>
-        <div>
-          <h2>History</h2>
+  if (user)
+    return user.loading ? (
+      <Loading animated />
+    ) : (
+      <Container className="profile-page">
+        <Header>
+          <Words>Profile</Words>
+        </Header>
+        <ProfilePictureGrid>
+          <ProfilePicture />
+          <Button>Edit Profile Picture</Button>
+        </ProfilePictureGrid>
+        <UserData>
+          <FormGroup>
+            <Label>
+              Name
+              <Input block type="text" defaultValue={user.name} />
+            </Label>
+          </FormGroup>
+          <FormGroup>
+            <Label>
+              Display Name
+              <Input block type="text" defaultValue={user.displayName} />
+            </Label>
+          </FormGroup>
+          <FormGroup>
+            <Label>Rank</Label>
+            <h3>{user.rank}</h3>
+            <div>Flight Hours: {user.flightHours}</div>
+            <div>Class Hours: {user.classHours}</div>
+          </FormGroup>
+          <Link to="/profile/certificate">
+            <Button>View Rank Certificate</Button>
+          </Link>
+        </UserData>
+        <History>
+          <div>
+            <h2>History</h2>
 
-          <Table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Center</th>
-                <th>Simulator</th>
-                <th>Station</th>
-                <th>Mission</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* {user.history.map(h => (
+            <Table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Center</th>
+                  <th>Simulator</th>
+                  <th>Station</th>
+                  <th>Mission</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* {user.history.map(h => (
                 <tr key={h.id}>
                   <td>{h.date.toLocaleDateString()}</td>
                   <td>{h.center}</td>
@@ -91,12 +94,13 @@ const Profile = () => {
                   <td>{h.mission}</td>
                 </tr>
               ))} */}
-            </tbody>
-          </Table>
-        </div>
-      </History>
-    </Container>
-  ) : null;
+              </tbody>
+            </Table>
+          </div>
+        </History>
+      </Container>
+    );
+  return null;
 };
 
 export default Profile;

@@ -4,11 +4,13 @@ import propTypes from "prop-types";
 import { auth } from "../../helpers/firebase";
 
 const AuthProvider = ({ children }) => {
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
   // Update the user state whenever the Firebase auth status changes
   useEffect(() => {
     auth.onAuthStateChanged(userObj => {
+      if (loading) setLoading(false);
       if (userObj) {
         setUser(userObj);
       } else {
@@ -64,9 +66,8 @@ const AuthProvider = ({ children }) => {
       }
     }
   };
-  console.log(user);
   return (
-    <AuthContext.Provider value={{ ...actions, user }}>
+    <AuthContext.Provider value={{ ...actions, user, loading }}>
       {children}
     </AuthContext.Provider>
   );
