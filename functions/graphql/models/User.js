@@ -4,6 +4,7 @@ const { AuthenticationError } = require("apollo-server-express");
 module.exports = class User {
   constructor(params) {
     Object.entries(params).forEach(([key, value]) => (this[key] = value));
+    this.profile = { ...(this.profile || {}), userId: this.id };
   }
   static async getUser(token) {
     try {
@@ -20,24 +21,9 @@ module.exports = class User {
       throw new AuthenticationError(err.message);
     }
   }
-  static async createUser({ email, password, displayName }) {
-    const userRecord = await auth().createUser({
-      email,
-      password,
-      displayName
-    });
-
-    // Create the user object in the database
-    const dbUser = await firestore()
-      .collection("Users")
-      .doc(userRecord.uid)
-      .create({});
-    const token = await auth().createCustomToken(userRecord.uid);
-    console.log(userRecord, dbUser, token);
-  }
   hasOneOfRoles(roles) {
     return roles.reduce(
-      (prev, next) => prev || this.roles.indexOf(next) > -1,
+      (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
       false
     );
   }
