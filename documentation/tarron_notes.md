@@ -2,4 +2,4 @@
 
 ## Firebase Functions
 
-* firebase serve
+- firebase serve
