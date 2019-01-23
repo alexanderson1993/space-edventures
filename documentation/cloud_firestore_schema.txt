@@ -15,7 +15,7 @@ Users
         - flight hours
         - class hours
         - Collection : [Badges] # So that we have the historical view of the mission when they took it
-        - Collection : [FlightRecord] 
+        - Collection : [FlightRecord] ### Should we remove this, since we have the same information on flight record?
 
 Badges - Assigned to a user at arbitary times
     - name
