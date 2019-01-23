@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { css } from "@emotion/core";
 import AuthContext from "../helpers/authContext";
 import ProfileContext from "../helpers/profileContext";
-import { Appear, Button as ArwesButton } from "@arwes/arwes";
+import { Appear, Button as ArwesButton, Loading } from "@arwes/arwes";
 import { Words, Button, Link, ProfilePicture } from "../components";
 import { subscribe } from "../helpers/pubsub";
 import "./profile.scss";
@@ -14,55 +14,56 @@ const Profile = () => {
       setOpen(false);
     })
   );
-  const { user: authUser, logout } = useContext(AuthContext);
-  const context = useContext(ProfileContext);
-  console.log(context);
-  const { user } = context;
-  return authUser ? (
-    <div className="profile-container">
-      <div className="profile" onClick={() => setOpen(!open)}>
-        <div className="profile-info">
-          <p className="profile-rank">
-            <Words>{user.rank}</Words>
-          </p>
-          <div className="profile-hours">
-            <p>Flight: {user.flightHours}</p>
-            <p>Class: {user.classHours}</p>
+  const { user: authUser, loading, logout } = useContext(AuthContext);
+  const { user } = useContext(ProfileContext);
+  if (loading || user.loading) return <Loading animate small />;
+  if (authUser)
+    return (
+      <div className="profile-container">
+        <div className="profile" onClick={() => setOpen(!open)}>
+          <div className="profile-info">
+            <p className="profile-rank">
+              <Words>{user.rank}</Words>
+            </p>
+            <div className="profile-hours">
+              <p>Flight: {user.flightHours}</p>
+              <p>Class: {user.classHours}</p>
+            </div>
           </div>
+          <ProfilePicture
+            css={css`
+              max-width: 60px;
+              max-height: 60px;
+              object-fit: contain;
+              margin: 0;
+            `}
+          />
         </div>
-        <ProfilePicture
-          css={css`
-            max-width: 60px;
-            max-height: 60px;
-            object-fit: contain;
-            margin: 0;
-          `}
-        />
-      </div>
-      <div
-        className="profile-extra-frame"
-        style={{ pointerEvents: open ? null : "none" }}
-      >
-        <Appear animate show={open} style={{ width: "100%" }}>
-          <div className="profile-extra">
-            <Link to="/profile">
-              <ArwesButton animate show={open} style={{ width: "100%" }}>
-                Profile
+        <div
+          className="profile-extra-frame"
+          style={{ pointerEvents: open ? null : "none" }}
+        >
+          <Appear animate show={open} style={{ width: "100%" }}>
+            <div className="profile-extra">
+              <Link to="/profile">
+                <ArwesButton animate show={open} style={{ width: "100%" }}>
+                  Profile
+                </ArwesButton>
+              </Link>
+              <ArwesButton
+                animate
+                show={open}
+                style={{ width: "100%" }}
+                onClick={logout}
+              >
+                Logout
               </ArwesButton>
-            </Link>
-            <ArwesButton
-              animate
-              show={open}
-              style={{ width: "100%" }}
-              onClick={logout}
-            >
-              Logout
-            </ArwesButton>
-          </div>
-        </Appear>
+            </div>
+          </Appear>
+        </div>
       </div>
-    </div>
-  ) : (
+    );
+  return (
     <div style={{ display: "flex" }}>
       <Link to="/login">
         <Button size="sm">Login</Button>
