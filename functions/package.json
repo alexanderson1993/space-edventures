@@ -20,7 +20,8 @@
     "graphql": "^14.0.2",
     "graphql-type-json": "^0.2.1",
     "graphql-upload": "^8.0.3",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "stripe": "^6.20.1"
   },
   "devDependencies": {
     "eslint": "^4.12.0",

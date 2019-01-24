@@ -26,6 +26,8 @@ const {
   resolver: TestingResolver
 } = require("./testing");
 
+const { schema: StripeSchema, resolver: StripeResolver } = require("./stripe");
+
 const { schema: directivesSchema, schemaDirectives } = require("./directives");
 
 const { merge } = require("lodash");
@@ -60,7 +62,8 @@ module.exports = makeExecutableSchema({
     FlightTypeSchema,
     StationSchema,
     SimulatorSchema,
-    TestingSchema
+    TestingSchema,
+    StripeSchema
   ].concat(directivesSchema),
   resolvers: merge(
     MainResolver,
@@ -73,7 +76,8 @@ module.exports = makeExecutableSchema({
     FlightTypeResolver,
     StationResolver,
     SimulatorResolver,
-    TestingResolver
+    TestingResolver,
+    StripeResolver
   ),
   schemaDirectives
 });

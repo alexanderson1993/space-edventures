@@ -1,4 +1,5 @@
 const { gql } = require("apollo-server-express");
+const { Center } = require("../models");
 
 // Definition for Space Edventures Centers
 
@@ -12,15 +13,22 @@ module.exports.schema = gql`
     registeredDate: Date
     website: String
     email: String
-    # These Stripe properties might change to a type someday, if necessary
-    stripeCustomer: String
-    isSubscribed: Boolean
   }
 
   # We can extend other graphQL types using the "extend" keyword.
   extend type Query {
     centers: [Center]
     center(id: ID!): Center
+  }
+
+  extend type Mutation {
+    registerCenter(
+      name: String!
+      website: String
+      email: String!
+      token: String!
+      planId: String!
+    ): Center
   }
 
   extend type FlightType {
@@ -42,6 +50,12 @@ module.exports.resolver = {
   Query: {
     centers: (rootQuery, args, context) => {},
     center: (rootQuery, { id }, context) => {}
+  },
+  Mutation: {
+    registerCenter: (rootQuery, args, context) => {
+      // TODO: Check to make sure this is an allowed operation.
+      return Center.createCenter(context.user.id, args);
+    }
   },
   FlightType: {
     center: (flightType, args, context) => {}
