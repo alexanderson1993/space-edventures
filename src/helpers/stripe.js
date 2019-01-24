@@ -13,10 +13,12 @@ export default class StripeAPIProvider extends Component {
     if (window.Stripe) {
       this.setState({ stripe: window.Stripe(PUB_KEY) });
     } else {
-      document.querySelector("#stripe-js").addEventListener("load", () => {
-        // Create Stripe instance once Stripe.js loads
-        this.setState({ stripe: window.Stripe(PUB_KEY) });
-      });
+      const script = document.querySelector("#stripe-js");
+      script &&
+        script.addEventListener("load", () => {
+          // Create Stripe instance once Stripe.js loads
+          this.setState({ stripe: window.Stripe(PUB_KEY) });
+        });
     }
   }
   render() {

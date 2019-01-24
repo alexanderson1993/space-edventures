@@ -1,5 +1,4 @@
 const { makeExecutableSchema, gql } = require("apollo-server-express");
-const { schema: AuthSchema, resolver: AuthResolver } = require("./auth");
 const { schema: UserSchema, resolver: UserResolver } = require("./user");
 const { schema: ScalarSchema, resolver: ScalarResolver } = require("./scalars");
 const { schema: BadgesSchema, resolver: BadgesResolver } = require("./badges");
@@ -53,7 +52,6 @@ const MainResolver = {};
 module.exports = makeExecutableSchema({
   typeDefs: [
     MainSchema,
-    AuthSchema,
     UserSchema,
     ScalarSchema,
     BadgesSchema,
@@ -67,7 +65,6 @@ module.exports = makeExecutableSchema({
   ].concat(directivesSchema),
   resolvers: merge(
     MainResolver,
-    AuthResolver,
     UserResolver,
     ScalarResolver,
     BadgesResolver,

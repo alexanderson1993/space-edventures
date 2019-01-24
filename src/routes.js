@@ -8,8 +8,6 @@ const Login = lazy(() => import("./pages/accounts/login"));
 const Participant = lazy(() => import("./pages/participant"));
 const GraphQL = lazy(() => import("./pages/test/graphql"));
 
-const NotFound = () => <div>Sorry, nothing here.</div>;
-
 const Routes = () => {
   return (
     <Router>
@@ -20,7 +18,6 @@ const Routes = () => {
       <SentMagicLink path="sentMagicLink" />
       <MagicLinkWithNavigator path="magicLink" />
       <GraphQL path="graphql" />
-      <NotFound default />
     </Router>
   );
 };

@@ -4,7 +4,8 @@ _Unauthenticated_
 
 - Create Account
 
-_Self_
+_Self_ - Only works if the object being queried has a `userId` property, or if
+the `id` property matches the `id` of the user
 
 - Change Email Address
 - Change Name

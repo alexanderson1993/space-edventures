@@ -46,6 +46,12 @@ class AuthDirective extends SchemaDirectiveVisitor {
       field.resolve = async function(...args) {
         // Get the required Role from the field first, falling back
         // to the objectType if no Role is required by the field:
+        // Grab the user off of context
+        const [data, queryArgs, context] = args;
+        const { user } = context;
+
+        console.log("DATA", data);
+
         const requiredRoles =
           field._requiredAuthRoles || objectType._requiredAuthRoles;
 
@@ -53,10 +59,16 @@ class AuthDirective extends SchemaDirectiveVisitor {
           return resolve.apply(this, args);
         }
 
-        // Grab the user off of context
-        const context = args[2];
-        const { user } = context;
-
+        if (
+          (objectType._requiredAuthRoles &&
+            objectType._requiredAuthRoles.indexOf("self") > -1 &&
+            (user.id === data.userId || user.id === data.id)) ||
+          (field._requiredAuthRoles &&
+            field._requiredAuthRoles.indexOf("self") > -1 &&
+            (user.id === data.userId || user.id === data.id))
+        ) {
+          return resolve.apply(this, args);
+        }
         // Provide different error messages based on whether it is a field
         // or object that is being denied.
         if (

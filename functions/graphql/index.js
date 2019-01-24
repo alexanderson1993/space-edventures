@@ -32,15 +32,15 @@ function configureServer() {
       maxFileSize: 10000000, // 10 MB
       maxFiles: 20
     },
-    context: ({ req }) => {
+    context: async ({ req }) => {
       // get the user token from the headers
       const token = (req.headers.authorization || "").replace("Bearer ", "");
 
       if (!token) return { user: null };
 
       // try to retrieve a user with the token
-      const user = User.getUser(token);
-
+      const userData = await User.getUser(token);
+      const user = new User(userData);
       // add the user to the context
       return { user };
     }
