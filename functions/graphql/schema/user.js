@@ -1,5 +1,5 @@
 const { gql } = require("apollo-server-express");
-const { firestore } = require("../connectors/firebase");
+let User = require("../models/User");
 
 module.exports.schema = gql`
   extend type Query {
@@ -40,9 +40,7 @@ module.exports.resolver = {
     me: (_, __, context) =>
       console.log("CONTEXT", context.user) || context.user,
     user: (_, { id }, context) => {
-      console.log("HERE IS THE OUTPUT");
-      console.log(firestore.collection("users"));
-      return { email: "This is a test" };
+      return User.getUserById(id);
     }
   },
   Badge: {
