@@ -29,7 +29,10 @@ const AuthProvider = ({ children }) => {
       {({ data, loading: queryLoading }) => (
         <ProfileContext.Provider
           value={{
-            user: { ...(data ? data.me : {}), loading: loading || queryLoading }
+            user: {
+              ...(data ? data.me : {}),
+              loading: loading || queryLoading
+            }
           }}
         >
           {children}

@@ -6,10 +6,8 @@ cache:
 notifications:
   email: false
 node_js: "10"
-
 stages:
   - test
-  # - schema
   - name: deploy
     if: type != pull_request
 
@@ -19,21 +17,6 @@ jobs:
       install: npm install
       script: npm run validate
       after_script: npx codecov@3
-    # - stage: schema
-    #   install:
-    #     - npm install
-    #     - npm install -g firebase-tools
-    #   before_script:
-    #     - firebase serve --only functions
-    #       --token="bQprtQ49DerB8MyMATDLw5qROR5ElXv976OkiyuNUO2+Z+HYui86wHn4yqjQNt9LkFqs2kBLnkTzuqCcMhA/jE4MC1/Qh5tw7OMwmkgwzmnvMVDZKleO2U55ZTl2DsC7WgYWW6tCBTSCoVWsEPJ8IR53wSZQMRhfMKXrCLLYCn2ZfQM9V+TQOEupcsgKoKd+PCf4lnhee+SEETfFXSnN0nW62zgqIdiZhqbt2V1QJMDLz9HEONBfGQk4RTqBfTBfNUAmZP3+YhBLsHRbCChedyf7zITestUbs9T2z+w9zARg2F0vCXpJ6cmVBaJYbW90pMAZCkyFk99SiWC5Y2qazSplgvSAaa67Eqp1vW2WcwPWmW3Evt1ZsXkVfuNVZVL6XBxXI9Fy3eXi2dDUVnCO8M729qMOxL0CLFedDTtOGxd53RdCHqseQTqWpSPxvpzX8zfBf16PLMppcfJSlx1hGG4rRoTiP8nIUk9+hC21k0pQMvC2kvxDeBXFjg4wdtvXWzIwqBgTE8taed+mspXejnwf1W2okKmBDX+FnC9q7WFur9X5IPgSaKJbrIHMSUJIbvC4+Ps6JHi5DT+1EpIjLTrJV6B4ldFpUDCU4H5npE1gKRFP/eMBsoqnb1A64epQy75J7RMCGC7i7FUz3YM2hOKzLFDKf0ZljmAeFII/JnU="&
-    #   script:
-    #     - sleep 20
-    #     - npx apollo service:check
-    #       --endpoint=http://localhost:5000/space-edventures-beta/us-central1/api/graphql
-    #     - npx apollo service:push
-    #       --endpoint=http://localhost:5000/space-edventures-beta/us-central1/api/graphql
-    #     - npx apollo client:push --key $ENGINE_API_KEY --clientName react-web
-    #       --includes="src/**/*.{ts,js,gql,graphql}"
     - stage: deploy
       install: npm install
       script: npm run build
@@ -41,7 +24,4 @@ jobs:
         provider: firebase
         skip_cleanup: true
         token:
-          secure: "bQprtQ49DerB8MyMATDLw5qROR5ElXv976OkiyuNUO2+Z+HYui86wHn4yqjQNt9LkFqs2kBLnkTzuqCcMhA/jE4MC1/Qh5tw7OMwmkgwzmnvMVDZKleO2U55ZTl2DsC7WgYWW6tCBTSCoVWsEPJ8IR53wSZQMRhfMKXrCLLYCn2ZfQM9V+TQOEupcsgKoKd+PCf4lnhee+SEETfFXSnN0nW62zgqIdiZhqbt2V1QJMDLz9HEONBfGQk4RTqBfTBfNUAmZP3+YhBLsHRbCChedyf7zITestUbs9T2z+w9zARg2F0vCXpJ6cmVBaJYbW90pMAZCkyFk99SiWC5Y2qazSplgvSAaa67Eqp1vW2WcwPWmW3Evt1ZsXkVfuNVZVL6XBxXI9Fy3eXi2dDUVnCO8M729qMOxL0CLFedDTtOGxd53RdCHqseQTqWpSPxvpzX8zfBf16PLMppcfJSlx1hGG4rRoTiP8nIUk9+hC21k0pQMvC2kvxDeBXFjg4wdtvXWzIwqBgTE8taed+mspXejnwf1W2okKmBDX+FnC9q7WFur9X5IPgSaKJbrIHMSUJIbvC4+Ps6JHi5DT+1EpIjLTrJV6B4ldFpUDCU4H5npE1gKRFP/eMBsoqnb1A64epQy75J7RMCGC7i7FUz3YM2hOKzLFDKf0ZljmAeFII/JnU="
-    - stage: deploy
-      install: npm install --prefix functions
-      script: npm run deploy --prefix functions
+          secure: bQprtQ49DerB8MyMATDLw5qROR5ElXv976OkiyuNUO2+Z+HYui86wHn4yqjQNt9LkFqs2kBLnkTzuqCcMhA/jE4MC1/Qh5tw7OMwmkgwzmnvMVDZKleO2U55ZTl2DsC7WgYWW6tCBTSCoVWsEPJ8IR53wSZQMRhfMKXrCLLYCn2ZfQM9V+TQOEupcsgKoKd+PCf4lnhee+SEETfFXSnN0nW62zgqIdiZhqbt2V1QJMDLz9HEONBfGQk4RTqBfTBfNUAmZP3+YhBLsHRbCChedyf7zITestUbs9T2z+w9zARg2F0vCXpJ6cmVBaJYbW90pMAZCkyFk99SiWC5Y2qazSplgvSAaa67Eqp1vW2WcwPWmW3Evt1ZsXkVfuNVZVL6XBxXI9Fy3eXi2dDUVnCO8M729qMOxL0CLFedDTtOGxd53RdCHqseQTqWpSPxvpzX8zfBf16PLMppcfJSlx1hGG4rRoTiP8nIUk9+hC21k0pQMvC2kvxDeBXFjg4wdtvXWzIwqBgTE8taed+mspXejnwf1W2okKmBDX+FnC9q7WFur9X5IPgSaKJbrIHMSUJIbvC4+Ps6JHi5DT+1EpIjLTrJV6B4ldFpUDCU4H5npE1gKRFP/eMBsoqnb1A64epQy75J7RMCGC7i7FUz3YM2hOKzLFDKf0ZljmAeFII/JnU=

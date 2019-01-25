@@ -62,6 +62,7 @@ const Login = ({ signingUp = false, to = "/" }) => {
     e.preventDefault();
     if (checkError("magic")) {
       setLoading(true);
+      localStorage.setItem("postLoginPath", to);
       magicLink({ email })
         .then(() => navigate(`/sentMagicLink?email=${email}`))
         .catch(error => {

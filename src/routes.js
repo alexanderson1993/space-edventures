@@ -1,7 +1,9 @@
 import React, { lazy } from "react";
 import { Router } from "@reach/router";
-import SentMagicLink from "./pages/accounts/sentMagicLink";
-import MagicLinkWithNavigator from "./pages/accounts/magicLink";
+const SentMagicLink = lazy(() => import("./pages/accounts/sentMagicLink"));
+const MagicLinkWithNavigator = lazy(() =>
+  import("./pages/accounts/magicLinkPage")
+);
 const Splash = lazy(() => import("./pages/splash"));
 const Admin = lazy(() => import("./pages/director"));
 const Login = lazy(() => import("./pages/accounts/login"));

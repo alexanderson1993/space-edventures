@@ -7,14 +7,13 @@ const MagicLink = ({ location, navigate }) => {
   const context = useContext(AuthContext);
   const { completeMagicLinkSignin } = context;
   const [error, setError] = useState(null);
-  useEffect(
-    () => {
-      completeMagicLinkSignin(location.href)
-        .then(() => navigate("/"))
-        .catch(error => setError(error));
-    },
-    [location.href]
-  );
+  useEffect(() => {
+    const to = localStorage.getItem("postLoginPath") || "/";
+
+    completeMagicLinkSignin(location.href)
+      .then(() => navigate(to))
+      .catch(error => setError(error));
+  }, [location.href]);
   return error ? (
     <Blockquote layer="alert">
       <Words>{error.message}</Words>
