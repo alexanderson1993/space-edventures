@@ -41,36 +41,37 @@ async function deleteCollections(db) {
 }
 
 async function refillCollections(db) {
-  const [directors, ranks, simulators] = await Promise.all(
-    addDirectors(),
-    addRanks(),
-    addSimulators()
-  );
+  const [directors, ranks, simulators] = await Promise.all([
+    addDirectors(db),
+    addRanks(db),
+    addSimulators(db)
+  ]);
   directorIds = directors.map(director => director.id);
   rankIds = ranks.map(rank => rank.id);
   simulatorIds = simulators.map(sim => sim.id);
 
-  const spaceCenters = await addSpaceCenters(directorIds);
+  const spaceCenters = await addSpaceCenters(db, directorIds);
   spaceCenterIds = spaceCenters.map(spaceCenter => spaceCenter.id);
 
-  const [flightTypes, badges] = await Promise.all(
-    addFlightTypes(spaceCenterIds),
-    addBadges(spaceCenterIds)
-  );
+  const [flightTypes, badges] = await Promise.all([
+    addFlightTypes(db, spaceCenterIds),
+    addBadges(db, spaceCenterIds)
+  ]);
   badgeIds = badges.map(badge => badge.id);
   flightTypeIds = flightTypes.map(type => type.id);
 
-  const users = await addUsers(badgeIds, rankIds);
+  const users = await addUsers(db, badgeIds, rankIds);
   userIds = users.map(user => user.id);
 
   const flightRecords = await addFlightRecords(
+    db,
     flightTypeIds,
     userIds,
     simulatorIds
   );
 }
 
-function addDirectors() {
+function addDirectors(db) {
   const spaceDirectors = [
     {
       name: "DirectorA LastNameA",
@@ -90,7 +91,7 @@ function addDirectors() {
   );
 }
 
-function addRanks() {
+function addRanks(db) {
   const ranks = [
     {
       name: "Cadet",
@@ -127,7 +128,7 @@ function addRanks() {
   return Promise.all(ranks.map(rank => db.collection("ranks").add(rank)));
 }
 
-function addSpaceCenters(directorIds) {
+function addSpaceCenters(db, directorIds) {
   const spaceCenters = [
     {
       name: "SpaceCenterA",
@@ -149,7 +150,7 @@ function addSpaceCenters(directorIds) {
   );
 }
 
-function addFlightTypes(spaceCenterIds) {
+function addFlightTypes(db, spaceCenterIds) {
   const flights = [
     {
       spaceCenterId: spaceCenterIds[0],
@@ -182,7 +183,7 @@ function addFlightTypes(spaceCenterIds) {
   );
 }
 
-function addBadges(spaceCenterIds) {
+function addBadges(db, paceCenterIds) {
   const badges = [
     {
       name: "BadgeA",
@@ -216,7 +217,7 @@ function addBadges(spaceCenterIds) {
   return Promise.all(badges.map(badge => db.collection("badges").add(badge)));
 }
 
-function addUsers(badgeIds, rankIds) {
+function addUsers(db, badgeIds, rankIds) {
   const users = [
     {
       name: "ParticipantA",
@@ -272,7 +273,7 @@ function addUsers(badgeIds, rankIds) {
   return Promise.all(users.map(user => db.collection("users").add(user)));
 }
 
-function addFlightRecords(flightTypeIds, userIds, simulatorIds) {
+function addFlightRecords(db, flightTypeIds, userIds, simulatorIds) {
   const flights = [
     {
       flightTypeId: flightTypeIds[0],
@@ -336,7 +337,7 @@ function addFlightRecords(flightTypeIds, userIds, simulatorIds) {
   );
 }
 
-function addSimulators() {
+function addSimulators(db) {
   const sims = [
     {
       name: "USS Enterprise"
@@ -351,7 +352,7 @@ function addSimulators() {
   return Promise.all(sims.map(sim => db.collection("simulators").add(sim)));
 }
 
-function addMessages(directorIds, userIds) {
+function addMessages(db, directorIds, userIds) {
   const messages = [
     {
       from: "",
