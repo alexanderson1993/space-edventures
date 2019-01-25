@@ -5,12 +5,16 @@ NOTES:
     - Sort of a starting point for the Admin (Space Center Directory) Pages
 *************************************************************************/
 import React from "react";
-import { Center } from "../../components";
+import { Center, Content } from "../../components";
 
-export default () => {
+const Welcome = () => {
   return (
-    <Center>
-      <h1 className="text-center">You are now connected!</h1>
-    </Center>
+    <Content>
+      <Center>
+        <h1 className="text-center">You are now connected!</h1>
+      </Center>
+    </Content>
   );
 };
+
+export default Welcome;

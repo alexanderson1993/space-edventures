@@ -8,3 +8,4 @@ export { default as Words } from "./Words";
 export { default as Table } from "./Table";
 export { default as ProfilePicture } from "./ProfilePicture";
 export { default as PaymentEntry } from "./PaymentEntry";
+export { default as Content } from "./Content";

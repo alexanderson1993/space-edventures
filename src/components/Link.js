@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { navigate } from "@reach/router";
 import { withStyles } from "@arwes/arwes";
 import { withSounds } from "@arwes/sounds";
 import AnimateContext from "../helpers/animateContext";
 import { publish } from "../helpers/pubsub";
+import { AdminContext } from "../layout/arwesProvider";
 
 const isExtern = /^https?:\/\//;
 
 export const Navigator = withStyles(() => {})(
   withSounds()(({ theme, sounds, children, ...etc }) => {
+    const { isAdmin, setIsAdmin } = useContext(AdminContext);
     const linkTrigger = (href, target, hide, reveal) => {
       sounds.click && sounds.click.play();
 
@@ -23,6 +25,8 @@ export const Navigator = withStyles(() => {})(
       publish("routeChanged");
 
       setTimeout(() => {
+        if (href.indexOf("/director") === 0 && !isAdmin) setIsAdmin(true);
+        else if (href.indexOf("/director") !== 0 && isAdmin) setIsAdmin(false);
         if (target) {
           window.open(href);
         } else if (isExtern.test(href)) {

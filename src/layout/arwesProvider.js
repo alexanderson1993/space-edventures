@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState, createContext } from "react";
 import "./style.scss";
 import PropTypes from "prop-types";
 
 import { ThemeProvider, createTheme } from "@arwes/arwes";
 import { SoundsProvider, createSounds } from "@arwes/sounds";
 import createAppTheme from "../helpers/createAppTheme";
+import Layout from "./";
+
+export const AdminContext = createContext();
 
 const sounds = {
   shared: {
@@ -26,25 +29,49 @@ const sounds = {
   }
 };
 
-const normalTheme = createAppTheme({
+const baseTheme = {
   typography: {
     headerSizes: {
       h1: 44
     }
   }
-});
-
-const ArwesProvider = ({ children, isAdmin }) => (
-  <>
-    <link
-      href="https://fonts.googleapis.com/css?family=Electrolize|Titillium+Web"
-      rel="stylesheet"
-    />
-    <ThemeProvider theme={createTheme(normalTheme)}>
-      <SoundsProvider sounds={createSounds(sounds)}>{children}</SoundsProvider>
-    </ThemeProvider>
-  </>
+};
+const normalTheme = createTheme(
+  createAppTheme({
+    ...baseTheme
+  })
 );
+
+const adminTheme = createTheme(
+  createAppTheme({
+    ...baseTheme,
+    colorPrimary: "#C395EE",
+    colorHeader: "#CBA0FA",
+    colorControl: "#DBACFA"
+  })
+);
+
+const ArwesProvider = ({ children }) => {
+  const [isAdmin, setIsAdmin] = useState(
+    window.location.pathname.indexOf("/director") === 0
+  );
+  return (
+    <>
+      <link
+        href="https://fonts.googleapis.com/css?family=Electrolize|Titillium+Web"
+        rel="stylesheet"
+      />
+
+      <ThemeProvider theme={isAdmin ? adminTheme : normalTheme}>
+        <SoundsProvider sounds={createSounds(sounds)}>
+          <AdminContext.Provider value={{ isAdmin, setIsAdmin }}>
+            <Layout isAdmin={isAdmin}>{children}</Layout>
+          </AdminContext.Provider>
+        </SoundsProvider>
+      </ThemeProvider>
+    </>
+  );
+};
 
 ArwesProvider.propTypes = {
   children: PropTypes.node.isRequired

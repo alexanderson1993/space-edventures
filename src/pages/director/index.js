@@ -10,18 +10,13 @@ import graphqlHelper from "../../helpers/graphQLHelper";
 const Welcome = lazy(() => import("./welcome"));
 const Splash = lazy(() => import("./splash"));
 const SignIn = lazy(() => import("./signIn"));
-const Details = lazy(() => import("./details"));
 const Register = lazy(() => import("./register"));
 const Dashboard = lazy(() => import("./dashboard"));
+const Navigation = lazy(() => import("./navigation"));
 
 // Management Pages
 const SimulatorEdit = lazy(() => import("./simulators/edit"));
 const SimulatorDetail = lazy(() => import("./simulators/detail"));
-const adminTheme = createAppTheme({
-  colorPrimary: "#C395EE",
-  colorHeader: "#CBA0FA",
-  colorControl: "#DBACFA"
-});
 
 const RouteData = () => {
   const { user } = useContext(AuthContext);
@@ -36,31 +31,24 @@ const RouteData = () => {
 
 const Routes = ({ director = {} }) => {
   const { user } = useContext(AuthContext);
-  let { center = {} } = director;
+  let { center } = director;
   if (process.env.NODE_ENV !== "production") center = {};
-  return (
-    <ThemeProvider theme={createTheme(adminTheme)}>
-      <Router>
-        {user ? (
-          center ? (
-            <>
-              <Welcome path="/" />
-              <Dashboard path="dashboard" />
-              {/* Management Pages */}
-              <SimulatorDetail path="simulators/:simulatorId" />
-              <SimulatorEdit path="simulators/create" create />
-              <SimulatorEdit path="simulators/edit/:simulatorId" />
-            </>
-          ) : (
-            <Register path="/" />
-          )
-        ) : (
-          <Splash path="/" />
-        )}
-        <SignIn path="signIn" />
-        <Details path="details" />
-      </Router>
-    </ThemeProvider>
+  return user ? (
+    center ? (
+      <Navigation>
+        <Router>
+          <Welcome path="/" />
+          <Dashboard path="dashboard" />
+          <SimulatorDetail path="simulators/:simulatorId" />
+          <SimulatorEdit path="simulators/create" create />
+          <SimulatorEdit path="simulators/edit/:simulatorId" />
+        </Router>
+      </Navigation>
+    ) : (
+      <Register />
+    )
+  ) : (
+    <Splash />
   );
 };
 
