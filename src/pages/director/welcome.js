@@ -5,7 +5,7 @@ NOTES:
     - Sort of a starting point for the Admin (Space Center Directory) Pages
 *************************************************************************/
 import React from "react";
-import { Button, Link, Center } from "../../components";
+import { Center } from "../../components";
 
 export default () => {
   return (

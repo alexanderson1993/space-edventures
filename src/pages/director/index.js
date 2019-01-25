@@ -1,4 +1,4 @@
-import React, { lazy, useContext, useEffect } from "react";
+import React, { lazy, useContext } from "react";
 import { Router } from "@reach/router";
 import { ThemeProvider, createTheme } from "@arwes/arwes";
 import createAppTheme from "../../helpers/createAppTheme";
@@ -6,6 +6,7 @@ import { Query } from "react-apollo";
 import CENTER_DIRECTOR from "../../queries/centerDirector.graphql";
 import AuthContext from "../../helpers/authContext";
 import graphqlHelper from "../../helpers/graphQLHelper";
+
 const Welcome = lazy(() => import("./welcome"));
 const Splash = lazy(() => import("./splash"));
 const SignIn = lazy(() => import("./signIn"));
@@ -18,6 +19,7 @@ const adminTheme = createAppTheme({
   colorHeader: "#CBA0FA",
   colorControl: "#DBACFA"
 });
+
 const RouteData = () => {
   const { user } = useContext(AuthContext);
   return (
