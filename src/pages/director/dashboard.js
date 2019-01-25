@@ -8,11 +8,6 @@ const Dashboard = () => {
       <h1>Director Dashboard</h1>
       <h2 style={{ display: "flex", justifyContent: "space-between" }}>
         Lehi Space Center
-        <Link to="./register">
-          <Button to="./register" style={{ fontSize: "5pt" }}>
-            Add another space center
-          </Button>
-        </Link>
       </h2>
       <h3>Space Center Description</h3>
       <p>

@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import { Router } from "@reach/router";
 import { Link, Words } from "../../components";
+const Certificate = lazy(() => import("./certificate"));
 const Profile = lazy(() => import("./profile"));
 
 const NotFound = () =>
@@ -21,6 +22,7 @@ export default () => {
   return (
     <Router>
       <Profile path="profile" />
+      <Certificate path="certificate" />
       <NotFound default />
     </Router>
   );

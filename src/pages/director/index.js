@@ -10,6 +10,9 @@ const Details = lazy(() => import("./details"));
 const Register = lazy(() => import("./register"));
 const Dashboard = lazy(() => import("./dashboard"));
 
+// Management Pages
+const SimulatorEdit = lazy(() => import("./simulators/edit"));
+const SimulatorDetail = lazy(() => import("./simulators/detail"));
 const adminTheme = createAppTheme({
   colorPrimary: "#C395EE",
   colorHeader: "#CBA0FA",
@@ -26,6 +29,11 @@ export default () => {
         <Details path="details" />
         <Register path="register" />
         <Dashboard path="dashboard" />
+
+        {/* Management Pages */}
+        <SimulatorDetail path="simulators/:simulatorId" />
+        <SimulatorEdit path="simulators/create" create />
+        <SimulatorEdit path="simulators/edit/:simulatorId" />
       </Router>
     </ThemeProvider>
   );
