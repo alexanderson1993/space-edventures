@@ -1,4 +1,5 @@
 const { gql } = require("apollo-server-express");
+let User = require("../models/User");
 
 module.exports.schema = gql`
   extend type Query {
@@ -39,7 +40,7 @@ module.exports.resolver = {
     me: (_, __, context) =>
       console.log("CONTEXT", context.user) || context.user,
     user: (_, { id }, context) => {
-      return {};
+      return User.getUserById(id);
     }
   },
   Badge: {
