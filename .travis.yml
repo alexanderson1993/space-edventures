@@ -32,4 +32,4 @@ jobs:
       install:
         - npm install -g firebase-tools
         - npm install --prefix functions
-      script: npm run deploy --prefix functions --token=$FIREBASE_TOKEN
+      script: npm run deploy --prefix functions -- --token=$FIREBASE_TOKEN
