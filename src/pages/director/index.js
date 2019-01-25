@@ -1,10 +1,14 @@
-import React, { lazy } from "react";
+import React, { lazy, useContext } from "react";
 import { Router } from "@reach/router";
 import { ThemeProvider, createTheme } from "@arwes/arwes";
 import createAppTheme from "../../helpers/createAppTheme";
+import { Query } from "react-apollo";
+import CENTER_DIRECTOR from "../../queries/centerDirector.graphql";
+import AuthContext from "../../helpers/authContext";
+import graphqlHelper from "../../helpers/graphQLHelper";
 
+const Welcome = lazy(() => import("./welcome"));
 const Splash = lazy(() => import("./splash"));
-const SignUp = lazy(() => import("./signUp"));
 const SignIn = lazy(() => import("./signIn"));
 const Details = lazy(() => import("./details"));
 const Register = lazy(() => import("./register"));
@@ -16,17 +20,40 @@ const adminTheme = createAppTheme({
   colorControl: "#DBACFA"
 });
 
-export default () => {
+const RouteData = () => {
+  const { user } = useContext(AuthContext);
+  return (
+    <Query query={CENTER_DIRECTOR} skip={!user}>
+      {graphqlHelper(({ me }) => (
+        <Routes director={me} />
+      ))}
+    </Query>
+  );
+};
+
+const Routes = ({ director = {} }) => {
+  const { user } = useContext(AuthContext);
+  const { center } = director;
   return (
     <ThemeProvider theme={createTheme(adminTheme)}>
       <Router>
-        <Splash path="/" />
-        <SignUp path="signUp" />
+        {user ? (
+          center ? (
+            <>
+              <Welcome path="/" />
+              <Dashboard path="dashboard" />
+            </>
+          ) : (
+            <Register path="/" />
+          )
+        ) : (
+          <Splash path="/" />
+        )}
         <SignIn path="signIn" />
         <Details path="details" />
-        <Register path="register" />
-        <Dashboard path="dashboard" />
       </Router>
     </ThemeProvider>
   );
 };
+
+export default RouteData;

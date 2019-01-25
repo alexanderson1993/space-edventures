@@ -1,3 +1,5 @@
 module.exports = {
-  User: require("./User")
+  User: require("./User"),
+  Stripe: require("./Stripe"),
+  Center: require("./Center")
 };

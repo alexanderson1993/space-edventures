@@ -8,24 +8,27 @@ import ArwesProvider from "./layout/arwesProvider";
 import graphqlClient from "./helpers/graphqlClient";
 import AuthProvider from "./helpers/authContext/provider";
 import ProfileProvider from "./helpers/profileContext/provider";
+import StripeAPIProvider from "./helpers/stripe";
 import "./styles.css";
 
 const App = () => (
-  <ApolloProvider client={graphqlClient}>
-    <ArwesProvider>
-      <AuthProvider>
-        <Layout>
-          <ErrorBoundary>
-            <ProfileProvider>
-              <Suspense fallback={<Loading animate />}>
-                <Routes />
-              </Suspense>
-            </ProfileProvider>
-          </ErrorBoundary>
-        </Layout>
-      </AuthProvider>
-    </ArwesProvider>
-  </ApolloProvider>
+  <StripeAPIProvider>
+    <ApolloProvider client={graphqlClient}>
+      <ArwesProvider>
+        <AuthProvider>
+          <Layout>
+            <ErrorBoundary>
+              <ProfileProvider>
+                <Suspense fallback={<Loading animate />}>
+                  <Routes />
+                </Suspense>
+              </ProfileProvider>
+            </ErrorBoundary>
+          </Layout>
+        </AuthProvider>
+      </ArwesProvider>
+    </ApolloProvider>
+  </StripeAPIProvider>
 );
 
 export default App;
