@@ -14,7 +14,6 @@ import {
 import AnimateContext from "../helpers/animateContext";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
-import { AdminContext } from "./arwesProvider";
 
 const Center = styled("div")`
   text-align: center;
