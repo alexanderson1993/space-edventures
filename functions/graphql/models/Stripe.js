@@ -1,7 +1,16 @@
+// =============================================================================
+// Class for querying/mutating Stripe
+// =============================================================================
 const stripe = require("../connectors/stripe");
 
 module.exports = class Stripe {
+  // ====================================================
   // Query Static Methods
+  // ====================================================
+
+  /**
+   * Returns all stripe plans
+   */
   static getPlans() {
     return new Promise((resolve, reject) => {
       stripe.plans.list({}, (err, plans) => {
@@ -10,6 +19,11 @@ module.exports = class Stripe {
       });
     });
   }
+
+  /**
+   * Param: customerId (string)
+   * Returns: Promise(customer)
+   */
   static getCustomer(customerId) {
     return new Promise((resolve, reject) =>
       stripe.customers.retrieve(customerId, (err, customer) => {
@@ -19,7 +33,14 @@ module.exports = class Stripe {
     );
   }
 
+  // ===========================================================================
   // Mutation Static Methods
+  // ===========================================================================
+
+  /**
+   * Param name(string), email(string), token(string)
+   * Return Promise(customer)
+   */
   static createCustomer({ name, email, token }) {
     return new Promise((resolve, reject) =>
       stripe.customers.create(
@@ -35,6 +56,13 @@ module.exports = class Stripe {
       )
     );
   }
+
+  /**
+   * Params customerId (string), planId(string), trial (bool)
+   * Returns Promise(subscription create event)
+   * QUESTION: What if they already have a subscription? would this add another subscription?
+   *    Then would the unsubscribe only remove one of the two they have?
+   */
   static subscribe(customerId, planId, trial = false) {
     return new Promise((resolve, reject) =>
       stripe.subscriptions.create(
@@ -50,6 +78,12 @@ module.exports = class Stripe {
       )
     );
   }
+
+  /**
+   * Deletes the first subscription on the customer (index 0)
+   * Params customerId (string)
+   * Returns Promise(confirmation)
+   */
   static unsubscribe(customerId) {
     return Stripe.getCustomer(customerId).then(
       customer =>
@@ -64,6 +98,12 @@ module.exports = class Stripe {
         )
     );
   }
+
+  /**
+   * Deletes all the Stripe sources for the customer, then adds the token as their source
+   * Params customerId (string), token (string)
+   * Returns Promise(card)
+   */
   static updatePayment(customerId, token) {
     return Stripe.getCustomer(customerId)
       .then(customer =>
