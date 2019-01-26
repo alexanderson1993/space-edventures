@@ -1,0 +1,8 @@
+query FlightTypes {
+  flightTypes {
+    id
+    name
+    flightHours
+    classHours
+  }
+}

@@ -79,7 +79,6 @@ class ArwesContainer extends Component {
   render() {
     const { children, isAdmin } = this.props;
     const { show } = this.state;
-    console.log(isAdmin);
     return (
       <AnimateContext.Provider value={this.state}>
         <>

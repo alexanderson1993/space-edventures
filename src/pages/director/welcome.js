@@ -11,7 +11,7 @@ const Welcome = () => {
   return (
     <Content>
       <Center>
-        <h1 className="text-center">You are now connected!</h1>
+        <h1 className="text-center">Welcome to the Director page!</h1>
       </Center>
     </Content>
   );

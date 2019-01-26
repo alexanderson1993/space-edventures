@@ -6,6 +6,7 @@ const Content = styled("div")`
   max-width: 80%;
   padding: 0px 1.0875rem 1.45rem;
   padding-top: 1.45rem;
+  margin-bottom: 10%;
 `;
 
 export default Content;

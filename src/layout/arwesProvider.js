@@ -29,25 +29,13 @@ const sounds = {
   }
 };
 
-const baseTheme = {
-  typography: {
-    headerSizes: {
-      h1: 44
-    }
-  }
-};
 const normalTheme = createTheme(
   createAppTheme({
-    ...baseTheme
-  })
-);
-
-const adminTheme = createTheme(
-  createAppTheme({
-    ...baseTheme,
-    colorPrimary: "#C395EE",
-    colorHeader: "#CBA0FA",
-    colorControl: "#DBACFA"
+    typography: {
+      headerSizes: {
+        h1: 44
+      }
+    }
   })
 );
 
@@ -55,6 +43,7 @@ const ArwesProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(
     window.location.pathname.indexOf("/director") === 0
   );
+
   return (
     <>
       <link
@@ -62,13 +51,13 @@ const ArwesProvider = ({ children }) => {
         rel="stylesheet"
       />
 
-      <ThemeProvider theme={isAdmin ? adminTheme : normalTheme}>
-        <SoundsProvider sounds={createSounds(sounds)}>
-          <AdminContext.Provider value={{ isAdmin, setIsAdmin }}>
+      <SoundsProvider sounds={createSounds(sounds)}>
+        <AdminContext.Provider value={{ isAdmin, setIsAdmin }}>
+          <ThemeProvider theme={normalTheme}>
             <Layout isAdmin={isAdmin}>{children}</Layout>
-          </AdminContext.Provider>
-        </SoundsProvider>
-      </ThemeProvider>
+          </ThemeProvider>
+        </AdminContext.Provider>
+      </SoundsProvider>
     </>
   );
 };

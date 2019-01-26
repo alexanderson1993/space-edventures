@@ -1,0 +1,6 @@
+query Simulators {
+  simulators {
+    id
+    name
+  }
+}

@@ -1,18 +1,16 @@
 import React from "react";
 
-const BadgeDetail = ({ name, description, badgeId }) => {
+const SimulatorDetail = ({ name, simulatorId }) => {
   return (
     <div>
-      <h1>Badge: {name}</h1>
-      <h2>Description</h2>
-      <p>{description}</p>
+      <h1>Simulator: {name}</h1>
       <p>
         Use the following ID when setting up this simulator with Thorium or
         providing flight information through the API:
       </p>
-      <pre>{badgeId}</pre>
+      <pre>{simulatorId}</pre>
     </div>
   );
 };
 
-export default BadgeDetail;
+export default SimulatorDetail;
