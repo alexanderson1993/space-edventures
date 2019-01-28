@@ -17,6 +17,10 @@ module.exports.schema = gql`
   extend type Badge {
     flight: FlightRecord
   }
+  extend type Query {
+    flightRecord(id: ID!): FlightRecord
+    flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
+  }
   # We can extend other graphQL types using the "extend" keyword.
 `;
 
@@ -24,6 +28,10 @@ module.exports.schema = gql`
 // the functionality in this file. These will be
 // deep merged with the other resolvers.
 module.exports.resolver = {
+  Query: {
+    flightRecord: (rootQuery, args, context) => {},
+    flightRecords: (rootQuery, args, context) => {}
+  },
   Badge: {
     flight: (badge, args, context) => {}
   }

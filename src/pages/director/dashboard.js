@@ -1,6 +1,18 @@
 import React from "react";
+import styled from "@emotion/styled";
+// import { Link, Button } from "../../components";
 
-import { Link, Button } from "../../components";
+const Badge = styled("div")`
+  width: 100%;
+  background-color: #1b9493;
+  display: flex;
+  padding: 20px;
+  margin-bottom: 10px;
+`;
+
+const Mission = styled(Badge)`
+  background-color: #1b3d94;
+`;
 
 const Dashboard = () => {
   return (
@@ -8,11 +20,6 @@ const Dashboard = () => {
       <h1>Director Dashboard</h1>
       <h2 style={{ display: "flex", justifyContent: "space-between" }}>
         Lehi Space Center
-        <Link to="./register">
-          <Button to="./register" style={{ fontSize: "5pt" }}>
-            Add another space center
-          </Button>
-        </Link>
       </h2>
       <h3>Space Center Description</h3>
       <p>
@@ -39,35 +46,13 @@ const Dashboard = () => {
         Provo UT 98765
       </p>
       <h3>Badges</h3>
-      <Badge />
-      <Badge />
+      <Badge>Completed 100 Flight Hours</Badge>
+      <Badge>Invited a friend to Space Edventures</Badge>
       <h3>Missions</h3>
-      <Mission />
-      <Mission />
+      <Mission>Intolerance</Mission>
+      <Mission>Children of Perikoi</Mission>
     </>
   );
-};
-
-let Badge = () => {
-  let style_badge = {
-    width: "100%",
-    backgroundColor: "#1B9493",
-    display: "flex",
-    padding: "20px",
-    marginBottom: "10px"
-  };
-  return <div style={style_badge}>Here is a test text</div>;
-};
-
-let Mission = () => {
-  let style_mission = {
-    width: "100%",
-    backgroundColor: "#1B9493",
-    display: "flex",
-    padding: "20px",
-    marginBottom: "10px"
-  };
-  return <div style={style_mission}>Here is a test text</div>;
 };
 
 export default Dashboard;

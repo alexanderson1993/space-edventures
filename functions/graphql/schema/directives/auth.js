@@ -50,8 +50,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
         const [data, queryArgs, context] = args;
         const { user } = context;
 
-        console.log("DATA", data);
-
         const requiredRoles =
           field._requiredAuthRoles || objectType._requiredAuthRoles;
 

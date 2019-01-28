@@ -8,13 +8,7 @@ import AnimateContext from "../helpers/animateContext";
 const TopHeader = () => (
   <AnimateContext.Consumer>
     {({ show }) => (
-      <Header
-        animate
-        show={show}
-        style={{
-          marginBottom: "1.45rem"
-        }}
-      >
+      <Header animate show={show}>
         <div
           style={{
             margin: "0 auto",

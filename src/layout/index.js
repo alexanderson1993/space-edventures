@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 import Header from "./header";
-
 import {
   Arwes,
   createLoader,
@@ -14,6 +13,7 @@ import {
 
 import AnimateContext from "../helpers/animateContext";
 import styled from "@emotion/styled";
+import { css } from "@emotion/core";
 
 const Center = styled("div")`
   text-align: center;
@@ -27,6 +27,15 @@ const resources = {
     xlarge: require("../assets/img/background-xlarge.jpg")
   },
   pattern: require("../assets/img/glow.png")
+};
+const adminResources = {
+  background: {
+    small: require("../assets/img/background-small-admin.jpg"),
+    medium: require("../assets/img/background-medium-admin.jpg"),
+    large: require("../assets/img/background-large-admin.jpg"),
+    xlarge: require("../assets/img/background-xlarge-admin.jpg")
+  },
+  pattern: require("../assets/img/glow-admin.png")
 };
 
 class ArwesContainer extends Component {
@@ -54,25 +63,31 @@ class ArwesContainer extends Component {
       resources.background,
       responsive
     );
+    const adminBackground = utils.getResponsiveResource(
+      adminResources.background,
+      responsive
+    );
     this.loader
-      .load({ images: [background, this.profile] }, { timeout: 5 * 1000 })
+      .load(
+        { images: [background, this.profile, adminBackground] },
+        { timeout: 5 * 1000 }
+      )
       .then(() => {}, () => {})
       .then(() => this.setState({ show: true, loaded: true }));
   }
-
   render() {
-    const { children } = this.props;
+    const { children, isAdmin } = this.props;
     const { show } = this.state;
-
     return (
       <AnimateContext.Provider value={this.state}>
         <>
           <Arwes
             animate
             show={show}
-            showResources={true}
-            background={resources.background}
-            pattern={resources.pattern}
+            background={
+              isAdmin ? adminResources.background : resources.background
+            }
+            pattern={isAdmin ? adminResources.pattern : resources.pattern}
           >
             <div
               style={{
@@ -82,18 +97,14 @@ class ArwesContainer extends Component {
               }}
             >
               <Header show={show} />
-
-              <Content style={{ flex: 1 }}>
-                <div
-                  style={{
-                    margin: "0 auto",
-                    maxWidth: 960,
-                    padding: "0px 1.0875rem 1.45rem",
-                    paddingTop: 0
-                  }}
-                >
-                  {children}
-                </div>
+              <Content
+                css={css`
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                `}
+              >
+                {children}
               </Content>
               <Footer animate>
                 <Center>Copyright © 2018</Center>

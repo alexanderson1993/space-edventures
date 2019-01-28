@@ -1,0 +1,8 @@
+query Badges {
+  badges(type: badge) {
+    id
+    name
+    image
+    description
+  }
+}

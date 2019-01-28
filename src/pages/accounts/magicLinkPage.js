@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../../helpers/authContext";
 import { Blockquote, Loading } from "@arwes/arwes";
-import { Words, Link, Navigator } from "../../components";
+import { Words, Link, Navigator, Content } from "../../components";
 
 const MagicLink = ({ location, navigate }) => {
   const context = useContext(AuthContext);
@@ -22,12 +22,12 @@ const MagicLink = ({ location, navigate }) => {
       </p>
     </Blockquote>
   ) : (
-    <div>
+    <Content>
       <h1>
         <Words animate>Logging In...</Words>
       </h1>
       <Loading animate />
-    </div>
+    </Content>
   );
 };
 
