@@ -14,15 +14,15 @@ const App = () => (
   <StripeAPIProvider>
     <ApolloProvider client={graphqlClient}>
       <AuthProvider>
-        <ArwesProvider>
-          <ErrorBoundary>
-            <ProfileProvider>
+        <ProfileProvider>
+          <ArwesProvider>
+            <ErrorBoundary>
               <Suspense fallback={<Loading animate />}>
                 <Routes />
               </Suspense>
-            </ProfileProvider>
-          </ErrorBoundary>
-        </ArwesProvider>
+            </ErrorBoundary>
+          </ArwesProvider>
+        </ProfileProvider>
       </AuthProvider>
     </ApolloProvider>
   </StripeAPIProvider>

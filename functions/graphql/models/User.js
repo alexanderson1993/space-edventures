@@ -1,5 +1,5 @@
 const { auth, firestore } = require("../connectors/firebase");
-const { AuthenticationError } = require("apollo-server-express");
+const { SyntaxError } = require("apollo-server-express");
 
 module.exports = class User {
   /**
@@ -58,12 +58,35 @@ module.exports = class User {
       .doc(uid)
       .get()
       .then(user => {
+        if (!user.exists) return null;
         return { ...user.data(), id: uid };
       })
       .catch(err => {
-        throw new AuthenticationError(err.message);
+        throw new SyntaxError(err.message);
       });
 
     return dbUser;
+  }
+
+  static async createUser({ id, email, displayName, name }) {
+    const user = await firestore()
+      .collection("users")
+      .doc(id)
+      .set({
+        email,
+        displayName,
+        name,
+        registeredDate: new Date(),
+        classHours: 0,
+        flightHours: 0,
+        badges: [],
+        roles: []
+      });
+
+    return firestore()
+      .collection("users")
+      .doc(id)
+      .get()
+      .then(res => ({ ...res.data(), id: res.id }));
   }
 };
