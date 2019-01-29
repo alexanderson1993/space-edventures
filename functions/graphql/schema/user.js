@@ -11,7 +11,7 @@ module.exports.schema = gql`
     userCreate: User
   }
 
-  type Profile @auth(requires: [self]) {
+  type Profile @auth(requires: [self, admin]) {
     age: Int
     name: String
     displayName: String
