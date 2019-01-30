@@ -1,38 +1,23 @@
 const stripe = require("../connectors/stripe");
+const util = require("util");
 
 module.exports = class Stripe {
   // Query Static Methods
   static getPlans() {
-    return new Promise((resolve, reject) => {
-      stripe.plans.list({}, (err, plans) => {
-        if (err) return reject(err);
-        return resolve(plans.data);
-      });
-    });
+    util.promisify(stripe.plans.list({}));
   }
   static getCustomer(customerId) {
-    return new Promise((resolve, reject) =>
-      stripe.customers.retrieve(customerId, (err, customer) => {
-        if (err) return reject(err);
-        return resolve(customer);
-      })
-    );
+    util.promisify(stripe.customers.retrieve(customerId));
   }
 
   // Mutation Static Methods
   static createCustomer({ name, email, token }) {
-    return new Promise((resolve, reject) =>
-      stripe.customers.create(
-        {
-          description: name,
-          email,
-          source: token // obtained with Stripe.js
-        },
-        (err, customer) => {
-          if (err) reject(err);
-          resolve(customer);
-        }
-      )
+    return util.promisify(
+      stripe.customers.create({
+        description: name,
+        email,
+        source: token // obtained with Stripe.js
+      })
     );
   }
   static subscribe(customerId, planId, trial = false) {
@@ -51,52 +36,27 @@ module.exports = class Stripe {
     );
   }
   static unsubscribe(customerId) {
-    return Stripe.getCustomer(customerId).then(
-      customer =>
-        new Promise((resolve, reject) =>
-          stripe.subscriptions.del(
-            customer.subscriptions.data[0].id,
-            (err, confirmation) => {
-              if (err) return reject(err);
-              return resolve(confirmation);
-            }
-          )
-        )
+    return Stripe.getCustomer(customerId).then(customer =>
+      util.promisify(
+        stripe.subscriptions.del(customer.subscriptions.data[0].id)
+      )
     );
   }
   static updatePayment(customerId, token) {
     return Stripe.getCustomer(customerId)
       .then(customer =>
         Promise.all(
-          customer.sources.data.map(
-            s =>
-              new Promise((resolve, reject) => {
-                stripe.customers.deleteSource(
-                  customerId,
-                  s.id,
-                  (err, source) => {
-                    if (err) reject(err);
-                    resolve();
-                  }
-                );
-              })
+          customer.sources.data.map(s =>
+            util.promisify(stripe.customers.deleteSource(customerId, s.id))
           )
         )
       )
-      .then(
-        () =>
-          new Promise((resolve, reject) => {
-            stripe.customers.createSource(
-              customerId,
-              {
-                source: token // obtained with Stripe.js
-              },
-              (err, card) => {
-                if (err) return reject(err);
-                return resolve(card);
-              }
-            );
+      .then(() =>
+        util.promisify(
+          stripe.customers.createSource(customerId, {
+            source: token // obtained with Stripe.js
           })
+        )
       );
   }
 };
