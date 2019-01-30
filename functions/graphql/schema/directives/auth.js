@@ -36,8 +36,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
   //    also receive a details object that provides information about
   //    the parent and grandparent types.
   visitFieldDefinition(field, details) {
-    // QUESTION: If one two fields have the directive, will the first one run ensureFIeldsWrapped, mark its object as _authFieldswrapped,
-    // and then the second one won't do anything because that property is already set to true?
     this.ensureFieldsWrapped(details.objectType);
     field._requiredAuthRoles = this.args.requires; // this.args holds the values passed in the directive usage
   }
@@ -68,8 +66,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
         const [data, queryArgs, context] = args;
         const { user } = context;
 
-        // QUESTION: since this ensureFieldsWrapped function is called before this property is set,
-        // will this only find roles set from previous directives?
         const requiredRoles =
           field._requiredAuthRoles || objectType._requiredAuthRoles;
 

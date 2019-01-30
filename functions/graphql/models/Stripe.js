@@ -60,8 +60,7 @@ module.exports = class Stripe {
   /**
    * Params customerId (string), planId(string), trial (bool)
    * Returns Promise(subscription create event)
-   * QUESTION: What if they already have a subscription? would this add another subscription?
-   *    Then would the unsubscribe only remove one of the two they have?
+   * TODO (SpEd) Have subscribe check for existing planId before creating the same one
    */
   static subscribe(customerId, planId, trial = false) {
     return new Promise((resolve, reject) =>
