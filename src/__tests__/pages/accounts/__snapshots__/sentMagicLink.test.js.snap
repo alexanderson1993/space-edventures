@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`sentMagicLink 1`] = `
+.emotion-0 {
+  margin: 0 auto;
+  width: 960px;
+  max-width: 80%;
+  padding: 0px 1.0875rem 1.45rem;
+  padding-top: 1.45rem;
+  margin-bottom: 10%;
+}
+
+<div>
+  <div
+    class="emotion-0 emotion-1"
+  >
+    <h1>
+      Magic Link Sent
+    </h1>
+    <p
+      data-testid="magic-link-text"
+    >
+      Check your inbox! We sent an email to 
+      . Click the link in that email to sign in to Space Edventures.
+    </p>
+  </div>
+</div>
+`;
