@@ -68,7 +68,7 @@ module.exports.resolver = {
     user: (badge, args, context) => {}
   },
   Center: {
-    director: (center, args, context) => {}
+    director: (center, args, context) => User.getUserById(center.directorId)
   },
   FlightRecord: {
     user: (flightRecord, args, context) => {}

@@ -1,5 +1,5 @@
 const { auth, firestore } = require("../connectors/firebase");
-const { SyntaxError } = require("apollo-server-express");
+const { SyntaxError, AuthenticationError } = require("apollo-server-express");
 
 module.exports = class User {
   /**
@@ -49,6 +49,7 @@ module.exports = class User {
   }
 
   /**
+   * Should only be used in private circumstances.
    * Param: uid (string)
    * Returns the firestore user
    */

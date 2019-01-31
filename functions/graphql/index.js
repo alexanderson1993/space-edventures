@@ -39,10 +39,14 @@ function configureServer() {
       if (!token) return { user: null };
 
       // try to retrieve a user with the token
-      const userData = await User.getUser(token);
-      const user = new User(userData);
-      // add the user to the context
-      return { user };
+      try {
+        const userData = await User.getUser(token);
+        const user = new User(userData);
+        // add the user to the context
+        return { user };
+      } catch (_) {
+        return {};
+      }
     }
   });
 

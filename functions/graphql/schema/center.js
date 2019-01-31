@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server-express");
+const { gql, AuthenticationError } = require("apollo-server-express");
 const { Center } = require("../models");
 
 // Definition for Space Edventures Centers
@@ -22,7 +22,7 @@ module.exports.schema = gql`
   }
 
   extend type Mutation {
-    registerCenter(
+    centerCreate(
       name: String!
       website: String
       email: String!
@@ -48,12 +48,14 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   Query: {
-    centers: (rootQuery, args, context) => {},
-    center: (rootQuery, { id }, context) => {}
+    centers: (rootQuery, args, context) => Center.getCenters(),
+    center: (rootQuery, { id }, context) => Center.getCenters(id)
   },
   Mutation: {
-    registerCenter: (rootQuery, args, context) => {
-      // TODO: Check to make sure this is an allowed operation.
+    centerCreate: (rootQuery, args, context) => {
+      // Verify that the action can be performed in the model
+      if (!context.user)
+        throw new AuthenticationError("Must be logged in to create a center.");
       return Center.createCenter(context.user.id, args);
     }
   },
@@ -65,8 +67,8 @@ module.exports.resolver = {
   },
   User: {
     center: (user, args, context) => {
-      // Returns a since center for which the user is a director
-      return null;
+      // Returns a center for which the user is a director
+      return Center.getCenterForUserId(user.id);
     }
   }
 };

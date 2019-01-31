@@ -25,6 +25,8 @@ module.exports.resolver = {
       return new Date(value); // value from the client
     },
     serialize(value) {
+      // Parse firestore dates
+      if (value.toDate) return value.toDate().getTime();
       return value.getTime(); // value sent to the client
     },
     parseLiteral(ast) {
