@@ -13,7 +13,7 @@ module.exports = class Stripe {
    */
   static getPlans() {
     return new Promise((resolve, reject) => {
-      stripe.plans.list({}, (err, plans) => {
+      return stripe.plans.list({}, (err, plans) => {
         if (err) return reject(err);
         return resolve(plans.data);
       });
@@ -60,22 +60,61 @@ module.exports = class Stripe {
   /**
    * Params customerId (string), planId(string), trial (bool)
    * Returns Promise(subscription create event)
-   * TODO (SpEd) Have subscribe check for existing planId before creating the same one
    */
   static subscribe(customerId, planId, trial = false) {
     return new Promise((resolve, reject) =>
-      stripe.subscriptions.create(
-        {
-          customer: customerId,
-          items: [{ plan: planId }],
-          trial_from_plan: trial
-        },
-        (err, sub) => {
-          if (err) reject(err);
-          resolve();
+      stripe.customers.retrieve(customerId, (err, customer) => {
+        if (err) return reject(err);
+        return resolve(customer);
+      })
+    ).then(customer => {
+      // IF a valid customer object was returned, with the expected fields
+      if (
+        typeof customer.subscriptions !== "undefined" &&
+        typeof customer.subscriptions.data !== "undefined" &&
+        typeof customer.subscriptions.data[0] !== "undefined"
+      ) {
+        // Get all of the current plans/products that are tied to this customer
+        let currentPlans = customer.subscriptions.data.map(item => item.id);
+
+        // If they aren't already subscribed to a plan
+        if (!currentPlans.includes(planId)) {
+          return stripe.subscriptions.create(
+            {
+              customer: customerId,
+              items: [
+                {
+                  plan: planId
+                }
+              ],
+              trial_from_plan: trial
+            },
+            (err, sub) => {
+              if (err) reject(err);
+              resolve();
+            }
+          );
         }
-      )
-    );
+      }
+      return;
+    });
+  }
+
+  /**
+   * Figure out the current user's stripe customer id, and subscribe them to a trial of the planId
+   * This should call the subscribe method from above
+   * UNFINISHED
+   */
+  static startDirectorTrial(context, planId) {
+    // Get the current user
+    let user = context.user;
+    // Get the data we store about the user in the database
+    // Get the center the user is tied to
+    // Get the stripe customer id off the center
+    // Subscribe the stripe customer to the plan
+    let customerId = "";
+
+    // DEBUG
   }
 
   /**
