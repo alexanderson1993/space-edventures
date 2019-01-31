@@ -1,6 +1,11 @@
 const Stripe = require("./Stripe");
 const { firestore } = require("../connectors/firebase");
 const { UserInputError } = require("apollo-server-express");
+
+// =============================================================================
+// Class for Querying/Mutating space centers
+// =============================================================================
+
 module.exports = class Center {
   static getCenters() {
     return firestore()

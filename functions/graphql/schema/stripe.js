@@ -67,11 +67,16 @@ module.exports.resolver = {
     // of the resolvers will work.
     stripe: (rootQuery, args, context) => ({})
   },
+  // This is basically a stub that allows the mutations down the line to work
+  Mutation: {
+    stripe: (rootQuery, args, context) => ({})
+  },
   StripeQuery: {
     plans: (rootQuery, args, context) => Stripe.getPlans()
   },
   StripeMutation: {
-    subscribe: (rootQuery, { planId }, context) => ({}),
+    subscribe: (rootQuery, { planId }, context) =>
+      Stripe.startDirectorTrial(context, planId),
     unsubscribe: (rootQuery, args, context) => ({}),
     updatePayment: (rootQuery, { token }, context) => ({})
   },
