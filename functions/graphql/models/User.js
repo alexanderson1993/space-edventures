@@ -1,4 +1,4 @@
-const { auth, firestore } = require("../connectors/firebase");
+const { auth, firestore, clientSideApp } = require("../connectors/firebase");
 const { AuthenticationError } = require("apollo-server-express");
 
 module.exports = class User {
@@ -35,6 +35,18 @@ module.exports = class User {
     } catch (err) {
       throw new AuthenticationError(err.message);
     }
+  }
+
+  /**
+   * Gets a token for a user: TESTING PURPOSES - Uses the Firebase Client-Side methods
+   */
+  static getToken(email, password) {
+    return clientSideApp
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(data => {
+        return data.user.getIdToken().then(token => token);
+      });
   }
 
   /**

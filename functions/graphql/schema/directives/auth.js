@@ -1,3 +1,7 @@
+// =============================================================================
+// Builds the Auth GraphQL Directive, which checks the required fields on the GraphQL type/field and compares
+// it to the roles on the user's object
+// =============================================================================
 const { gql, ForbiddenError } = require("apollo-server-express");
 const { SchemaDirectiveVisitor } = require("graphql-tools");
 const { defaultFieldResolver, GraphQLString } = require("graphql");
@@ -19,27 +23,39 @@ module.exports.schema = gql`
 `;
 
 // Adapted from https://www.apollographql.com/docs/graphql-tools/schema-directives.html#Enforcing-access-permissions
+// See also https://www.apollographql.com/docs/graphql-tools/schema-directives.html#Implementing-schema-directives
 class AuthDirective extends SchemaDirectiveVisitor {
+  // Logic to perform when the directive is used on a type
   visitObject(type) {
     this.ensureFieldsWrapped(type);
     type._requiredAuthRoles = this.args.requires;
   }
-  // Visitor methods for nested types like fields and arguments
-  // also receive a details object that provides information about
-  // the parent and grandparent types.
+
+  // Logic to use when the directive is used on a field
+  //  - Visitor methods for nested types like fields and arguments
+  //    also receive a details object that provides information about
+  //    the parent and grandparent types.
   visitFieldDefinition(field, details) {
     this.ensureFieldsWrapped(details.objectType);
-    field._requiredAuthRoles = this.args.requires;
+    field._requiredAuthRoles = this.args.requires; // this.args holds the values passed in the directive usage
   }
 
+  /**
+   * Wraps all the fields on the object type, overriding the resolver and making sure that permissions are checked first
+   */
   ensureFieldsWrapped(objectType) {
     // Mark the GraphQLObjectType object to avoid re-wrapping:
     if (objectType._authFieldsWrapped) return;
     objectType._authFieldsWrapped = true;
 
     const fields = objectType.getFields();
+
+    // Loop through all the fields on the object
     Object.keys(fields).forEach(fieldName => {
+      // Get the field
       const field = fields[fieldName];
+
+      // Destructure the field to get the resolve, but default to use defaultFieldResolver if no resolve is found
       const { resolve = defaultFieldResolver } = field;
 
       // Override the field's resolver function so it checks permissions before resolving.
@@ -53,10 +69,13 @@ class AuthDirective extends SchemaDirectiveVisitor {
         const requiredRoles =
           field._requiredAuthRoles || objectType._requiredAuthRoles;
 
+        // If there are no required roles, just return back the same resolver
         if (!requiredRoles) {
           return resolve.apply(this, args);
         }
 
+        // If the GraphQL data's user id matches the user id of the GraphQL context, don't check permissions and just
+        // return the normal resolver
         if (
           (objectType._requiredAuthRoles &&
             objectType._requiredAuthRoles.indexOf("self") > -1 &&
@@ -67,9 +86,11 @@ class AuthDirective extends SchemaDirectiveVisitor {
         ) {
           return resolve.apply(this, args);
         }
+
         // Provide different error messages based on whether it is a field
         // or object that is being denied.
         if (
+          // the field has required roles and the user does not have one of those roles
           field._requiredAuthRoles &&
           !user.hasOneOfRoles(field._requiredAuthRoles)
         ) {
@@ -79,6 +100,7 @@ class AuthDirective extends SchemaDirectiveVisitor {
         }
 
         if (
+          // The object has required roles and the user does not have one of those roles
           objectType._requiredAuthRoles &&
           !user.hasOneOfRoles(objectType._requiredAuthRoles)
         ) {
