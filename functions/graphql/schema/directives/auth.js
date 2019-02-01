@@ -74,7 +74,7 @@ class AuthDirective extends SchemaDirectiveVisitor {
         // to the objectType if no Role is required by the field:
         // Grab the user off of context
         const [data, queryArgs, context] = args;
-        const { user } = context;
+        const { user, center } = context;
 
         const requiredRoles =
           field._requiredAuthRoles || objectType._requiredAuthRoles;
@@ -83,28 +83,28 @@ class AuthDirective extends SchemaDirectiveVisitor {
         if (!requiredRoles) {
           return resolve.apply(this, args);
         }
-        if (!user) {
+        if (!user && !center) {
           throw new AuthenticationError(
             `You must be logged in to access "${fieldName || objectType.name}"`
           );
         }
-        // If the GraphQL data's user id matches the user id of the GraphQL context, don't check permissions and just
-        // return the normal resolver
+
+        if (requiredRoles.indexOf("center") === -1 && center) {
+          throw new AuthenticationError(
+            `You do not have permission to access "${fieldName ||
+              objectType.name}" using the API.`
+          );
+        }
         if (
-          (objectType._requiredAuthRoles &&
-            objectType._requiredAuthRoles.indexOf("self") > -1 &&
-            (user.id === data.userId || user.id === data.id)) ||
-          (field._requiredAuthRoles &&
-            field._requiredAuthRoles.indexOf("self") > -1 &&
-            (user.id === data.userId || user.id === data.id))
+          requiredRoles.indexOf("self") > -1 &&
+          (user.id === data.userId || user.id === data.id)
         ) {
+          // If the GraphQL data's user id matches the user id of the GraphQL context, don't check permissions and just
+          // return the normal resolver
           return resolve.apply(this, args);
         }
         if (
-          ((objectType._requiredAuthRoles &&
-            objectType._requiredAuthRoles.indexOf("director") > -1) ||
-            (field._requiredAuthRoles &&
-              field._requiredAuthRoles.indexOf("director") > -1)) &&
+          requiredRoles.indexOf("director") > -1 &&
           user.id === data.directorId
         ) {
           return resolve.apply(this, args);

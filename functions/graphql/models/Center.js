@@ -20,6 +20,17 @@ module.exports = class Center {
       .get()
       .then(res => ({ ...res.data(), id: res.id }));
   }
+  static getByApiToken(token) {
+    return firestore()
+      .collection("spaceCenters")
+      .where("apiToken", "==", token)
+      .get()
+      .then(res =>
+        res.docs.length > 0
+          ? { ...res.docs[0].data(), id: res.docs[0].id }
+          : null
+      );
+  }
   static getCenterForUserId(userId) {
     return firestore()
       .collection("spaceCenters")

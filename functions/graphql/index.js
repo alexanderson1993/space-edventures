@@ -2,7 +2,7 @@
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const schema = require("./schema");
-const { User } = require("./models");
+const { User, Center } = require("./models");
 const admin = require("./connectors/firebase");
 
 function getUser(token) {
@@ -41,8 +41,14 @@ function configureServer() {
 
       if (!token) return { user: null };
 
-      // try to retrieve a user with the token
       try {
+        // A 36-character token is likely a space center API key;
+        if (token.length === 36) {
+          const center = await Center.getByApiToken(token);
+          return { center, user: null };
+        }
+
+        // try to retrieve a user with the token
         const userData = await User.getUser(token);
         const user = new User(userData);
         // add the user to the context

@@ -19,7 +19,7 @@ module.exports.schema = gql`
   # We can extend other graphQL types using the "extend" keyword.
   extend type Query {
     centers: [Center]
-    center(id: ID!): Center
+    center(id: ID): Center
   }
 
   extend type Mutation {
@@ -51,7 +51,8 @@ module.exports.schema = gql`
 module.exports.resolver = {
   Query: {
     centers: (rootQuery, args, context) => Center.getCenters(),
-    center: (rootQuery, { id }, context) => Center.getCenter(id)
+    center: (rootQuery, { id }, context) =>
+      id ? Center.getCenter(id) : context.center
   },
   Mutation: {
     centerCreate: (rootQuery, args, context) => {
