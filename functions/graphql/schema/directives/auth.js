@@ -2,7 +2,11 @@
 // Builds the Auth GraphQL Directive, which checks the required fields on the GraphQL type/field and compares
 // it to the roles on the user's object
 // =============================================================================
-const { gql, ForbiddenError } = require("apollo-server-express");
+const {
+  gql,
+  ForbiddenError,
+  AuthenticationError
+} = require("apollo-server-express");
 const { SchemaDirectiveVisitor } = require("graphql-tools");
 const { defaultFieldResolver, GraphQLString } = require("graphql");
 
@@ -14,11 +18,17 @@ module.exports.schema = gql`
   enum ROLE {
     admin
     staff
-    director
     authenticated
+
+    # For space center API tokens
+    center
     # For accessing information about
     # the currently logged in person
     self
+    # For accessing information about
+    # The center which a person is
+    # A director of
+    director
   }
 `;
 
@@ -73,7 +83,11 @@ class AuthDirective extends SchemaDirectiveVisitor {
         if (!requiredRoles) {
           return resolve.apply(this, args);
         }
-
+        if (!user) {
+          throw new AuthenticationError(
+            `You must be logged in to access "${fieldName || objectType.name}"`
+          );
+        }
         // If the GraphQL data's user id matches the user id of the GraphQL context, don't check permissions and just
         // return the normal resolver
         if (
@@ -86,14 +100,24 @@ class AuthDirective extends SchemaDirectiveVisitor {
         ) {
           return resolve.apply(this, args);
         }
+        if (
+          ((objectType._requiredAuthRoles &&
+            objectType._requiredAuthRoles.indexOf("director") > -1) ||
+            (field._requiredAuthRoles &&
+              field._requiredAuthRoles.indexOf("director") > -1)) &&
+          user.id === data.directorId
+        ) {
+          return resolve.apply(this, args);
+        }
 
-        // Provide different error messages based on whether it is a field
-        // or object that is being denied.
         if (
           // the field has required roles and the user does not have one of those roles
+
           field._requiredAuthRoles &&
           !user.hasOneOfRoles(field._requiredAuthRoles)
         ) {
+          // Provide different error messages based on whether it is a field
+          // or object that is being denied.
           throw new ForbiddenError(
             `Insufficient permissions to access field "${fieldName}"`
           );

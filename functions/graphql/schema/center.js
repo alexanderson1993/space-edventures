@@ -13,6 +13,7 @@ module.exports.schema = gql`
     registeredDate: Date
     website: String
     email: String
+    apiToken: String @auth(requires: [director])
   }
 
   # We can extend other graphQL types using the "extend" keyword.
@@ -28,7 +29,8 @@ module.exports.schema = gql`
       email: String!
       token: String!
       planId: String!
-    ): Center
+    ): Center @auth(requires: [authenticated])
+    centerSetApiToken: Center
   }
 
   extend type FlightType {
@@ -49,14 +51,14 @@ module.exports.schema = gql`
 module.exports.resolver = {
   Query: {
     centers: (rootQuery, args, context) => Center.getCenters(),
-    center: (rootQuery, { id }, context) => Center.getCenters(id)
+    center: (rootQuery, { id }, context) => Center.getCenter(id)
   },
   Mutation: {
     centerCreate: (rootQuery, args, context) => {
-      // Verify that the action can be performed in the model
-      if (!context.user)
-        throw new AuthenticationError("Must be logged in to create a center.");
       return Center.createCenter(context.user.id, args);
+    },
+    centerSetApiToken: (rootQuery, args, context) => {
+      return Center.setApiToken(context.user.id);
     }
   },
   FlightType: {
