@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import AuthContext from "./";
 import propTypes from "prop-types";
 import { auth } from "../../helpers/firebase";
+import client from "../../helpers/graphqlClient";
+import CREATE_USER from "./createUser.graphql";
 
 const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,11 @@ const AuthProvider = ({ children }) => {
       return auth.signInWithEmailAndPassword(email, password);
     },
     signUp: ({ email, password }) => {
-      return auth.createUserWithEmailAndPassword(email, password);
+      // Create the user record in GraphQL
+      return auth.createUserWithEmailAndPassword(email, password).then(() => {
+        // Ignore error if there is a user
+        return client.mutate({ mutation: CREATE_USER }).catch(() => {});
+      });
     },
     logout: () => {
       return auth.signOut();
@@ -58,11 +64,19 @@ const AuthProvider = ({ children }) => {
           email = window.prompt("Please provide your email for confirmation");
         }
         // The client SDK will parse the code from the link for you.
-        return auth.signInWithEmailLink(email, href).then(function(result) {
-          // Clear email from storage.
-          window.localStorage.removeItem("emailForSignIn");
-          return result;
-        });
+        return auth
+          .signInWithEmailLink(email, href)
+          .then(function(result) {
+            // Clear email from storage.
+            window.localStorage.removeItem("emailForSignIn");
+            return result;
+          })
+          .then(() => {
+            // Ignore error if there is a user
+            console.log("Creating User");
+            return client.mutate({ mutation: CREATE_USER }).catch(() => {});
+          })
+          .then(res => console.log("Res", res));
       }
     }
   };

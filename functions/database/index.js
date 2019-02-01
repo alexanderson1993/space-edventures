@@ -76,12 +76,12 @@ function addDirectors(db) {
     {
       name: "DirectorA LastNameA",
       email: "DirectorA@example.com",
-      registeredDate: Date("10 October 2010")
+      registeredDate: new Date("10 October 2010")
     },
     {
       name: "DirectorB LastNameB",
       email: "DirectorB@example.com",
-      registeredDate: Date("11 November 2011")
+      registeredDate: new Date("11 November 2011")
     }
   ];
 
@@ -132,13 +132,13 @@ function addSpaceCenters(db, directorIds) {
   const spaceCenters = [
     {
       name: "SpaceCenterA",
-      registeredDate: Date("10 October 2010"),
+      registeredDate: new Date("10 October 2010"),
       description: "This is the description for Space Center A",
       directorId: directorIds[0]
     },
     {
       name: "SpaceCenterB",
-      registeredDate: Date("10 October 2010"),
+      registeredDate: new Date("10 October 2010"),
       description: "This is the description for Space Center B",
       directorId: directorIds[1]
     }
@@ -190,28 +190,28 @@ function addBadges(db, paceCenterIds) {
       description: "This is the description for Badge A",
       imagePath: "path/to/the/image.png",
       spaceCenterId: spaceCenterIds[0],
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       name: "BadgeB",
       description: "This is the description for Badge B",
       imagePath: "path/to/the/image.png",
       spaceCenterId: spaceCenterIds[0],
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       name: "BadgeC",
       description: "This is the description for Badge C",
       imagePath: "path/to/the/image.png",
       spaceCenterId: spaceCenterIds[1],
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       name: "BadgeD",
       description: "This is the description for Badge D",
       imagePath: "path/to/the/image.png",
       spaceCenterId: spaceCenterIds[1],
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     }
   ];
   return Promise.all(badges.map(badge => db.collection("badges").add(badge)));
@@ -221,7 +221,7 @@ function addUsers(db, badgeIds, rankIds) {
   const users = [
     {
       name: "ParticipantA",
-      registeredDate: Date("10 Oct 2010"),
+      registeredDate: new Date("10 Oct 2010"),
       displayName: "Star Fox",
       rankId: rankIds[0],
       flightHours: 26,
@@ -231,7 +231,7 @@ function addUsers(db, badgeIds, rankIds) {
     },
     {
       name: "ParticipantB",
-      registeredDate: Date("10 Oct 2010"),
+      registeredDate: new Date("10 Oct 2010"),
       displayName: "Star Duck",
       rankId: rankIds[1],
       flightHours: 26,
@@ -241,7 +241,7 @@ function addUsers(db, badgeIds, rankIds) {
     },
     {
       name: "ParticipantC",
-      registeredDate: Date("10 Oct 2010"),
+      registeredDate: new Date("10 Oct 2010"),
       displayName: "Star Bear",
       rankId: rankIds[2],
       flightHours: 26,
@@ -251,7 +251,7 @@ function addUsers(db, badgeIds, rankIds) {
     },
     {
       name: "ParticipantD",
-      registeredDate: Date("10 Oct 2010"),
+      registeredDate: new Date("10 Oct 2010"),
       displayName: "Star Fish",
       rankId: rankIds[3],
       flightHours: 26,
@@ -261,7 +261,7 @@ function addUsers(db, badgeIds, rankIds) {
     },
     {
       name: "ParticipantE",
-      registeredDate: Date("10 Oct 2010"),
+      registeredDate: new Date("10 Oct 2010"),
       displayName: "Star Lord",
       rankId: rankIds[4],
       flightHours: 26,
@@ -280,56 +280,56 @@ function addFlightRecords(db, flightTypeIds, userIds, simulatorIds) {
       participantId: userIds[0],
       simulatorId: simulatorIds[0],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       flightTypeId: flightTypeIds[1],
       participantId: userIds[1],
       simulatorId: simulatorIds[0],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       flightTypeId: flightTypeIds[2],
       participantId: userIds[2],
       simulatorId: simulatorIds[1],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       flightTypeId: flightTypeIds[3],
       participantId: userIds[3],
       simulatorId: simulatorIds[1],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       flightTypeId: flightTypeIds[1],
       participantId: userIds[4],
       simulatorId: simulatorIds[1],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       flightTypeId: flightTypeIds[1],
       participantId: userIds[3],
       simulatorId: simulatorIds[2],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       flightTypeId: flightTypeIds[3],
       participantId: userIds[2],
       simulatorId: simulatorIds[2],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     },
     {
       flightTypeId: flightTypeIds[3],
       participantId: userIds[1],
       simulatorId: simulatorIds[2],
       stationId: "NO STATION ID",
-      date: Date("10 Oct 2010")
+      date: new Date("10 Oct 2010")
     }
   ];
   return Promise.all(
@@ -359,28 +359,28 @@ function addMessages(db, directorIds, userIds) {
       to: "",
       read: "",
       content: "This is just a test message",
-      sentDate: Date("10 Oct 2010")
+      sentDate: new Date("10 Oct 2010")
     },
     {
       from: "",
       to: "",
       read: "",
       content: "This is just a test message",
-      sentDate: Date("10 Oct 2010")
+      sentDate: new Date("10 Oct 2010")
     },
     {
       from: "",
       to: "",
       read: "",
       content: "This is just a test message",
-      sentDate: Date("10 Oct 2010")
+      sentDate: new Date("10 Oct 2010")
     },
     {
       from: "",
       to: "",
       read: "",
       content: "This is just a test message",
-      sentDate: Date("10 Oct 2010")
+      sentDate: new Date("10 Oct 2010")
     }
   ];
 }

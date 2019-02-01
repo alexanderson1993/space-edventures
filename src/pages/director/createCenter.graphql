@@ -1,0 +1,20 @@
+mutation CreateCenter(
+  $name: String!
+  $website: String
+  $email: String!
+  $token: String!
+  $planId: String!
+) {
+  centerCreate(
+    name: $name
+    email: $email
+    token: $token
+    planId: $planId
+    website: $website
+  ) {
+    id
+    name
+    description
+    registeredDate
+  }
+}

@@ -4,11 +4,15 @@ import ProfileContext from "../helpers/profileContext";
 
 const ProfilePicture = props => {
   const [error, setError] = useState(false);
-  const { user } = useContext(ProfileContext);
+  const { user = {} } = useContext(ProfileContext);
+  const { profile } = user;
+
   return (
     <Image
       src={
-        !user.profile || error ? require("../assets/avatar.jpeg") : user.profile
+        !profile || !profile.profilePicture || error
+          ? require("../assets/avatar.jpeg")
+          : profile.profilePicture
       }
       {...props}
       alt="Profile"

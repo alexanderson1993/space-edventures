@@ -1,0 +1,12 @@
+query StripePlans {
+  stripe {
+    plans {
+      id
+      amount
+      interval
+      nickname
+      interval_count
+      trial_period_days
+    }
+  }
+}

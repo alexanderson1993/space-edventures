@@ -43,7 +43,6 @@ const ArwesProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(
     window.location.pathname.indexOf("/director") === 0
   );
-
   return (
     <>
       <link
