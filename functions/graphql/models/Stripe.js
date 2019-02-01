@@ -2,6 +2,7 @@
 // Class for querying/mutating Stripe
 // =============================================================================
 const stripe = require("../connectors/stripe");
+const util = require("util");
 
 module.exports = class Stripe {
   // ====================================================
@@ -12,12 +13,7 @@ module.exports = class Stripe {
    * Returns all stripe plans
    */
   static getPlans() {
-    return new Promise((resolve, reject) => {
-      return stripe.plans.list({}, (err, plans) => {
-        if (err) return reject(err);
-        return resolve(plans.data);
-      });
-    });
+    return stripe.plans.list({}).then(res => res.data);
   }
 
   /**
@@ -25,12 +21,7 @@ module.exports = class Stripe {
    * Returns: Promise(customer)
    */
   static getCustomer(customerId) {
-    return new Promise((resolve, reject) =>
-      stripe.customers.retrieve(customerId, (err, customer) => {
-        if (err) return reject(err);
-        return resolve(customer);
-      })
-    );
+    return stripe.customers.retrieve(customerId);
   }
 
   // ===========================================================================
@@ -42,61 +33,32 @@ module.exports = class Stripe {
    * Return Promise(customer)
    */
   static createCustomer({ name, email, token }) {
-    return new Promise((resolve, reject) =>
-      stripe.customers.create(
-        {
-          description: name,
-          email,
-          source: token // obtained with Stripe.js
-        },
-        (err, customer) => {
-          if (err) reject(err);
-          resolve(customer);
-        }
-      )
-    );
+    return stripe.customers.create({
+      description: name,
+      email,
+      source: token // obtained with Stripe.js
+    });
   }
 
   /**
    * Params customerId (string), planId(string), trial (bool)
    * Returns Promise(subscription create event)
    */
-  static subscribe(customerId, planId, trial = false) {
-    return new Promise((resolve, reject) =>
-      stripe.customers.retrieve(customerId, (err, customer) => {
-        if (err) return reject(err);
-        return resolve(customer);
-      })
-    ).then(customer => {
-      // IF a valid customer object was returned, with the expected fields
-      if (
-        typeof customer.subscriptions !== "undefined" &&
-        typeof customer.subscriptions.data !== "undefined" &&
-        typeof customer.subscriptions.data[0] !== "undefined"
-      ) {
-        // Get all of the current plans/products that are tied to this customer
-        let currentPlans = customer.subscriptions.data.map(item => item.id);
-
-        // If they aren't already subscribed to a plan
-        if (!currentPlans.includes(planId)) {
-          return stripe.subscriptions.create(
-            {
-              customer: customerId,
-              items: [
-                {
-                  plan: planId
-                }
-              ],
-              trial_from_plan: trial
-            },
-            (err, sub) => {
-              if (err) reject(err);
-              resolve();
-            }
-          );
-        }
-      }
-      return;
+  static async subscribe(customerId, planId, trial = false) {
+    const customer = await Stripe.getCustomer(customerId);
+    if (!customer) return {};
+    if (customer.subscriptions.length > 0) {
+      // Unsubscribe from every subscription.
+      await Promise.all(
+        customer.subscriptions.data.map(item =>
+          stripe.subscriptions.del(item.id)
+        )
+      );
+    }
+    return stripe.subscriptions.create({
+      customer: customerId,
+      items: [{ plan: planId }],
+      trial_from_plan: trial
     });
   }
 
@@ -123,17 +85,8 @@ module.exports = class Stripe {
    * Returns Promise(confirmation)
    */
   static unsubscribe(customerId) {
-    return Stripe.getCustomer(customerId).then(
-      customer =>
-        new Promise((resolve, reject) =>
-          stripe.subscriptions.del(
-            customer.subscriptions.data[0].id,
-            (err, confirmation) => {
-              if (err) return reject(err);
-              return resolve(confirmation);
-            }
-          )
-        )
+    return Stripe.getCustomer(customerId).then(customer =>
+      stripe.subscriptions.del(customer.subscriptions.data[0].id)
     );
   }
 
@@ -146,35 +99,15 @@ module.exports = class Stripe {
     return Stripe.getCustomer(customerId)
       .then(customer =>
         Promise.all(
-          customer.sources.data.map(
-            s =>
-              new Promise((resolve, reject) => {
-                stripe.customers.deleteSource(
-                  customerId,
-                  s.id,
-                  (err, source) => {
-                    if (err) reject(err);
-                    resolve();
-                  }
-                );
-              })
+          customer.sources.data.map(s =>
+            stripe.customers.deleteSource(customerId, s.id)
           )
         )
       )
-      .then(
-        () =>
-          new Promise((resolve, reject) => {
-            stripe.customers.createSource(
-              customerId,
-              {
-                source: token // obtained with Stripe.js
-              },
-              (err, card) => {
-                if (err) return reject(err);
-                return resolve(card);
-              }
-            );
-          })
+      .then(() =>
+        stripe.customers.createSource(customerId, {
+          source: token // obtained with Stripe.js
+        })
       );
   }
 };

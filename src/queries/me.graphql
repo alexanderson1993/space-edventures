@@ -6,5 +6,6 @@ query Me {
       displayName
       profilePicture
     }
+    roles
   }
 }

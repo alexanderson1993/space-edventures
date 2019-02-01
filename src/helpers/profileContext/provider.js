@@ -5,7 +5,7 @@ import { auth } from "../../helpers/firebase";
 import { Query } from "react-apollo";
 import ME_QUERY from "../../queries/me.graphql";
 
-const AuthProvider = ({ children }) => {
+const ProfileProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   // Update the user state whenever the Firebase auth status changes
@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <Query query={ME_QUERY} skip={!user} key={user && user.uid}>
+    <Query query={ME_QUERY} skip={!user} variables={{ user: user && user.id }}>
       {({ data, loading: queryLoading }) => (
         <ProfileContext.Provider
           value={{
@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-AuthProvider.propTypes = {
+ProfileProvider.propTypes = {
   children: propTypes.node
 };
-export default AuthProvider;
+export default ProfileProvider;
