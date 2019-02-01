@@ -30,7 +30,6 @@ module.exports = class User {
         .doc(user.uid)
         .get()
         .then(user => ({ ...user.data(), id: user.id }));
-
       return { ...user, ...dbUser };
     } catch (err) {
       throw new AuthenticationError(err.message);
@@ -77,7 +76,6 @@ module.exports = class User {
       .catch(err => {
         throw new SyntaxError(err.message);
       });
-
     return dbUser;
   }
 

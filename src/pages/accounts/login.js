@@ -111,8 +111,9 @@ const Login = ({ signingUp = false, to = "/" }) => {
                 <Words animate>{signUp ? "Sign Up" : "Login"}</Words>
               </h2>
               <div>
-                <label>Email: </label>
+                <label htmlFor="email">Email: </label>
                 <Input
+                  id="email"
                   type="email"
                   value={email}
                   block

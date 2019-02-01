@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`magicLinkPage 1`] = `
+.emotion-0 {
+  margin: 0 auto;
+  width: 960px;
+  max-width: 80%;
+  padding: 0px 1.0875rem 1.45rem;
+  padding-top: 1.45rem;
+  margin-bottom: 10%;
+}
+
+<div>
+  <div
+    class="emotion-0 emotion-1"
+  >
+    <h1>
+      <span
+        class="Sounds(Words)-root-0-1-1 Sounds(Words)-root-0-1-7 Sounds(Words)-hide-0-1-5"
+      >
+        <span
+          class="Sounds(Words)-children-0-1-2"
+        >
+          Logging In...
+        </span>
+      </span>
+    </h1>
+    <div
+      class="Loading-root-0-1-8 Loading-entering-0-1-14"
+    >
+      <div
+        class="Loading-circle-0-1-9 Loading-circle-0-1-18 Loading-circle1-0-1-10"
+      />
+      <div
+        class="Loading-circle-0-1-9 Loading-circle-0-1-18 Loading-circle2-0-1-11"
+      />
+    </div>
+  </div>
+</div>
+`;

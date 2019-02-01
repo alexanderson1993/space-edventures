@@ -1,0 +1,377 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`login snapshot 1`] = `
+.emotion-11 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-9 {
+  width: 360px;
+  max-width: 80%;
+}
+
+.emotion-0 {
+  color: #30fffe;
+  background: transparent;
+  border: transparent;
+  padding: 5px 10px;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  width: 100%;
+}
+
+.emotion-7 {
+  margin-top: 20px;
+}
+
+.emotion-4 {
+  text-align: center;
+}
+
+.emotion-6 {
+  margin-bottom: 10px;
+}
+
+<div>
+  <div
+    class="emotion-11 emotion-12"
+  >
+    <form
+      class="emotion-9 emotion-10"
+    >
+      <h2>
+        <span
+          class="Sounds(Words)-root-0-1-1 Sounds(Words)-root-0-1-7 Sounds(Words)-hide-0-1-5"
+        >
+          <span
+            class="Sounds(Words)-children-0-1-2"
+          >
+            Login
+          </span>
+        </span>
+      </h2>
+      <div>
+        <label
+          for="email"
+        >
+          Email: 
+        </label>
+        <div
+          style="display: block;"
+        >
+          <div
+            class="Sounds(Frame)-root-0-1-8 Sounds(Frame)-root-0-1-26 Sounds(Frame)-exited-0-1-25"
+            id="email"
+            type="email"
+            value=""
+          >
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-28 Sounds(Frame)-borderLeft-0-1-12"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-28 Sounds(Frame)-borderRight-0-1-13"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-28 Sounds(Frame)-borderTop-0-1-14"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-28 Sounds(Frame)-borderBottom-0-1-15"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-29 Sounds(Frame)-cornerLT-0-1-17 Sounds(Frame)-cornerLT-0-1-30"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-29 Sounds(Frame)-cornerLB-0-1-18 Sounds(Frame)-cornerLB-0-1-31"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-29 Sounds(Frame)-cornerRT-0-1-19 Sounds(Frame)-cornerRT-0-1-32"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-29 Sounds(Frame)-cornerRB-0-1-20 Sounds(Frame)-cornerRB-0-1-33"
+            />
+            <div
+              class="Sounds(Frame)-box-0-1-9 Sounds(Frame)-box-0-1-27"
+            >
+              <div
+                class="Sounds(Frame)-children-0-1-10"
+              >
+                <input
+                  class="emotion-0 emotion-1"
+                  id="email"
+                  type="email"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label>
+          Password: 
+        </label>
+        <div
+          style="display: block;"
+        >
+          <div
+            class="Sounds(Frame)-root-0-1-8 Sounds(Frame)-root-0-1-34 Sounds(Frame)-exited-0-1-25"
+            type="password"
+            value=""
+          >
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-36 Sounds(Frame)-borderLeft-0-1-12"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-36 Sounds(Frame)-borderRight-0-1-13"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-36 Sounds(Frame)-borderTop-0-1-14"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-36 Sounds(Frame)-borderBottom-0-1-15"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-37 Sounds(Frame)-cornerLT-0-1-17 Sounds(Frame)-cornerLT-0-1-38"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-37 Sounds(Frame)-cornerLB-0-1-18 Sounds(Frame)-cornerLB-0-1-39"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-37 Sounds(Frame)-cornerRT-0-1-19 Sounds(Frame)-cornerRT-0-1-40"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-37 Sounds(Frame)-cornerRB-0-1-20 Sounds(Frame)-cornerRB-0-1-41"
+            />
+            <div
+              class="Sounds(Frame)-box-0-1-9 Sounds(Frame)-box-0-1-35"
+            >
+              <div
+                class="Sounds(Frame)-children-0-1-10"
+              >
+                <input
+                  class="emotion-0 emotion-1"
+                  type="password"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="emotion-7 emotion-8"
+      >
+        <div
+          class="Sounds(Button)-root-0-1-42"
+          style="display: block; text-align: center;"
+          type="submit"
+        >
+          <div
+            class="Sounds(Frame)-root-0-1-8 Sounds(Frame)-root-0-1-45 Sounds(Frame)-hover-0-1-21 Sounds(Frame)-exited-0-1-25"
+          >
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-47 Sounds(Frame)-borderLeft-0-1-12"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-47 Sounds(Frame)-borderRight-0-1-13"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-47 Sounds(Frame)-borderTop-0-1-14"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-47 Sounds(Frame)-borderBottom-0-1-15"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-48 Sounds(Frame)-cornerLT-0-1-17 Sounds(Frame)-cornerLT-0-1-49"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-48 Sounds(Frame)-cornerLB-0-1-18 Sounds(Frame)-cornerLB-0-1-50"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-48 Sounds(Frame)-cornerRT-0-1-19 Sounds(Frame)-cornerRT-0-1-51"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-48 Sounds(Frame)-cornerRB-0-1-20 Sounds(Frame)-cornerRB-0-1-52"
+            />
+            <div
+              class="Sounds(Frame)-box-0-1-9 Sounds(Frame)-box-0-1-46"
+            >
+              <div
+                class="Sounds(Frame)-children-0-1-10"
+              >
+                <div
+                  class="Highlight-root-0-1-53"
+                >
+                  <div
+                    class="Highlight-children-0-1-55"
+                  >
+                    <button
+                      class="Sounds(Button)-button-0-1-43 Sounds(Button)-button-0-1-44"
+                    >
+                      <span
+                        class="Sounds(Words)-root-0-1-1 Sounds(Words)-root-0-1-57 Sounds(Words)-hide-0-1-5"
+                      >
+                        <span
+                          class="Sounds(Words)-children-0-1-2"
+                        >
+                          Login
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          <small>
+            ‒ OR ‒
+          </small>
+        </div>
+        <div
+          class="Sounds(Button)-root-0-1-42 emotion-6"
+          style="display: block; text-align: center;"
+          type="button"
+        >
+          <div
+            class="Sounds(Frame)-root-0-1-8 Sounds(Frame)-root-0-1-59 Sounds(Frame)-hover-0-1-21 Sounds(Frame)-exited-0-1-25"
+          >
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-61 Sounds(Frame)-borderLeft-0-1-12"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-61 Sounds(Frame)-borderRight-0-1-13"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-61 Sounds(Frame)-borderTop-0-1-14"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-61 Sounds(Frame)-borderBottom-0-1-15"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-62 Sounds(Frame)-cornerLT-0-1-17 Sounds(Frame)-cornerLT-0-1-63"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-62 Sounds(Frame)-cornerLB-0-1-18 Sounds(Frame)-cornerLB-0-1-64"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-62 Sounds(Frame)-cornerRT-0-1-19 Sounds(Frame)-cornerRT-0-1-65"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-62 Sounds(Frame)-cornerRB-0-1-20 Sounds(Frame)-cornerRB-0-1-66"
+            />
+            <div
+              class="Sounds(Frame)-box-0-1-9 Sounds(Frame)-box-0-1-60"
+            >
+              <div
+                class="Sounds(Frame)-children-0-1-10"
+              >
+                <div
+                  class="Highlight-root-0-1-53"
+                >
+                  <div
+                    class="Highlight-children-0-1-55"
+                  >
+                    <button
+                      class="Sounds(Button)-button-0-1-43 Sounds(Button)-button-0-1-58"
+                    >
+                      <span
+                        class="Sounds(Words)-root-0-1-1 Sounds(Words)-root-0-1-68 Sounds(Words)-hide-0-1-5"
+                      >
+                        <span
+                          class="Sounds(Words)-children-0-1-2"
+                        >
+                          Create Account
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="Sounds(Button)-root-0-1-42"
+          style="display: block; text-align: center;"
+          type="button"
+        >
+          <div
+            class="Sounds(Frame)-root-0-1-8 Sounds(Frame)-root-0-1-70 Sounds(Frame)-hover-0-1-21 Sounds(Frame)-exited-0-1-25"
+          >
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderLeft-0-1-12"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderRight-0-1-13"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderTop-0-1-14"
+            />
+            <div
+              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderBottom-0-1-15"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerLT-0-1-17 Sounds(Frame)-cornerLT-0-1-74"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerLB-0-1-18 Sounds(Frame)-cornerLB-0-1-75"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerRT-0-1-19 Sounds(Frame)-cornerRT-0-1-76"
+            />
+            <div
+              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerRB-0-1-20 Sounds(Frame)-cornerRB-0-1-77"
+            />
+            <div
+              class="Sounds(Frame)-box-0-1-9 Sounds(Frame)-box-0-1-71"
+            >
+              <div
+                class="Sounds(Frame)-children-0-1-10"
+              >
+                <div
+                  class="Highlight-root-0-1-53"
+                >
+                  <div
+                    class="Highlight-children-0-1-55"
+                  >
+                    <button
+                      class="Sounds(Button)-button-0-1-43 Sounds(Button)-button-0-1-69"
+                    >
+                      <span
+                        class="Sounds(Words)-root-0-1-1 Sounds(Words)-root-0-1-79 Sounds(Words)-hide-0-1-5"
+                      >
+                        <span
+                          class="Sounds(Words)-children-0-1-2"
+                        >
+                          Send Magic Link
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+`;
