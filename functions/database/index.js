@@ -8,11 +8,13 @@ let addBadges = require("./addBadges");
 let addFlightRecords = require("./addFlightRecords");
 let addSimulators = require("./addSimulators");
 let addMessages = require("./addMessages");
+let addFirebaseUsers = require("./addFirebaseUsers");
 
 async function manageDatabase(req, res) {
   // =========================================================================
   // Set up our Firebase Service Connection
   // =========================================================================
+
   require("dotenv").config();
   const admin = require("firebase-admin");
   const functions = require("firebase-functions");
@@ -29,7 +31,9 @@ async function manageDatabase(req, res) {
   db.settings(settings);
 
   await deleteCollections(db);
-  await refillCollections(db);
+
+  let firebaseUsers = addFirebaseUsers(admin);
+  await refillCollections(db, firebaseUsers);
 
   return res.status(200).send(
     JSON.stringify({
@@ -38,13 +42,16 @@ async function manageDatabase(req, res) {
   );
 }
 
-async function refillCollections(db) {
-  const [directors, ranks, simulators] = await Promise.all([
-    addDirectors(db),
+async function refillCollections(db, firebaseUsers) {
+  const [directorIds, ranks, simulators] = await Promise.all([
+    addDirectors(
+      db,
+      firebaseUsers.filter(({ email }) => email.includes("director"))
+    ),
     addRanks(db),
     addSimulators(db)
   ]);
-  directorIds = directors.map(director => director.id);
+
   rankIds = ranks.map(rank => rank.id);
   simulatorIds = simulators.map(sim => sim.id);
 
@@ -58,8 +65,12 @@ async function refillCollections(db) {
   badgeIds = badges.map(badge => badge.id);
   flightTypeIds = flightTypes.map(type => type.id);
 
-  const users = await addUsers(db, badgeIds, rankIds);
-  userIds = users.map(user => user.id);
+  const userIds = await addUsers(
+    db,
+    firebaseUsers.filter(({ email }) => email.includes("participant")),
+    badgeIds,
+    rankIds
+  );
 
   const flightRecords = await addFlightRecords(
     db,
@@ -67,6 +78,8 @@ async function refillCollections(db) {
     userIds,
     simulatorIds
   );
+
+  return;
 }
 
 module.exports = manageDatabase;
