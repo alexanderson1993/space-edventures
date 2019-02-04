@@ -39,7 +39,7 @@ module.exports.schema = gql`
     badgeRemove(badgeId: ID!): Badge
     badgeRename(badgeId: ID!, name: String!): Badge
     badgeChangeDescription(badgeId: ID!, description: String!): Badge
-    badgeChangeImage(badgeId: ID!, image: Upload!): Badge
+    badgeChangeImage(badgeId: ID!, image: Uploaded!): Badge
   }
   extend type User {
     badges(type: BADGE_TYPE): [Badge]

@@ -1,9 +1,10 @@
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
 import { setContext } from "apollo-link-context";
 import { ApolloLink } from "apollo-link";
+import { createUploadLink } from "apollo-upload-client";
+
 import { auth } from "./firebase";
 
 const uri =
@@ -33,7 +34,7 @@ const ErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const DataLink = new HttpLink({
+const DataLink = createUploadLink({
   uri,
   credentials: "same-origin"
 });

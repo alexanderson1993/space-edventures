@@ -4,6 +4,7 @@ const { ApolloServer } = require("apollo-server-express");
 const schema = require("./schema");
 const { User, Center } = require("./models");
 const admin = require("./connectors/firebase");
+const fileMiddleware = require("express-multipart-file-parser");
 
 function getUser(token) {
   return {
@@ -23,7 +24,17 @@ function configureServer() {
 
   //use the cors middleware
   app.use(cors());
+  // Set up for the file middleware
+  app.use((req, res, next) => {
+    req.body = {};
+    next();
+  });
 
+  app.use(fileMiddleware);
+  app.use((req, res, next) => {
+    const { fieldname, filename, encoding, mimetype, buffer } = req.files[0];
+    next();
+  });
   const server = new ApolloServer({
     schema,
     engine: process.env.ENGINE_API_KEY,

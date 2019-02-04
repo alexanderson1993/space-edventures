@@ -2,7 +2,7 @@ const { gql } = require("apollo-server-express");
 const { GraphQLScalarType } = require("graphql");
 const { Kind } = require("graphql/language");
 const GraphQLJSON = require("graphql-type-json");
-const { GraphQLUpload } = require("graphql-upload");
+// const { GraphQLUpload } = require("graphql-upload");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -37,5 +37,7 @@ module.exports.resolver = {
       return null;
     }
   }),
-  Upload: GraphQLUpload
+  Upload: (a, b, c, d, e) => {
+    console.log("UPLOAD!", a, b, c, d, e);
+  } //GraphQLUpload
 };

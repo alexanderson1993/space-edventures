@@ -9,6 +9,8 @@ module.exports.schema = gql`
 
   extend type Mutation {
     userCreate: User
+    userChangeProfilePicture(id: ID, picture: Upload!): User
+      @auth(requires: [self, admin])
   }
 
   type Profile @auth(requires: [self, admin]) {
@@ -62,6 +64,10 @@ module.exports.resolver = {
         email: user.email,
         name: user.email
       });
+    },
+    userChangeProfilePicture: (rootQuery, args, context) => {
+      const { user } = context;
+      console.log(args, context);
     }
   },
   Badge: {
