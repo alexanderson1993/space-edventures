@@ -1,7 +1,7 @@
 const Stripe = require("./Stripe");
 const { firestore } = require("../connectors/firebase");
 const { UserInputError } = require("apollo-server-express");
-
+const uuid = require("uuid");
 // =============================================================================
 // Class for Querying/Mutating space centers
 // =============================================================================
@@ -9,20 +9,31 @@ const { UserInputError } = require("apollo-server-express");
 module.exports = class Center {
   static getCenters() {
     return firestore()
-      .collection("centers")
+      .collection("spaceCenters")
       .get()
       .then(res => res.docs.map(d => ({ ...d.data(), id: d.id })));
   }
   static getCenter(id) {
     return firestore()
-      .collection("centers")
+      .collection("spaceCenters")
       .doc(id)
       .get()
       .then(res => ({ ...res.data(), id: res.id }));
   }
+  static getByApiToken(token) {
+    return firestore()
+      .collection("spaceCenters")
+      .where("apiToken", "==", token)
+      .get()
+      .then(res =>
+        res.docs.length > 0
+          ? { ...res.docs[0].data(), id: res.docs[0].id }
+          : null
+      );
+  }
   static getCenterForUserId(userId) {
     return firestore()
-      .collection("centers")
+      .collection("spaceCenters")
       .where("directorId", "==", userId)
       .get()
       .then(res =>
@@ -42,18 +53,33 @@ module.exports = class Center {
       const customer = await Stripe.createCustomer({ name, email, token });
       await Stripe.subscribe(customer.id, planId, true);
       return firestore()
-        .collection("centers")
+        .collection("spaceCenters")
         .add({
           name,
           email,
           website,
           registeredDate: new Date(),
           stripeCustomer: customer.id,
-          directorId
+          directorId,
+          apiToken: uuid.v4()
         });
     } catch (err) {
       console.log(err);
       throw new UserInputError(`Unable to create center: ${err.message}`);
     }
+  }
+  static async setApiToken(directorId) {
+    const centers = await firestore()
+      .collection("spaceCenters")
+      .where("directorId", "==", directorId)
+      .get();
+    const center = centers.docs[0];
+    if (!center || !center.exists)
+      throw new UserInputError(
+        "The current user is not a director of a space center."
+      );
+    const apiToken = uuid.v4();
+    center.ref.update({ apiToken });
+    return { ...center.data(), apiToken, id: center.id };
   }
 };

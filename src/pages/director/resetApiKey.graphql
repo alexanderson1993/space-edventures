@@ -1,0 +1,6 @@
+mutation API {
+  centerSetApiToken {
+    id
+    apiToken
+  }
+}

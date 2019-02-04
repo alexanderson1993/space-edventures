@@ -53,10 +53,13 @@ module.exports = class User {
    * Returns true if user has any of the roles
    */
   hasOneOfRoles(roles) {
-    return roles.reduce(
-      (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
-      false
-    );
+    // Automatically has the authenticated role if it exists.
+    return roles
+      .concat("authenticated")
+      .reduce(
+        (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
+        false
+      );
   }
 
   /**

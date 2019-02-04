@@ -6,7 +6,9 @@ import {
   FaUserSecret,
   FaIdBadge,
   FaHome,
-  FaFeatherAlt
+  FaFeatherAlt,
+  FaCogs,
+  FaDollarSign
 } from "react-icons/fa";
 import { Link } from "../../../components";
 
@@ -62,6 +64,16 @@ const sidebarLinks = [
     label: "Badges",
     icon: FaIdBadge,
     url: "/director/badges"
+  },
+  {
+    label: "Billing",
+    icon: FaDollarSign,
+    url: "/director/billing"
+  },
+  {
+    label: "Settings",
+    icon: FaCogs,
+    url: "/director/settings"
   }
 ];
 

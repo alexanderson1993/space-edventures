@@ -1,9 +1,0 @@
-query CenterDirector {
-  me {
-    id
-    center {
-      id
-      name
-    }
-  }
-}

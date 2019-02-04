@@ -1,0 +1,6 @@
+query CenterApiKey($id: ID!) {
+  center(id: $id) {
+    id
+    apiToken
+  }
+}
