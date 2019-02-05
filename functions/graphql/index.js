@@ -24,25 +24,55 @@ function configureServer() {
 
   //use the cors middleware
   app.use(cors());
+
   // Set up for the file middleware
   app.use((req, res, next) => {
-    req.body = {};
+    if (req.body instanceof Buffer) {
+      req.body = {};
+    }
     next();
   });
 
   app.use(fileMiddleware);
   app.use((req, res, next) => {
-    const { fieldname, filename, encoding, mimetype, buffer } = req.files[0];
+    // Map the files onto the query.
+    if (req.files) {
+      const ops = JSON.parse(req.body.operations);
+      const maps = JSON.parse(req.body.map);
+      const filePaths = Object.entries(maps).reduce(
+        (prev, [key, pathArr]) =>
+          prev.concat([[pathArr, req.files.find(f => f.fieldname === key)]]),
+        []
+      );
+      const mapped = filePaths.reduce(
+        (prev, [paths, file]) => ({
+          ...prev,
+          ...paths.reduce(
+            (p, path) => ({
+              ...p,
+              ...path
+                .split(".")
+                .reverse()
+                .reduce((pp, next) => ({ [next]: pp }), file)
+            }),
+            {}
+          )
+        }),
+        {}
+      );
+      //  "variables.picture"
+      req.body = {
+        ...ops,
+        variables: { ...ops.variables, ...mapped.variables }
+      };
+    }
     next();
   });
   const server = new ApolloServer({
     schema,
     engine: process.env.ENGINE_API_KEY,
     tracing: process.env.NODE_ENV !== "production",
-    uploads: {
-      maxFileSize: 10000000, // 10 MB
-      maxFiles: 20
-    },
+    uploads: false,
     context: async ({ req }) => {
       // get the user token from the headers
       const token = (req.headers.authorization || "").replace("Bearer ", "");
