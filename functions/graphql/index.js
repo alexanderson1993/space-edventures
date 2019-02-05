@@ -33,11 +33,9 @@ function configureServer() {
       maxFiles: 20
     },
     context: async ({ req }) => {
-      // get the user token from the headers
       const token = (req.headers.authorization || "").replace("Bearer ", "");
-
       // If you need to test a specific user's graphQL abilities
-      //   let token = await User.getToken('tarronlane@hotmail.com', 'Test1234');
+      //   const token = await User.getToken('participantd@example.com', 'Test1234');
 
       if (!token) return { user: null };
 

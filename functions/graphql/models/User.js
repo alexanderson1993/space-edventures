@@ -103,4 +103,15 @@ module.exports = class User {
       .get()
       .then(res => ({ ...res.data(), id: res.id }));
   }
+
+  static async deleteUser(uid) {
+    return firestore()
+      .collection("users")
+      .doc(uid)
+      .delete()
+      .then(() => true)
+      .catch(error => {
+        throw new FirebaseException("Unable to delete your user.");
+      });
+  }
 };

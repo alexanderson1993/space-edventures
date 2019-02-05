@@ -9,6 +9,7 @@ module.exports.schema = gql`
 
   extend type Mutation {
     userCreate: User
+    userDelete: Boolean
   }
 
   type Profile @auth(requires: [self, admin]) {
@@ -68,6 +69,16 @@ module.exports.resolver = {
         email: user.email,
         name: user.email
       });
+    },
+    userDelete: async (rootQuery, args, context) => {
+      const { user } = context;
+
+      if (!user)
+        throw new AuthenticationError("Must be logged in to delete your user.");
+
+      const userObj = await User.getUserById(user.id);
+      if (!userObj) return true;
+      return User.deleteUser(user.id);
     }
   },
   Badge: {
