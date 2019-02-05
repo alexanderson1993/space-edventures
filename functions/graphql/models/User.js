@@ -82,6 +82,9 @@ module.exports = class User {
     return dbUser;
   }
 
+  /**
+   * Create or Id a user
+   */
   static async createUser({ id, email, displayName, name }) {
     const user = await firestore()
       .collection("users")

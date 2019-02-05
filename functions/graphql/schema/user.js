@@ -10,6 +10,7 @@ module.exports.schema = gql`
   extend type Mutation {
     userCreate: User
     userDelete: Boolean
+    profileEdit(age: Int, name: String, displayName: String): Profile
   }
 
   type Profile @auth(requires: [self, admin]) {
