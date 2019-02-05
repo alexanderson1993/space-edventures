@@ -1,0 +1,8 @@
+mutation SetProfilePicture($picture: Upload!) {
+  userChangeProfilePicture(picture: $picture) {
+    id
+    profile {
+      profilePicture
+    }
+  }
+}

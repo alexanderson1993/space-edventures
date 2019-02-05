@@ -73,9 +73,8 @@ class AuthDirective extends SchemaDirectiveVisitor {
         // Get the required Role from the field first, falling back
         // to the objectType if no Role is required by the field:
         // Grab the user off of context
-        const [data, queryArgs, context] = args;
+        const [data = {}, queryArgs, context] = args;
         const { user, center } = context;
-
         const requiredRoles =
           field._requiredAuthRoles || objectType._requiredAuthRoles;
 

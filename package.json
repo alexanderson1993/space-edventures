@@ -34,6 +34,8 @@
     "apollo-link-context": "^1.0.12",
     "apollo-link-error": "^1.1.5",
     "apollo-link-http": "^1.5.9",
+    "apollo-upload-client": "^10.0.0",
+    "blueimp-load-image": "^2.20.1",
     "emotion": "^10.0.6",
     "firebase": "^5.8.1",
     "graphql": "^14.1.1",
@@ -43,6 +45,7 @@
     "react-apollo": "^2.4.0",
     "react-dom": "^16.8.0-alpha.1",
     "react-icons": "^3.3.0",
+    "react-image-crop": "^6.0.12",
     "react-stripe-elements": "^2.0.2"
   },
   "devDependencies": {

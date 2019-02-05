@@ -1,4 +1,9 @@
-const { auth, firestore, clientSideApp } = require("../connectors/firebase");
+const {
+  auth,
+  firestore,
+  storage,
+  clientSideApp
+} = require("../connectors/firebase");
 const { SyntaxError, AuthenticationError } = require("apollo-server-express");
 
 module.exports = class User {
@@ -60,6 +65,41 @@ module.exports = class User {
         (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
         false
       );
+  }
+
+  changeProfilePicture(picture) {
+    const file = storage()
+      .bucket()
+      .file(`${this.id}/profilePicture`);
+
+    return new Promise((resolve, reject) => {
+      const stream = file.createWriteStream({
+        metadata: { contentType: picture.mimetype },
+        predefinedAcl: "publicRead"
+      });
+      stream.on("error", err => {
+        reject(err);
+      });
+      stream.on("finish", async () => {
+        const userRef = await firestore()
+          .collection("users")
+          .doc(this.id);
+
+        const dbUser = await userRef
+          .get()
+          .then(user => ({ ...user.data(), id: user.id }));
+
+        userRef.update({
+          profile: {
+            ...dbUser.profile,
+            profilePicture: file.metadata.mediaLink
+          }
+        });
+        this.profile.profilePicture = file.metadata.mediaLink;
+        resolve(this);
+      });
+      stream.end(picture.buffer);
+    });
   }
 
   /**

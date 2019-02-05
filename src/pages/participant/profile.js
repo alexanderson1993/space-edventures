@@ -1,9 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "@emotion/styled";
 import { Loading } from "@arwes/arwes";
-import { Words, Button, Input, Link, ProfilePicture } from "../../components";
+import {
+  Words,
+  Button,
+  Input,
+  Link,
+  ProfilePicture,
+  Modal,
+  ImageUploader
+} from "../../components";
 import "./profile.scss";
 import ProfileContext from "../../helpers/profileContext";
+import css from "@emotion/css";
+import { Mutation } from "react-apollo";
+import SET_PROFILE_PICTURE from "./setProfilePicture.graphql";
+import { dataURItoBlob } from "../../helpers/dataURIToBlob";
 
 const Container = styled("div")`
   display: grid;
@@ -35,6 +47,7 @@ const Table = styled("table")`
 
 const Profile = () => {
   const { user } = useContext(ProfileContext);
+  const [editPicture, setEditPicture] = useState(false);
   if (user)
     return user.loading ? (
       <Loading animate />
@@ -45,7 +58,9 @@ const Profile = () => {
         </Header>
         <ProfilePictureGrid>
           <ProfilePicture />
-          <Button>Edit Profile Picture</Button>
+          <Button onClick={() => setEditPicture(true)}>
+            Edit Profile Picture
+          </Button>
         </ProfilePictureGrid>
         <UserData>
           <FormGroup>
@@ -98,6 +113,28 @@ const Profile = () => {
             </Table>
           </div>
         </History>
+        <Modal show={editPicture} onCancel={() => setEditPicture(false)}>
+          <div
+            css={css`
+              width: 600px;
+              height: 600px;
+              max-height: 800vh;
+              max-width: 80vw;
+            `}
+          >
+            <Mutation mutation={SET_PROFILE_PICTURE}>
+              {action => (
+                <ImageUploader
+                  onChange={image => {
+                    setEditPicture(false);
+                    const picture = dataURItoBlob(image);
+                    action({ variables: { picture } });
+                  }}
+                />
+              )}
+            </Mutation>
+          </div>
+        </Modal>
       </Container>
     );
   return null;

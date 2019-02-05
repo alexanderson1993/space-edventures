@@ -9,6 +9,7 @@ const Login = lazy(() => import("./pages/accounts/login"));
 const Participant = lazy(() => import("./pages/participant"));
 const GraphQL = lazy(() => import("./pages/test/graphql"));
 
+const ImageLoader = lazy(() => import("./components/ImageUploader"));
 const Routes = () => {
   return (
     <Router
@@ -26,6 +27,10 @@ const Routes = () => {
       <MagicLinkWithNav path="magicLink" />
       <GraphQL path="graphql" />
       <Admin path="/director/*" />
+      <ImageLoader
+        src="https://pbs.twimg.com/profile_images/567927550714736641/4kXV9NPG_400x400.jpeg"
+        path="imageLoader"
+      />
     </Router>
   );
 };

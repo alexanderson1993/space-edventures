@@ -1,4 +1,8 @@
-const { gql, AuthenticationError } = require("apollo-server-express");
+const {
+  gql,
+  AuthenticationError,
+  ForbiddenError
+} = require("apollo-server-express");
 let User = require("../models/User");
 
 module.exports.schema = gql`
@@ -9,6 +13,7 @@ module.exports.schema = gql`
 
   extend type Mutation {
     userCreate: User
+    userChangeProfilePicture(id: ID, picture: Upload!): User
   }
 
   type Profile @auth(requires: [self, admin]) {
@@ -62,6 +67,23 @@ module.exports.resolver = {
         email: user.email,
         name: user.email
       });
+    },
+    userChangeProfilePicture: (rootQuery, args, context) => {
+      const { user } = context;
+      if (!user)
+        throw new AuthenticationError(
+          "Must be logged in to change profile picture."
+        );
+      if (user.roles.includes("admin") && args.id) {
+        const setUser = User.getUserById(args.id);
+        return setUser.changeProfilePicture(args.picture);
+      }
+      if (args.id && args.id !== user.id) {
+        throw new ForbiddenError(
+          "Not allowed to alter other profile pictures."
+        );
+      }
+      return user.changeProfilePicture(args.picture);
     }
   },
   Badge: {

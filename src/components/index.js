@@ -10,3 +10,5 @@ export { default as ProfilePicture } from "./ProfilePicture";
 export { default as PaymentEntry } from "./PaymentEntry";
 export { default as Content } from "./Content";
 export { default as Confirm } from "./Confirm";
+export { default as Modal } from "./Modal";
+export { default as ImageUploader } from "./ImageUploader";
