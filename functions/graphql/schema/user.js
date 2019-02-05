@@ -33,9 +33,11 @@ module.exports.schema = gql`
   extend type Badge {
     user: User
   }
+
   extend type Center {
     director: User
   }
+
   extend type FlightRecord {
     user: User
   }
@@ -48,6 +50,10 @@ module.exports.resolver = {
     }
   },
   Mutation: {
+    /**
+     * Create a user in the firestore database for the current GraphQL user
+     * If user already exists, just override the information about that user
+     */
     userCreate: async (rootQuery, args, context) => {
       const { user } = context;
       // If there is a user in context, then the authentication user does exist

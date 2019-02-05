@@ -19,7 +19,9 @@ module.exports = function addUsers(db, participants, badgeIds, rankIds) {
           email: email,
           displayName: displayName,
           rankId: rankId,
-          badges: badges
+          badges: badges,
+          age: 14,
+          profilePicture: "path/to/my/picture"
         })
         .then(() => {
           return uid;
