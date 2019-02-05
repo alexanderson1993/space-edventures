@@ -36,7 +36,8 @@ module.exports.schema = gql`
     id: ID
     created: Date
     email: String
-    subscription: StripeSubscription
+    subscriptions: [StripeSubscription]
+    sources: [StripeSource]
   }
   type StripeSubscription {
     id: ID
@@ -44,6 +45,14 @@ module.exports.schema = gql`
     current_period_start: Date
     current_period_end: Date
     status: String
+    plan: StripePlan
+  }
+  type StripeSource {
+    id: ID
+    brand: String
+    exp_month: String
+    exp_year: String
+    last4: String
   }
 
   # We can extend other graphQL types using the "extend" keyword.
@@ -82,7 +91,17 @@ module.exports.resolver = {
   },
   Center: {
     /* TODO: Add checks to make sure only the director can view this, including if the auth directive works */
-    stripeCustomer: (center, args, context) =>
-      Stripe.getCustomer(center.customerId)
+    stripeCustomer: (center, args, context) => {
+      return Stripe.getCustomer(center.stripeCustomer);
+    }
+  },
+  StripeCustomer: {
+    subscriptions: (customer, args, context) => {
+      return customer.subscriptions.data;
+    },
+    sources: (customer, args, context) => {
+      return customer.sources.data;
+    }
   }
+  //  StripeSubscription:
 };
