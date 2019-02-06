@@ -88,12 +88,23 @@ class AuthDirective extends SchemaDirectiveVisitor {
           );
         }
 
+        if (requiredRoles.indexOf("authenticated") > -1 && user) {
+          return resolve.apply(this, args);
+        }
+
         if (requiredRoles.indexOf("center") === -1 && center) {
           throw new AuthenticationError(
             `You do not have permission to access "${fieldName ||
               objectType.name}" using the API.`
           );
         }
+        if (
+          requiredRoles.indexOf("center") > -1 &&
+          (center.id === data.centerId || center.id === data.id)
+        ) {
+          return resolve.apply(this, args);
+        }
+
         if (
           requiredRoles.indexOf("self") > -1 &&
           (user.id === data.userId || user.id === data.id)
@@ -108,12 +119,11 @@ class AuthDirective extends SchemaDirectiveVisitor {
         ) {
           return resolve.apply(this, args);
         }
-
         if (
           // the field has required roles and the user does not have one of those roles
 
           field._requiredAuthRoles &&
-          !user.hasOneOfRoles(field._requiredAuthRoles)
+          (!user || !user.hasOneOfRoles(field._requiredAuthRoles))
         ) {
           // Provide different error messages based on whether it is a field
           // or object that is being denied.
@@ -125,7 +135,7 @@ class AuthDirective extends SchemaDirectiveVisitor {
         if (
           // The object has required roles and the user does not have one of those roles
           objectType._requiredAuthRoles &&
-          !user.hasOneOfRoles(objectType._requiredAuthRoles)
+          (!user || !user.hasOneOfRoles(objectType._requiredAuthRoles))
         ) {
           throw new ForbiddenError(
             `Insufficient permissions to access object "${objectType.name}"`
