@@ -20,9 +20,6 @@ module.exports.schema = gql`
   extend type FlightRecord {
     simulator: Simulator
   }
-  extend type Station {
-    simulator: Station
-  }
 `;
 
 // We define all of the resolvers necessary for
@@ -34,8 +31,5 @@ module.exports.resolver = {
   },
   Center: {
     simulators: (center, args, context) => {}
-  },
-  Station: {
-    simulator: (station, args, context) => {}
   }
 };

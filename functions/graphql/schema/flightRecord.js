@@ -11,7 +11,6 @@ module.exports.schema = gql`
     # Flight Type
     # User
     # Simulator
-    # Station
     # Center
   }
   extend type Badge {
@@ -20,6 +19,9 @@ module.exports.schema = gql`
   extend type Query {
     flightRecord(id: ID!): FlightRecord
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
+  }
+  extend type Mutation {
+    flightAssign(flightId: ID!, userId: ID, stations: [String]): FlightRecord
   }
   # We can extend other graphQL types using the "extend" keyword.
 `;
@@ -31,6 +33,9 @@ module.exports.resolver = {
   Query: {
     flightRecord: (rootQuery, args, context) => {},
     flightRecords: (rootQuery, args, context) => {}
+  },
+  Mutation: {
+    flightAssign: (rootQuery, { flightId, userId, stations }, context) => {}
   },
   Badge: {
     flight: (badge, args, context) => {}

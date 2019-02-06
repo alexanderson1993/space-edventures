@@ -40,8 +40,14 @@ module.exports.schema = gql`
     badgeRename(badgeId: ID!, name: String!): Badge
     badgeChangeDescription(badgeId: ID!, description: String!): Badge
     badgeChangeImage(badgeId: ID!, image: Upload!): Badge
+    badgeAssign(badgeId: ID!, flightId: ID!, userId: ID): Badge
   }
+
   extend type User {
+    badges(type: BADGE_TYPE): [Badge]
+  }
+
+  extend type Center {
     badges(type: BADGE_TYPE): [Badge]
   }
 `;
@@ -54,7 +60,24 @@ module.exports.resolver = {
     badges: (rootQuery, { type }, context) => {},
     badge: (rootQuery, { type }, context) => {}
   },
+  Mutation: {
+    badgeCreate: (rootQuery, { badge }, context) => {},
+    badgeRemove: (rootQuery, { badgeId }, context) => {},
+    badgeRename: (rootQuery, { badgeId, name }, context) => {},
+    badgeChangeDescription: (
+      rootQuery,
+      { badgeId, description },
+      context
+    ) => {},
+    badgeChangeImage: (rootQuery, { badgeId, image }, context) => {},
+    badgeAssign: (rootQuery, { badgeId, flightId, userId }, context) => {
+      // Either assign the badge directly, or create an assignment object
+    }
+  },
   User: {
+    badges: (user, { type }, context) => {}
+  },
+  Center: {
     badges: (user, { type }, context) => {}
   }
 };

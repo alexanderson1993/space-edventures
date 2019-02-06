@@ -12,10 +12,6 @@ const {
   resolver: FlightTypeResolver
 } = require("./flightType");
 const {
-  schema: StationSchema,
-  resolver: StationResolver
-} = require("./station");
-const {
   schema: SimulatorSchema,
   resolver: SimulatorResolver
 } = require("./simulator");
@@ -58,7 +54,6 @@ module.exports = makeExecutableSchema({
     CenterSchema,
     FlightRecordSchema,
     FlightTypeSchema,
-    StationSchema,
     SimulatorSchema,
     TestingSchema,
     StripeSchema
@@ -71,7 +66,6 @@ module.exports = makeExecutableSchema({
     CenterResolver,
     FlightRecordResolver,
     FlightTypeResolver,
-    StationResolver,
     SimulatorResolver,
     TestingResolver,
     StripeResolver
