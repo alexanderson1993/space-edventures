@@ -11,7 +11,6 @@ export default () => {
   const { director } = useContext(DirectorContext);
   const [doQuery, setDoQuery] = useState(null);
   const [resetModal, setResetModal] = useState(false);
-  console.log(director);
   return (
     <div>
       <h1>

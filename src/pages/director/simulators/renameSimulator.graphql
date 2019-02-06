@@ -1,0 +1,6 @@
+mutation RenameSimulator($id: ID!, $name: String!) {
+  simulatorRename(id: $id, name: $name) {
+    id
+    name
+  }
+}

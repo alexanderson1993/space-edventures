@@ -1,7 +1,7 @@
 import React from "react";
 import { Query } from "react-apollo";
 import styled from "@emotion/styled";
-import SIMULATORS_QUERY from "../../../queries/simulators.graphql";
+import SIMULATORS_QUERY from "./simulators.graphql";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Link, Button } from "../../../components";
 const ButtonAlign = styled("div")`

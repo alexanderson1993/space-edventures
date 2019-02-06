@@ -20,26 +20,27 @@ module.exports = class Simulator {
       .collection("simulators")
       .where("centerId", "==", centerId)
       .get();
-    return simulators.docs.map(d => ({ ...d.data(), id: d.id }));
+    return simulators.docs.map(d => new Simulator({ ...d.data(), id: d.id }));
   }
   static async getSimulator(id) {
     const simulator = await firestore()
       .collection("simulators")
       .doc(id)
       .get();
-    return { ...simulator.data(), id: simulator.id };
+    return new Simulator({ ...simulator.data(), id: simulator.id });
   }
   constructor({ id, name, centerId }) {
     this.id = id;
     this.name = name;
     this.centerId = centerId;
   }
-  rename(name) {
+  async rename(name) {
     this.name = name;
-    return firestore()
+    await firestore()
       .collection("simulators")
       .doc(this.id)
       .update({ name });
+    return this;
   }
   async delete() {
     await firestore()

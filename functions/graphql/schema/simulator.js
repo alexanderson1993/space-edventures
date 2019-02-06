@@ -1,7 +1,8 @@
 const {
   gql,
   ForbiddenError,
-  AuthenticationError
+  AuthenticationError,
+  UserInputError
 } = require("apollo-server-express");
 const { Simulator, Center } = require("../models");
 // We define a schema that encompasses all of the types
@@ -50,8 +51,17 @@ module.exports.resolver = {
     simulator: (rootQuery, { id }, context) => {
       return Simulator.getSimulator(id);
     },
-    simulators: (rootQuery, { centerId }, context) => {
-      return Simulator.getSimulators(centerId);
+    simulators: async (rootQuery, { centerId }, context) => {
+      let centerIdValue = centerId;
+      if (!centerIdValue) {
+        const center = await getCenter(context.user);
+        if (!center) {
+          throw new UserInputError('"centerId" is a required parameter.');
+        }
+        centerIdValue = center.id;
+      }
+      console.log(centerIdValue);
+      return Simulator.getSimulators(centerIdValue);
     }
   },
   Mutation: {
