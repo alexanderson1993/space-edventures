@@ -1,23 +1,13 @@
 const {
   gql,
   ForbiddenError,
-  AuthenticationError,
   UserInputError
 } = require("apollo-server-express");
-const { Simulator, Center } = require("../models");
+const { Simulator } = require("../models");
+const getCenter = require("../helpers/getCenter");
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 
-async function getCenter(user) {
-  if (!user)
-    throw new AuthenticationError(
-      `You must be logged in to create simulators.`
-    );
-  const center = await Center.getCenterForUserId(user.id);
-  if (!center)
-    throw new ForbiddenError(`Insufficient permissions to create simulators.`);
-  return center;
-}
 module.exports.schema = gql`
   type Simulator {
     id: ID!
@@ -60,7 +50,6 @@ module.exports.resolver = {
         }
         centerIdValue = center.id;
       }
-      console.log(centerIdValue);
       return Simulator.getSimulators(centerIdValue);
     }
   },

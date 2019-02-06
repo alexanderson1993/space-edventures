@@ -1,0 +1,80 @@
+const { firestore } = require("../connectors/firebase");
+const uploadFile = require("../helpers/uploadFile");
+// =============================================================================
+// Class for Querying/Mutating Badges
+// =============================================================================
+
+module.exports = class Badge {
+  static async createBadge({ name, description, type, image }, centerId) {
+    const badgeData = await firestore()
+      .collection("badges")
+      .add({
+        name,
+        type,
+        description,
+        centerId
+      });
+    const file = await uploadFile(image, `badges/${badgeData.id}`);
+    await firestore()
+      .collection("badges")
+      .doc(badgeData.id)
+      .update({ image: file.metadata.mediaLink });
+    return new Badge({ ...badgeData, image: file.metadata.mediaLink });
+  }
+  static async getBadges(type, centerId) {
+    const badges = await firestore()
+      .collection("badges")
+      .where("centerId", "==", centerId)
+      .where("type", "==", type)
+      .get();
+    return badges.docs.map(d => new Badge({ ...d.data(), id: d.id }));
+  }
+  static async getBadge(id) {
+    const badge = await firestore()
+      .collection("badges")
+      .doc(id)
+      .get();
+    return new Badge({ ...badge.data(), id: badge.id });
+  }
+  constructor({ id, name, type, description, image, centerId }) {
+    this.id = id;
+    this.name = name;
+    this.type;
+    this.description;
+    this.image;
+    this.centerId = centerId;
+  }
+  async rename(name) {
+    this.name = name;
+    await firestore()
+      .collection("badges")
+      .doc(this.id)
+      .update({ name });
+    return this;
+  }
+  async changeDescription(description) {
+    this.description = description;
+    await firestore()
+      .collection("badges")
+      .doc(this.id)
+      .update({ name });
+    return this;
+  }
+  async changeImage(image) {
+    const file = await uploadFile(image, `badges/${this.id}`);
+    await firestore()
+      .collection("badges")
+      .doc(this.id)
+      .update({ image: file.metadata.mediaLink });
+    this.image = file.metadata.mediaLink;
+    return this;
+  }
+  async delete() {
+    await firestore()
+      .collection("badges")
+      .doc(this.id)
+      .delete();
+    return true;
+    // It will throw an error if there is a problem.
+  }
+};
