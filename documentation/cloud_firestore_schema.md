@@ -7,14 +7,15 @@
 ### Users
 
 - email
-- firstName
-- lastName
 - registerDate
-- displayName _(fake name for directors to see)_
+- profile
+    - firstName
+    - lastName
+    - displayName _(fake name for directors to see)_
+    - birthDate
+    - profilePicture
 - rankId
 - List: Badges _(list of ids)_
-- birthDate
-- profilePicture
 - **REMOVED** _Collection : [Badges] # So that we have the historical view of the mission when they took it_
 - **REMOVED** _Collection : [FlightRecord] ### Should we remove this, since we have the same information on flight record?_
 - **REMOVED** _flightHours (REMOVED)_

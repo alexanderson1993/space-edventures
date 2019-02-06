@@ -14,14 +14,16 @@ module.exports = function addUsers(db, participants, badgeIds, rankIds) {
         .collection("users")
         .doc(uid)
         .set({
-          firstName: firstName,
-          lastName: lastName,
           email: email,
-          displayName: displayName,
+          profile: {
+            firstName: firstName,
+            lastName: lastName,
+              displayName: displayName,
+              birthDate: new Date('10 Oct 2010'),
+              profilePicture: "path/to/my/picture"
+          },
           rankId: rankId,
           badges: badges,
-          birthDate: Date('10 Oct 2010'),
-          profilePicture: "path/to/my/picture"
         })
         .then(() => {
           return uid;
