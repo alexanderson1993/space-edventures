@@ -12,7 +12,7 @@ module.exports.schema = gql`
     description: String
     registeredDate: Date
     website: String
-    email: String
+    email: String @auth(requires: [center])
     apiToken: String @auth(requires: [director])
   }
 
