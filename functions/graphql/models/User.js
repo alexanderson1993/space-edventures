@@ -114,7 +114,9 @@ module.exports = class User {
       .get()
       .then(user => {
         if (!user.exists) return null;
-        return { ...user.data(), id: uid };
+        let data = user.data();
+        data.profile.id = uid; // Add the user's ID to the profile object, so that permissions can be checked on self
+        return { ...data, id: uid };
       })
       .catch(err => {
         throw new SyntaxError(err.message);
@@ -122,6 +124,9 @@ module.exports = class User {
     return dbUser;
   }
 
+  /**
+   * Create or Id a user
+   */
   static async createUser({ id, email, displayName, name }) {
     const user = await firestore()
       .collection("users")
@@ -142,5 +147,16 @@ module.exports = class User {
       .doc(id)
       .get()
       .then(res => ({ ...res.data(), id: res.id }));
+  }
+
+  static async deleteUser(uid) {
+    return firestore()
+      .collection("users")
+      .doc(uid)
+      .delete()
+      .then(() => true)
+      .catch(error => {
+        throw new FirebaseException("Unable to delete your user.");
+      });
   }
 };
