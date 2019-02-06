@@ -19,8 +19,6 @@ var config = {
   projectId: "space-edventures"
 };
 
-firebase.initializeApp(
-  process.env.NODE_ENV === "production" ? config : betaConfig
-);
+firebase.initializeApp(process.env.REACT_APP_IS_LIVE ? config : betaConfig);
 
 export const auth = firebase.auth();
