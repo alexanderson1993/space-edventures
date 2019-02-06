@@ -1,162 +1,162 @@
 const {
-    auth,
-    firestore,
-    storage,
-    clientSideApp
+  auth,
+  firestore,
+  storage,
+  clientSideApp
 } = require("../connectors/firebase");
 const { SyntaxError, AuthenticationError } = require("apollo-server-express");
 
 module.exports = class User {
-    /**
-     * Param: params (dictionary)
-     *   {
-     *     id: 'theId',
-     *     roles: ['role1', 'role2']
-     *   }
-     * Add the params (dictionary) as attributes to the User object, and
-     * additionally add the user id to the object's profile attribute
-     */
-    constructor(params) {
-        Object.entries(params).forEach(([key, value]) => (this[key] = value));
-        this.profile = { ...(this.profile || {}), userId: this.id };
+  /**
+   * Param: params (dictionary)
+   *   {
+   *     id: 'theId',
+   *     roles: ['role1', 'role2']
+   *   }
+   * Add the params (dictionary) as attributes to the User object, and
+   * additionally add the user id to the object's profile attribute
+   */
+  constructor(params) {
+    Object.entries(params).forEach(([key, value]) => (this[key] = value));
+    this.profile = { ...(this.profile || {}), userId: this.id };
+  }
+
+  /**
+   * Params: token (string)
+   * Verifies the token, then returns the authenticated user's data combined
+   * with the firestore user data matching the id of the authenticated user
+   */
+  static async getUser(token) {
+    try {
+      const user = await auth().verifyIdToken(token);
+
+      const dbUser = await firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get()
+        .then(user => ({ ...user.data(), id: user.id }));
+      return { ...user, ...dbUser };
+    } catch (err) {
+      throw new AuthenticationError(err.message);
     }
+  }
 
-    /**
-     * Params: token (string)
-     * Verifies the token, then returns the authenticated user's data combined
-     * with the firestore user data matching the id of the authenticated user
-     */
-    static async getUser(token) {
-        try {
-            const user = await auth().verifyIdToken(token);
+  /**
+   * Gets a token for a user: TESTING PURPOSES - Uses the Firebase Client-Side methods
+   */
+  static getToken(email, password) {
+    return clientSideApp
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(data => {
+        return data.user.getIdToken().then(token => token);
+      });
+  }
 
-            const dbUser = await firestore()
-                .collection("users")
-                .doc(user.uid)
-                .get()
-                .then(user => ({ ...user.data(), id: user.id }));
-            return { ...user, ...dbUser };
-        } catch (err) {
-            throw new AuthenticationError(err.message);
-        }
-    }
+  /**
+   * Param: roles (array)
+   * Returns true if user has any of the roles
+   */
+  hasOneOfRoles(roles) {
+    // Automatically has the authenticated role if it exists.
+    return roles
+      .concat("authenticated")
+      .reduce(
+        (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
+        false
+      );
+  }
 
-    /**
-     * Gets a token for a user: TESTING PURPOSES - Uses the Firebase Client-Side methods
-     */
-    static getToken(email, password) {
-        return clientSideApp
-            .auth()
-            .signInWithEmailAndPassword(email, password)
-            .then(data => {
-                return data.user.getIdToken().then(token => token);
-            });
-    }
+  changeProfilePicture(picture) {
+    const file = storage()
+      .bucket()
+      .file(`${this.id}/profilePicture`);
 
-    /**
-     * Param: roles (array)
-     * Returns true if user has any of the roles
-     */
-    hasOneOfRoles(roles) {
-        // Automatically has the authenticated role if it exists.
-        return roles
-            .concat("authenticated")
-            .reduce(
-                (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
-                false
-            );
-    }
+    return new Promise((resolve, reject) => {
+      const stream = file.createWriteStream({
+        metadata: { contentType: picture.mimetype },
+        predefinedAcl: "publicRead"
+      });
+      stream.on("error", err => {
+        reject(err);
+      });
+      stream.on("finish", async () => {
+        const userRef = await firestore()
+          .collection("users")
+          .doc(this.id);
 
-    changeProfilePicture(picture) {
-        const file = storage()
-            .bucket()
-            .file(`${this.id}/profilePicture`);
+        const dbUser = await userRef
+          .get()
+          .then(user => ({ ...user.data(), id: user.id }));
 
-        return new Promise((resolve, reject) => {
-            const stream = file.createWriteStream({
-                metadata: { contentType: picture.mimetype },
-                predefinedAcl: "publicRead"
-            });
-            stream.on("error", err => {
-                reject(err);
-            });
-            stream.on("finish", async () => {
-                const userRef = await firestore()
-                    .collection("users")
-                    .doc(this.id);
-
-                const dbUser = await userRef
-                    .get()
-                    .then(user => ({ ...user.data(), id: user.id }));
-
-                userRef.update({
-                    profile: {
-                        ...dbUser.profile,
-                        profilePicture: file.metadata.mediaLink
-                    }
-                });
-                this.profile.profilePicture = file.metadata.mediaLink;
-                resolve(this);
-            });
-            stream.end(picture.buffer);
+        userRef.update({
+          profile: {
+            ...dbUser.profile,
+            profilePicture: file.metadata.mediaLink
+          }
         });
-    }
+        this.profile.profilePicture = file.metadata.mediaLink;
+        resolve(this);
+      });
+      stream.end(picture.buffer);
+    });
+  }
 
-    /**
-     * Should only be used in private circumstances.
-     * Param: uid (string)
-     * Returns the firestore user
-     */
-    static async getUserById(uid) {
-        const dbUser = await firestore()
-            .collection("users")
-            .doc(uid)
-            .get()
-            .then(user => {
-                if (!user.exists) return null;
-                let data = user.data();
-                data.profile.id = uid; // Add the user's ID to the profile object, so that permissions can be checked on self
-                return { ...data, id: uid };
-            })
-            .catch(err => {
-                throw new SyntaxError(err.message);
-            });
-        return dbUser;
-    }
+  /**
+   * Should only be used in private circumstances.
+   * Param: uid (string)
+   * Returns the firestore user
+   */
+  static async getUserById(uid) {
+    const dbUser = await firestore()
+      .collection("users")
+      .doc(uid)
+      .get()
+      .then(user => {
+        if (!user.exists) return null;
+        let data = user.data();
+        data.profile.id = uid; // Add the user's ID to the profile object, so that permissions can be checked on self
+        return { ...data, id: uid };
+      })
+      .catch(err => {
+        throw new SyntaxError(err.message);
+      });
+    return dbUser;
+  }
 
-    /**
-     * Create or Id a user
-     */
-    static async createUser({ id, email, displayName, name }) {
-        const user = await firestore()
-            .collection("users")
-            .doc(id)
-            .set({
-                email,
-                displayName,
-                name,
-                registeredDate: new Date(),
-                classHours: 0,
-                flightHours: 0,
-                badges: [],
-                roles: []
-            });
+  /**
+   * Create or Id a user
+   */
+  static async createUser({ id, email, displayName, name }) {
+    const user = await firestore()
+      .collection("users")
+      .doc(id)
+      .set({
+        email,
+        displayName,
+        name,
+        registeredDate: new Date(),
+        classHours: 0,
+        flightHours: 0,
+        badges: [],
+        roles: []
+      });
 
-        return firestore()
-            .collection("users")
-            .doc(id)
-            .get()
-            .then(res => ({ ...res.data(), id: res.id }));
-    }
+    return firestore()
+      .collection("users")
+      .doc(id)
+      .get()
+      .then(res => ({ ...res.data(), id: res.id }));
+  }
 
-    static async deleteUser(uid) {
-        return firestore()
-            .collection("users")
-            .doc(uid)
-            .delete()
-            .then(() => true)
-            .catch(error => {
-                throw new FirebaseException("Unable to delete your user.");
-            });
-    }
+  static async deleteUser(uid) {
+    return firestore()
+      .collection("users")
+      .doc(uid)
+      .delete()
+      .then(() => true)
+      .catch(error => {
+        throw new FirebaseException("Unable to delete your user.");
+      });
+  }
 };

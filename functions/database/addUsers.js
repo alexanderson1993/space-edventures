@@ -18,12 +18,12 @@ module.exports = function addUsers(db, participants, badgeIds, rankIds) {
           profile: {
             firstName: firstName,
             lastName: lastName,
-              displayName: displayName,
-              birthDate: new Date('10 Oct 2010'),
-              profilePicture: "path/to/my/picture"
+            displayName: displayName,
+            birthDate: new Date("10 Oct 2010"),
+            profilePicture: "path/to/my/picture"
           },
           rankId: rankId,
-          badges: badges,
+          badges: badges
         })
         .then(() => {
           return uid;

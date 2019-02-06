@@ -76,7 +76,7 @@ function configureServer() {
     context: async ({ req }) => {
       const token = (req.headers.authorization || "").replace("Bearer ", "");
       // If you need to test a specific user's graphQL abilities
-        // const token = await User.getToken('participantd@example.com', 'Test1234');
+      // const token = await User.getToken('participantd@example.com', 'Test1234');
 
       if (!token) return { user: null };
 

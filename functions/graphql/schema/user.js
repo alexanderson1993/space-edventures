@@ -58,10 +58,10 @@ module.exports.resolver = {
   },
   // Needs to pass in parent of profile so that value can be checked
   Profile: {
-      age: (profile, args, context) => {
-          let theDate = new Date(profile.birthDate._seconds*1000);
-          return new Date().getFullYear() - theDate.getFullYear();
-      }
+    age: (profile, args, context) => {
+      let theDate = new Date(profile.birthDate._seconds * 1000);
+      return new Date().getFullYear() - theDate.getFullYear();
+    }
   },
   Mutation: {
     /**

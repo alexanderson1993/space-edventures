@@ -9,11 +9,11 @@
 - email
 - registerDate
 - profile
-    - firstName
-    - lastName
-    - displayName _(fake name for directors to see)_
-    - birthDate
-    - profilePicture
+  - firstName
+  - lastName
+  - displayName _(fake name for directors to see)_
+  - birthDate
+  - profilePicture
 - rankId
 - List: Badges _(list of ids)_
 - **REMOVED** _Collection : [Badges] # So that we have the historical view of the mission when they took it_
