@@ -20,7 +20,7 @@ module.exports = function addUsers(db, participants, badgeIds, rankIds) {
           displayName: displayName,
           rankId: rankId,
           badges: badges,
-          age: 14,
+          birthDate: Date('10 Oct 2010'),
           profilePicture: "path/to/my/picture"
         })
         .then(() => {

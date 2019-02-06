@@ -13,7 +13,7 @@
 - displayName _(fake name for directors to see)_
 - rankId
 - List: Badges _(list of ids)_
-- age
+- birthDate
 - profilePicture
 - **REMOVED** _Collection : [Badges] # So that we have the historical view of the mission when they took it_
 - **REMOVED** _Collection : [FlightRecord] ### Should we remove this, since we have the same information on flight record?_
