@@ -1,0 +1,16 @@
+mutation BadgeCreate($name: String!, $image: Upload, $description: String) {
+  missionCreate: badgeCreate(
+    badge: {
+      name: $name
+      image: $image
+      description: $description
+      type: mission
+    }
+  ) {
+    id
+    name
+    description
+    type
+    image
+  }
+}

@@ -9,7 +9,6 @@ import graphQLHelper from "../../../helpers/graphQLHelper";
 
 const EditSimulator = ({ simulator, create, simulatorId }) => {
   const [name, setName] = useState(() => (simulator ? simulator.name : ""));
-  console.log(simulator, name);
   const buttonText = `${create ? "Create" : "Update"} Simulator`;
   return (
     <div>

@@ -1,10 +1,9 @@
 import React from "react";
 import { Query } from "react-apollo";
 import styled from "@emotion/styled";
-import BADGES_QUERY from "../../../queries/badges.graphql";
+import BADGES_QUERY from "./badges.graphql";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Link, Button } from "../../../components";
-
 const ButtonAlign = styled("div")`
   display: flex;
   align-items: center;
@@ -14,7 +13,6 @@ const ButtonAlign = styled("div")`
     margin-bottom: 0;
   }
 `;
-
 const BadgeIndex = props => {
   return (
     <div>

@@ -1,4 +1,8 @@
-const { gql } = require("apollo-server-express");
+const {
+  gql,
+  ForbiddenError,
+  UserInputError
+} = require("apollo-server-express");
 const getCenter = require("../helpers/getCenter");
 const { Badge } = require("../models");
 // We define a schema that encompasses all of the types
@@ -18,7 +22,7 @@ module.exports.schema = gql`
     name: String
     type: BADGE_TYPE
     description: String
-    image: String
+    image: Upload
     flightId: ID
     userId: ID
   }
@@ -61,13 +65,17 @@ module.exports.resolver = {
     badges: async (rootQuery, { type, centerId }, context) => {
       let centerIdValue = centerId;
       if (!centerIdValue) {
-        const center = await getCenter(context.user);
-        if (!center) {
-          throw new UserInputError('"centerId" is a required parameter.');
+        try {
+          const center = await getCenter(context.user);
+          if (!center) {
+            throw new UserInputError('"centerId" is a required parameter.');
+          }
+          centerIdValue = center.id;
+        } catch (err) {
+          null;
         }
-        centerIdValue = center.id;
       }
-      return Badge.getBadges(centerIdValue);
+      return Badge.getBadges(type, centerIdValue);
     },
     badge: (rootQuery, { id }, context) => {
       return Badge.getBadge(id);
@@ -80,14 +88,14 @@ module.exports.resolver = {
     },
     badgeRemove: async (rootQuery, { badgeId }, context) => {
       const center = await getCenter(context.user);
-      const badge = Badge.getBadge(badgeId);
+      const badge = await Badge.getBadge(badgeId);
       if (badge.centerId !== center.id)
         throw new ForbiddenError("Cannot delete a badge you do not own.");
       return badge.delete();
     },
     badgeRename: async (rootQuery, { badgeId, name }, context) => {
       const center = await getCenter(context.user);
-      const badge = Badge.getBadge(badgeId);
+      const badge = await Badge.getBadge(badgeId);
       if (badge.centerId !== center.id)
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.rename(name);
@@ -98,14 +106,14 @@ module.exports.resolver = {
       context
     ) => {
       const center = await getCenter(context.user);
-      const badge = Badge.getBadge(badgeId);
+      const badge = await Badge.getBadge(badgeId);
       if (badge.centerId !== center.id)
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.changeDescription(description);
     },
     badgeChangeImage: async (rootQuery, { badgeId, image }, context) => {
       const center = await getCenter(context.user);
-      const badge = Badge.getBadge(badgeId);
+      const badge = await Badge.getBadge(badgeId);
       if (badge.centerId !== center.id)
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.changeImage(image);

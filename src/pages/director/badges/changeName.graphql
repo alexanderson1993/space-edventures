@@ -1,0 +1,6 @@
+mutation BadgeChangeName($id: ID!, $name: String!) {
+  badgeRename(badgeId: $id, name: $name) {
+    id
+    name
+  }
+}

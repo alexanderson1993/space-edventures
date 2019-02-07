@@ -1,0 +1,6 @@
+mutation BadgeChangeImage($id: ID!, $image: Upload!) {
+  badgeChangeImage(badgeId: $id, image: $image) {
+    id
+    image
+  }
+}
