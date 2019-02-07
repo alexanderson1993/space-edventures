@@ -3,5 +3,6 @@ module.exports = {
   Stripe: require("./Stripe"),
   Center: require("./Center"),
   Simulator: require("./Simulator"),
-  Badge: require("./Badge")
+  Badge: require("./Badge"),
+  BadgeAssignment: require("./BadgeAssignment")
 };

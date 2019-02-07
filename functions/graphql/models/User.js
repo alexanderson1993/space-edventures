@@ -105,6 +105,29 @@ module.exports = class User {
     return dbUser;
   }
 
+  static async assignBadge(userId, badgeId, flightId) {
+    // Get user and check to make sure it's a valid user
+    const badgeMeta = await firestore()
+      .collection("users")
+      .doc(userId)
+      .set(
+        {
+          badges: [
+            {
+              badgeId,
+              flightId,
+              dateAwarded: new Date()
+            }
+          ]
+        },
+        { merge: true }
+      )
+      .catch(() => {
+        false;
+      });
+    return true;
+  }
+
   /**
    * Create or Id a user
    */

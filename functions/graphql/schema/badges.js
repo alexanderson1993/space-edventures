@@ -4,7 +4,7 @@ const {
   UserInputError
 } = require("apollo-server-express");
 const getCenter = require("../helpers/getCenter");
-const { Badge } = require("../models");
+const { Badge, User, BadgeAssignment } = require("../models");
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -14,7 +14,6 @@ module.exports.schema = gql`
     type: BADGE_TYPE
     description: String
     image: String
-    dateAwarded: Date
   }
 
   input BadgeInput {
@@ -23,8 +22,7 @@ module.exports.schema = gql`
     type: BADGE_TYPE
     description: String
     image: Upload
-    flightId: ID
-    userId: ID
+    flightTypeId: ID
   }
 
   # Different types of badges, for categorization
@@ -118,12 +116,29 @@ module.exports.resolver = {
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.changeImage(image);
     },
-    badgeAssign: (rootQuery, { badgeId, flightId, userId }, context) => {
+    badgeAssign: async (rootQuery, { badgeId, flightId, userId }, context) => {
       // Either assign the badge directly, or create an assignment object
+      let user = null;
+      let badge = Badge.getBadge(badgeId);
+      if (typeof userId !== "undefined") {
+        user = await User.getUserById(userId);
+      }
+
+      if (user === null) {
+        // If user does not exist, create assignment object
+        await BadgeAssignment.createAssignment(badgeId, flightId);
+        return badge;
+      } else {
+        // If user does exist, append to that user's badges array
+        await User.assignBadge(user.id, badgeId, flightId);
+        return badge;
+      }
     }
   },
   User: {
-    badges: (user, { type }, context) => {}
+    badges: (user, { type }, context) => {
+      // Return the list of badge objects with the meta data added in (from the user's badges array)
+    }
   },
   Center: {
     badges: (user, { type }, context) => {}
