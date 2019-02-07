@@ -94,7 +94,7 @@ module.exports = class User {
       .doc(uid)
       .get()
       .then(user => {
-          if (!user.exists) return null;
+        if (!user.exists) return null;
         let data = user.data();
         data.profile.id = uid; // Add the user's ID to the profile object, so that permissions can be checked on self
         return { ...data, id: uid };
@@ -106,18 +106,26 @@ module.exports = class User {
   }
 
   static async assignBadge(userId, badgeId, flightId) {
-      // Get user and check to make sure it's a valid user
-      const badgeMeta = await firestore()
-        .collection('users')
-        .doc(userId)
-        .set({ badges: [{
-                badgeId,
-                flightId,
-                dateAwarded: new Date()
-            }]
-        }, {merge: true})
-        .catch(()=>{false})
-        return true;
+    // Get user and check to make sure it's a valid user
+    const badgeMeta = await firestore()
+      .collection("users")
+      .doc(userId)
+      .set(
+        {
+          badges: [
+            {
+              badgeId,
+              flightId,
+              dateAwarded: new Date()
+            }
+          ]
+        },
+        { merge: true }
+      )
+      .catch(() => {
+        false;
+      });
+    return true;
   }
 
   /**
