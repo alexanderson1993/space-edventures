@@ -7,7 +7,7 @@ import "react-image-crop/dist/ReactCrop.css";
 const loadImagePromise = import("blueimp-load-image");
 const ReactCrop = React.lazy(() => import("react-image-crop"));
 
-const ImageUploader = ({ src, onChange = () => {} }) => {
+const ImageUploader = ({ src, onChange = () => {}, noSave }) => {
   const cropDefault = {
     aspect: 1
   };
@@ -39,6 +39,7 @@ const ImageUploader = ({ src, onChange = () => {} }) => {
       setCroppedImage(null);
       setCropping(false);
       setCrop(cropDefault);
+      noSave && onChange(dataUrl);
     });
   };
 
@@ -70,6 +71,7 @@ const ImageUploader = ({ src, onChange = () => {} }) => {
     // As Base64 string
     const image = canvas.toDataURL("image/jpeg");
     setCroppedImage(image);
+    noSave && onChange(image);
   };
 
   return (
@@ -129,6 +131,7 @@ const ImageUploader = ({ src, onChange = () => {} }) => {
       >
         {image && (
           <Button
+            type="button"
             block
             onClick={() => {
               setCropping(!cropping);
@@ -143,6 +146,7 @@ const ImageUploader = ({ src, onChange = () => {} }) => {
         {!cropping && (
           <label htmlFor="image-file-upload">
             <Button
+              type="button"
               block
               onClick={() => {
                 fileRef.current.click();
@@ -159,11 +163,15 @@ const ImageUploader = ({ src, onChange = () => {} }) => {
             />
           </label>
         )}
-        {!cropping && (image || croppedImage) && (
-          <Button block onClick={() => onChange(croppedImage || image)}>
+        {!cropping && (image || croppedImage) && !noSave && (
+          <Button
+            type="button"
+            block
+            onClick={() => onChange(croppedImage || image)}
+          >
             Save Image
           </Button>
-        )}{" "}
+        )}
       </div>
     </div>
   );

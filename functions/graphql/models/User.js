@@ -1,11 +1,6 @@
-const {
-  auth,
-  firestore,
-  storage,
-  clientSideApp
-} = require("../connectors/firebase");
+const { auth, firestore, clientSideApp } = require("../connectors/firebase");
 const { SyntaxError, AuthenticationError } = require("apollo-server-express");
-
+const uploadFile = require("../helpers/uploadFile");
 module.exports = class User {
   /**
    * Param: params (dictionary)
@@ -67,39 +62,25 @@ module.exports = class User {
       );
   }
 
-  changeProfilePicture(picture) {
-    const file = storage()
-      .bucket()
-      .file(`${this.id}/profilePicture`);
+  async changeProfilePicture(picture) {
+    const path = `${this.id}/profilePicture`;
+    const file = await uploadFile(picture, path);
+    const userRef = await firestore()
+      .collection("users")
+      .doc(this.id);
 
-    return new Promise((resolve, reject) => {
-      const stream = file.createWriteStream({
-        metadata: { contentType: picture.mimetype },
-        predefinedAcl: "publicRead"
-      });
-      stream.on("error", err => {
-        reject(err);
-      });
-      stream.on("finish", async () => {
-        const userRef = await firestore()
-          .collection("users")
-          .doc(this.id);
+    const dbUser = await userRef
+      .get()
+      .then(user => ({ ...user.data(), id: user.id }));
 
-        const dbUser = await userRef
-          .get()
-          .then(user => ({ ...user.data(), id: user.id }));
-
-        userRef.update({
-          profile: {
-            ...dbUser.profile,
-            profilePicture: file.metadata.mediaLink
-          }
-        });
-        this.profile.profilePicture = file.metadata.mediaLink;
-        resolve(this);
-      });
-      stream.end(picture.buffer);
+    await userRef.update({
+      profile: {
+        ...dbUser.profile,
+        profilePicture: file.metadata.mediaLink
+      }
     });
+    this.profile.profilePicture = file.metadata.mediaLink;
+    return this;
   }
 
   /**

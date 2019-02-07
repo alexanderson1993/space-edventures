@@ -64,7 +64,6 @@ module.exports = class Center {
           apiToken: uuid.v4()
         });
     } catch (err) {
-      console.log(err);
       throw new UserInputError(`Unable to create center: ${err.message}`);
     }
   }

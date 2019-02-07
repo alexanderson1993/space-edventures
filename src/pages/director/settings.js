@@ -11,7 +11,6 @@ export default () => {
   const { director } = useContext(DirectorContext);
   const [doQuery, setDoQuery] = useState(null);
   const [resetModal, setResetModal] = useState(false);
-  console.log(director);
   return (
     <div>
       <h1>
@@ -57,10 +56,7 @@ export default () => {
           ))}
         </Query>
         <Button onClick={() => setDoQuery(true)}>Show API Token</Button>
-        <Button
-          layer="alert"
-          onClick={() => console.log("Setting REset") || setResetModal(true)}
-        >
+        <Button layer="alert" onClick={() => setResetModal(true)}>
           Reset API Token
         </Button>
         <Mutation mutation={RESET_API_KEY}>

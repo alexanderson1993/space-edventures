@@ -73,10 +73,8 @@ const AuthProvider = ({ children }) => {
           })
           .then(() => {
             // Ignore error if there is a user
-            console.log("Creating User");
             return client.mutate({ mutation: CREATE_USER }).catch(() => {});
-          })
-          .then(res => console.log("Res", res));
+          });
       }
     }
   };

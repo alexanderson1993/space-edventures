@@ -1,0 +1,8 @@
+query Missions {
+  missions: badges(type: mission) {
+    id
+    name
+    description
+    image
+  }
+}
