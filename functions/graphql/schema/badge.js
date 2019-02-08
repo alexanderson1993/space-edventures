@@ -137,7 +137,10 @@ module.exports.resolver = {
   },
   User: {
     badges: (user, { type }, context) => {
-      // Return the list of badge objects with the meta data added in (from the user's badges array)
+      return Promise.all(user.badges.map(badgeMeta => Badge.getBadge(badgeMeta.badgeId)))
+        .then(badges => {
+            return badges.filter(badge => badge.type === (typeof(type) !== 'undefined' ? type : badge.type)); // If type was submitted, only return badges matching the type
+        });
     }
   },
   Center: {
