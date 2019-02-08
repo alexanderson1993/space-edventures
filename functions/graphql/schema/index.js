@@ -1,7 +1,7 @@
 const { makeExecutableSchema, gql } = require("apollo-server-express");
 const { schema: UserSchema, resolver: UserResolver } = require("./user");
 const { schema: ScalarSchema, resolver: ScalarResolver } = require("./scalars");
-const { schema: BadgesSchema, resolver: BadgesResolver } = require("./badges");
+const { schema: BadgesSchema, resolver: BadgesResolver } = require("./badge");
 const { schema: CenterSchema, resolver: CenterResolver } = require("./center");
 const {
   schema: FlightRecordSchema,
