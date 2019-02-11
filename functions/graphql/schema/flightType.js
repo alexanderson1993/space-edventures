@@ -19,6 +19,9 @@ module.exports.schema = gql`
   extend type FlightRecord {
     flightType: FlightType
   }
+  extend type Center {
+    flightTypes: [FlightType] @auth(requires: [director, center])
+  }
 `;
 
 // We define all of the resolvers necessary for
@@ -27,5 +30,24 @@ module.exports.schema = gql`
 module.exports.resolver = {
   FlightRecord: {
     flightType: (flightRecord, args, context) => {}
+  },
+  Center: {
+    flightTypes: (center, args, context) => {
+      // Stub for testing
+      return [
+        {
+          id: "testing-short-flight-id",
+          name: "2.5 Hour Flight",
+          flightHours: 1.5,
+          classHours: 1
+        },
+        {
+          id: "testing-long-flight-id",
+          name: "5 Hour Flight",
+          flightHours: 3.5,
+          classHours: 1.5
+        }
+      ];
+    }
   }
 };
