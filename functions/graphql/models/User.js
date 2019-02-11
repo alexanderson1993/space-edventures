@@ -1,5 +1,5 @@
 const { auth, firestore, clientSideApp } = require("../connectors/firebase");
-const { SyntaxError, AuthenticationError } = require("apollo-server-express");
+const { SyntaxError, AuthenticationError, ApolloError } = require("apollo-server-express");
 const uploadFile = require("../helpers/uploadFile");
 module.exports = class User {
   /**
@@ -105,27 +105,41 @@ module.exports = class User {
     return dbUser;
   }
 
-  static async assignBadge(userId, badgeId, flightId) {
+  /**
+   * Assign a badge to a user
+   * @param {string} userId 
+   * Does not assign the badge if the user already had the badge Id assigned to them
+   */
+  static async assignBadge(userId, badgeMeta) {
+      let {badgeId} = badgeMeta
+      // Specify required parameters
+      if ([typeof(userId), typeof(badgeId)].includes('undefined')) {
+          throw new ApolloError('Attempted to assign badge to user without required meta data');
+      }
     // Get user and check to make sure it's a valid user
-    const badgeMeta = await firestore()
-      .collection("users")
-      .doc(userId)
-      .set(
-        {
-          badges: [
-            {
-              badgeId,
-              flightId,
-              dateAwarded: new Date()
-            }
-          ]
-        },
-        { merge: true }
-      )
-      .catch(() => {
-        false;
-      });
-    return true;
+    // Done in a transaction since we have to read and write all at once
+    let userRef = firestore().collection('users').doc(userId);
+    return await firestore().runTransaction(async (transaction) => {
+        let currentBadges = await transaction.get(userRef).then(user => user.data().badges);
+        // If they don't already have the badge
+        if (!currentBadges.map(badge => badge.badgeId).includes(badgeId)) {
+            return transaction.set(
+                userRef, 
+                {
+                    badges: currentBadges.concat([
+                        {
+                            badgeId,
+                            ...badgeMeta, // Include any other badge meta data
+                            dateAwarded: new Date()
+                        }
+                    ])
+                },
+                { merge: true }
+            );
+        } else {
+            return {isSuccess: false, failureType: 'ALREADY_CLAIMED_BY_USER'};
+        }
+    });
   }
 
   /**
