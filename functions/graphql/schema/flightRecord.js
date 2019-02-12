@@ -19,7 +19,8 @@ module.exports.schema = gql`
   }
   input FlightStationInput {
     name: String! # The name of the station. Required
-    id: ID # The ID of the Space Edventures user
+    badges: [ID]! # The list of badges that the station earned. Includes missions
+    userId: ID # The ID of the Space Edventures user
   }
   extend type Badge {
     flight: FlightRecord
@@ -50,7 +51,13 @@ module.exports.resolver = {
     flightRecords: (rootQuery, args, context) => {}
   },
   Mutation: {
-    flightAssign: (rootQuery, { flightId, userId, stations }, context) => {}
+    flightAssign: (rootQuery, { flightId, userId, stations }, context) => {},
+    flightRecordCreate: (rootQuery, { flightId, flightType, simulators }) => {
+      console.log("Got Flight Record Create:");
+      console.log(flightId);
+      console.log(flightType);
+      console.log(simulators);
+    }
   },
   Badge: {
     flight: (badge, args, context) => {}
