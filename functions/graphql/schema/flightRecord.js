@@ -13,6 +13,14 @@ module.exports.schema = gql`
     # Simulator
     # Center
   }
+  input FlightSimulatorInput {
+    id: ID! # The ID of the Space Edventures simulator
+    stations: [FlightStationInput]
+  }
+  input FlightStationInput {
+    name: String! # The name of the station. Required
+    id: ID # The ID of the Space Edventures user
+  }
   extend type Badge {
     flight: FlightRecord
   }
@@ -21,6 +29,13 @@ module.exports.schema = gql`
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
   }
   extend type Mutation {
+    # Creates the record of the flight
+    # Uses the ID of the flight from Thorium so a flight cannot be recorded twice
+    flightRecordCreate(
+      flightId: ID!
+      flightType: ID!
+      simulators: [FlightSimulatorInput!]!
+    ): FlightRecord
     flightAssign(flightId: ID!, userId: ID, stations: [String]): FlightRecord
   }
   # We can extend other graphQL types using the "extend" keyword.
