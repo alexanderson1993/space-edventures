@@ -136,14 +136,16 @@ module.exports = class User {
                     },
                     { merge: true }
                 );
+
                 return {
-                    isSuccess: true
+                    isSuccess: true,
+                    badgeId: badgeId,
                 }
-            // Otherwise return an error
+                // Otherwise return an error
             } else {
-                return { 
-                    isSuccess: false, 
-                    failureType: 'ALREADY_CLAIMED_BY_USER' 
+                return {
+                    isSuccess: false,
+                    failureType: 'ALREADY_CLAIMED_BY_USER'
                 };
             }
         });
