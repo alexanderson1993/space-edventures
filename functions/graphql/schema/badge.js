@@ -182,29 +182,12 @@ module.exports.resolver = {
       });
     }
   },
+  /**
+   * Get the badges for a specific center, optionally limited by badge type
+   */
   Center: {
-    badges: (user, { type }, context) => {
-      if (type === "mission") {
-        return [
-          {
-            id: "mission-badge",
-            name: "Fallout",
-            type: "mission",
-            description: "A simple weapons test. What could possibly go wrong?",
-            image: ""
-          }
-        ];
-      } else {
-        return [
-          {
-            id: "badge-badge",
-            name: "Phasers Fired",
-            type: "badge",
-            description: "You fired your phasers. Yay!",
-            image: ""
-          }
-        ];
-      }
+    badges: async (center, { type }, context) => {
+      return await Badge.getBadges(type, center.id);
     }
   }
 };

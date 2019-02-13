@@ -34,11 +34,9 @@
 ```graphql
 
 mutation {
-    badgeClaim(token:"dgrszwtzew") {
+    badgeClaim(token:"lgg8plx96z") {
         isSuccess
-    badge {
-        id
-    }
+    badgeId
         failureType
     }
 }
@@ -46,6 +44,12 @@ mutation {
 mutation {
   badgeAssign (badgeId:"2gFkOq4Suoir03olyLm6", flightId:"0LFSd9S3fkbAhRvDHmFV") {
     id
+  }
+}
+
+query {
+  center {
+    badges
   }
 }
 

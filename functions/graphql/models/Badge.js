@@ -34,7 +34,7 @@ module.exports = class Badge {
       ref = ref.where("type", "==", type);
     }
     if (centerId) {
-      ref = ref.where("centerId", "==", centerId);
+      ref = ref.where("spaceCenterId", "==", centerId);
     }
 
     const badges = await ref.get();
