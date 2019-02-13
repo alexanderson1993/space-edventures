@@ -43,14 +43,15 @@ module.exports.schema = gql`
     badgeRename(badgeId: ID!, name: String!): Badge
     badgeChangeDescription(badgeId: ID!, description: String!): Badge
     badgeChangeImage(badgeId: ID!, image: Upload!): Badge
-    badgeAssign(badgeId: ID!, flightId: ID!, userId: ID): Badge @auth(requires: [center, director])
+    badgeAssign(badgeId: ID!, flightId: ID!, userId: ID): Badge
+      @auth(requires: [center, director])
     badgeClaim(token: String!): ClaimResult @auth(requires: [authenticated])
   }
 
   type ClaimResult {
-      isSuccess: Boolean
-      badge: Badge
-      failureType: CLAIM_FAILURE
+    isSuccess: Boolean
+    badge: Badge
+    failureType: CLAIM_FAILURE
   }
 
   enum CLAIM_FAILURE {
@@ -131,7 +132,6 @@ module.exports.resolver = {
             // Either assign the badge directly, or create an assignment object
             let user = null;
             let badge = await Badge.getBadge(badgeId);
-            
             if (typeof userId !== "undefined") {
                 user = await User.getUserById(userId);
             }
@@ -152,23 +152,50 @@ module.exports.resolver = {
          */
         badgeClaim: async (rootQuery, { token }, context) => {
             let badgeAssignment = await BadgeAssignment.getAssignment(token);
-            delete badgeAssignment['id'];
-            let { isSuccess, failureType } = await User.assignBadge(context.user.id, badgeAssignment);
-
-            // If success, delete the assignment object
-
+            delete badgeAssignment["id"];
+            let { isSuccess, failureType } = await User.assignBadge(
+                context.user.id,
+                badgeAssignment
+            );
+            // Delete the badge assignment
             return { isSuccess: isSuccess, failureType: failureType };
         }
     },
     User: {
         badges: (user, { type }, context) => {
-            return Promise.all(user.badges.map(badgeMeta => Badge.getBadge(badgeMeta.badgeId)))
-                .then(badges => {
-                    return badges.filter(badge => badge.type === (typeof (type) !== 'undefined' ? type : badge.type)); // If type was submitted, only return badges matching the type
-                });
+            return Promise.all(
+                user.badges.map(badgeMeta => Badge.getBadge(badgeMeta.badgeId))
+            ).then(badges => {
+                return badges.filter(
+                    badge =>
+                        badge.type === (typeof type !== "undefined" ? type : badge.type)
+                ); // If type was submitted, only return badges matching the type
+            });
         }
     },
     Center: {
-        badges: (user, { type }, context) => { }
+        badges: (user, { type }, context) => {
+            if (type === "mission") {
+                return [
+                    {
+                        id: "mission-badge",
+                        name: "Fallout",
+                        type: "mission",
+                        description: "A simple weapons test. What could possibly go wrong?",
+                        image: ""
+                    }
+                ];
+            } else {
+                return [
+                    {
+                        id: "badge-badge",
+                        name: "Phasers Fired",
+                        type: "badge",
+                        description: "You fired your phasers. Yay!",
+                        image: ""
+                    }
+                ];
+            }
+        }
     }
 };
