@@ -14,7 +14,6 @@
 - [x] Add Stripe CustomerID on space center?
 - [x] Make User schema up-to-date
 - [x] Add CRUD for users
-- [x]
 - [ ] Flight Assignment and flight records
 - [ ] Need to add centerId to badge assignments so that permissions can be checked appropriately
 
@@ -33,13 +32,20 @@
 
 ## GraphQL Queries
 ```graphql
+
 mutation {
-	badgeClaim(token:"dgrszwtzew") {
-		isSuccess
+    badgeClaim(token:"dgrszwtzew") {
+        isSuccess
     badge {
-			id
+        id
     }
-    failureType
+        failureType
+    }
+}
+
+mutation {
+  badgeAssign (badgeId:"2gFkOq4Suoir03olyLm6", flightId:"0LFSd9S3fkbAhRvDHmFV") {
+    id
   }
 }
 
