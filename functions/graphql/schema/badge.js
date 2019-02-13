@@ -131,6 +131,7 @@ module.exports.resolver = {
             // Either assign the badge directly, or create an assignment object
             let user = null;
             let badge = await Badge.getBadge(badgeId);
+            
             if (typeof userId !== "undefined") {
                 user = await User.getUserById(userId);
             }
@@ -153,6 +154,9 @@ module.exports.resolver = {
             let badgeAssignment = await BadgeAssignment.getAssignment(token);
             delete badgeAssignment['id'];
             let { isSuccess, failureType } = await User.assignBadge(context.user.id, badgeAssignment);
+
+            // If success, delete the assignment object
+
             return { isSuccess: isSuccess, failureType: failureType };
         }
     },
