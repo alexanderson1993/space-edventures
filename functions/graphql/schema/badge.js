@@ -154,18 +154,21 @@ module.exports.resolver = {
       let badgeAssignment = await BadgeAssignment.getAssignment(token);
       let badgeMeta = {};
       // Remove the badge assignment id from the meta data, since we don't need to save that to the user's badge array
-      Object.keys(badgeAssignment).map((key) => key !== 'id' ? badgeMeta[key] = badgeAssignment[key] : undefined);
-      let { isSuccess, failureType = undefined, badgeId = undefined } = await User.assignBadge(
-        context.user.id,
-        badgeMeta
+      Object.keys(badgeAssignment).map(key =>
+        key !== "id" ? (badgeMeta[key] = badgeAssignment[key]) : undefined
       );
-      
+      let {
+        isSuccess,
+        failureType = undefined,
+        badgeId = undefined
+      } = await User.assignBadge(context.user.id, badgeMeta);
+
       // Delete the badge assignment if it was successful
       await badgeAssignment.delete();
 
       return {
         isSuccess: isSuccess,
-        badgeId, badgeId,
+        badgeId,
         failureType: failureType
       };
     }
