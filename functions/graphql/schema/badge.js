@@ -130,7 +130,7 @@ module.exports.resolver = {
         badgeAssign: async (rootQuery, { badgeId, flightId, userId }, context) => {
             // Either assign the badge directly, or create an assignment object
             let user = null;
-            let badge = Badge.getBadge(badgeId);
+            let badge = await Badge.getBadge(badgeId);
             if (typeof userId !== "undefined") {
                 user = await User.getUserById(userId);
             }
