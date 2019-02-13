@@ -52,7 +52,18 @@ module.exports = class BadgeAssignment {
   /**
    * Delete the loaded badge assignment (usally after having claimed it to a user)
    */
-  async delete() {}
+  async delete() {
+    console.log(this);
+    console.log(this.id);
+    let isSuccess = false;
+    let deleteAction = await firestore()
+      .collection('badgeAssignments')
+      .doc(this.id)
+      .delete()
+      .then(() => {isSuccess = true})
+      .catch(() => {isSuccess = false});
+    return isSuccess;
+  }
 };
 
 function generateFriendlyToken() {

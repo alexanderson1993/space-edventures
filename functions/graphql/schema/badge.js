@@ -50,7 +50,7 @@ module.exports.schema = gql`
 
   type ClaimResult {
     isSuccess: Boolean
-    badge: Badge
+    badgeId: ID
     failureType: CLAIM_FAILURE
   }
 
@@ -152,12 +152,22 @@ module.exports.resolver = {
      */
     badgeClaim: async (rootQuery, { token }, context) => {
       let badgeAssignment = await BadgeAssignment.getAssignment(token);
-      delete badgeAssignment["id"];
-      let { isSuccess, failureType } = await User.assignBadge(
+      let badgeMeta = {};
+      // Remove the badge assignment id from the meta data, since we don't need to save that to the user's badge array
+      Object.keys(badgeAssignment).map((key) => key !== 'id' ? badgeMeta[key] = badgeAssignment[key] : undefined);
+      let { isSuccess, failureType = undefined, badgeId = undefined } = await User.assignBadge(
         context.user.id,
-        badgeAssignment
+        badgeMeta
       );
-      return { isSuccess: isSuccess, failureType: failureType };
+      
+      // Delete the badge assignment if it was successful
+      await badgeAssignment.delete();
+
+      return {
+        isSuccess: isSuccess,
+        badgeId, badgeId,
+        failureType: failureType
+      };
     }
   },
   User: {
@@ -172,29 +182,12 @@ module.exports.resolver = {
       });
     }
   },
+  /**
+   * Get the badges for a specific center, optionally limited by badge type
+   */
   Center: {
-    badges: (user, { type }, context) => {
-      if (type === "mission") {
-        return [
-          {
-            id: "mission-badge",
-            name: "Fallout",
-            type: "mission",
-            description: "A simple weapons test. What could possibly go wrong?",
-            image: ""
-          }
-        ];
-      } else {
-        return [
-          {
-            id: "badge-badge",
-            name: "Phasers Fired",
-            type: "badge",
-            description: "You fired your phasers. Yay!",
-            image: ""
-          }
-        ];
-      }
+    badges: async (center, { type }, context) => {
+      return await Badge.getBadges(type, center.id);
     }
   }
 };

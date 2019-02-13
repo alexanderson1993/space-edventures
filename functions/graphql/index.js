@@ -76,7 +76,12 @@ function configureServer() {
     context: async ({ req }) => {
       const token = (req.headers.authorization || "").replace("Bearer ", "");
       // If you need to test a specific user's graphQL abilities
+
+      // FOR DEBUGGING, COMMENT OUT IN PRODUCTION
+      // USER
       // const token = await User.getToken('participantd@example.com', 'Test1234');
+      // CENTER
+      // const token = '123456789012345678901234567890123456' // Must be a 36 long string that matches the apiToken object on a center
 
       if (!token) return { user: null };
 

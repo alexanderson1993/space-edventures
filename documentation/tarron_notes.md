@@ -2,33 +2,20 @@
 
 ## Questions
 
-- [ ] In the following code, it looks like each badge will have a "user" property that will return a user. Since we decided to just have one badge and we'll tie that to all the users that have earned it, should we get rid of this?
-- [ ] Since our Functions code doesn't have access to create/delete users, will all that have to be done on the front end? For the firebase user only, not the firestore user.
-- [ ] Profiles don't have the user id on them, making them fail the "self" check in auth.js
+## TODO
 
-##### functions\graphql\schema\user.js
-
-```javascript
-extend type Badge {
-    user: User
-}
-
-  .
-  .
-  .
-
-Badge: {
-    user: (badge, args, context) => {}
-},
-```
+- [ ] Make successful claimBadge return the badge
+- [ ] Delete the badge assignment after successful claiming
+- [ ] Limit centers' permissions on objects that don't directly have the center's ID on the object
 
 ## Working on
 
 - [x] Modify the generate script so that it will tie users to actual firebase users
-- [ ] Add Stripe CustomerID on space center?
+- [x] Add Stripe CustomerID on space center?
 - [x] Make User schema up-to-date
-- [ ] Add CRUD for users
-- [ ]
+- [x] Add CRUD for users
+- [ ] Flight Assignment and flight records
+- [ ] Need to add centerId to badge assignments so that permissions can be checked appropriately
 
 ## Backlog
 
@@ -42,3 +29,28 @@ Badge: {
 
 - firebase serve
 - firebase deploy --only functions
+
+## GraphQL Queries
+```graphql
+
+mutation {
+    badgeClaim(token:"lgg8plx96z") {
+        isSuccess
+    badgeId
+        failureType
+    }
+}
+
+mutation {
+  badgeAssign (badgeId:"2gFkOq4Suoir03olyLm6", flightId:"0LFSd9S3fkbAhRvDHmFV") {
+    id
+  }
+}
+
+query {
+  center {
+    badges
+  }
+}
+
+```
