@@ -1,5 +1,5 @@
 const { gql } = require("apollo-server-express");
-const { FlightRecord } = require('../models');
+const { FlightRecord } = require("../models");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -56,9 +56,12 @@ module.exports.resolver = {
     /**
      * Creates a flight record for the logged in center
      */
-    flightRecordCreate: (rootQuery, { flightId, flightTypeId, simulators }, context) => {
+    flightRecordCreate: (
+      rootQuery,
+      { flightId, flightTypeId, simulators },
+      context
+    ) => {
       // Make sure this center has this flight ID
-
       // Make sure this center has these simulators
     }
   },

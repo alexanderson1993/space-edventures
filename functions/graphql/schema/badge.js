@@ -146,18 +146,20 @@ module.exports.resolver = {
 
         // Check to see if this is a valid badge
         if (!badge) {
-          throw new UserInputError('Invalid Badge Id');
+          throw new UserInputError("Invalid Badge Id");
         }
 
         // Check to see if this center has permissions on this badge/flight
         if (badge.spaceCenterId !== context.center.id) {
-          throw new ForbiddenError('You do not have access to assign this badge');
+          throw new ForbiddenError(
+            "You do not have access to assign this badge"
+          );
         }
-        
+
         if (typeof userId !== "undefined") {
           user = await User.getUserById(userId);
         }
-        
+
         if (user === null) {
           // If user does not exist, create assignment object
           await BadgeAssignment.createAssignment(badgeId, flightId);

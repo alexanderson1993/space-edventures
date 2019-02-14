@@ -29,7 +29,10 @@ module.exports = class Center {
       .get();
 
     if (centers.length > 1) {
-      throw new Error('Multiple space centers found for director: director\'s user id: ' + directorId);
+      throw new Error(
+        "Multiple space centers found for director: director's user id: " +
+          directorId
+      );
     }
 
     return centers.docs[0];

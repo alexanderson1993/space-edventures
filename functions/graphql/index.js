@@ -74,10 +74,9 @@ function configureServer() {
     tracing: process.env.NODE_ENV !== "production",
     uploads: false,
     context: async ({ req }) => {
-      
       // PRODUCTION VERSION
       const token = (req.headers.authorization || "").replace("Bearer ", "");
-      
+
       // If you need to test a specific user's graphQL abilities
       // FOR DEBUGGING, COMMENT OUT IN PRODUCTION
       // USER
@@ -86,7 +85,6 @@ function configureServer() {
       // const token = '123456789012345678901234567890123456' // Must be a 36 long string that matches the apiToken object on a center
       // DIRECTOR
       // const token = await User.getToken('directora@example.com', 'Test1234');
-      
 
       if (!token) return { user: null };
 

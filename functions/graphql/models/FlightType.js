@@ -4,10 +4,10 @@ const { firestore } = require("../connectors/firebase");
 // Class for Querying/Mutating space centers
 // =============================================================================
 
-const collectionName = 'flightTypes';
+const collectionName = "flightTypes";
 
 module.exports = class FlightType {
-  constructor({ id, name, spaceCenterId, classHours, flightHours}) {
+  constructor({ id, name, spaceCenterId, classHours, flightHours }) {
     this.id = id;
     this.name = name;
     this.spaceCenterId = spaceCenterId;
@@ -24,24 +24,26 @@ module.exports = class FlightType {
     if (!flightType.exists) {
       return false;
     }
-    
+
     return new FlightType({ ...flightType.data(), id: flightType.id });
   }
 
   static getFlightTypes(centerId) {
     return firestore()
       .collection(collectionName)
-      .where('spaceCenterId', '==', centerId)
+      .where("spaceCenterId", "==", centerId)
       .get()
-      .then((ref) => {
-        return ref.docs.map((doc) => (new FlightType({ ...doc.data(), id: doc.id})))
+      .then(ref => {
+        return ref.docs.map(
+          doc => new FlightType({ ...doc.data(), id: doc.id })
+        );
       });
   }
 
   static async createFlightType(data) {
     // Make sure data contains the space center id
-    if (typeof(data.spaceCenterId) === 'undefined') {
-      throw new Error('Flight types require a space center id.');
+    if (typeof data.spaceCenterId === "undefined") {
+      throw new Error("Flight types require a space center id.");
     }
 
     let newId = (await firestore()
@@ -49,30 +51,35 @@ module.exports = class FlightType {
       .add(data)).id;
 
     // If successfully added the id
-    if (typeof(newId) === 'undefined') {
-      throw new Error('Unable to add new flight type');
+    if (typeof newId === "undefined") {
+      throw new Error("Unable to add new flight type");
     }
 
-    let newFlightType = await firestore().collection(collectionName).doc(newId).get();
+    let newFlightType = await firestore()
+      .collection(collectionName)
+      .doc(newId)
+      .get();
 
     return new FlightType({ ...newFlightType.data(), id: newFlightType.id });
   }
 
   async editFlightType(newData) {
-    let isSuccess = await firestore().collection(collectionName).doc(this.id).set(newData, {merge: true})
+    let isSuccess = await firestore()
+      .collection(collectionName)
+      .doc(this.id)
+      .set(newData, { merge: true })
       .then(() => true)
       .catch(() => false);
     return isSuccess;
   }
 
   async delete() {
-    let isSuccess = false;
-    await firestore()
+    const isSuccess = await firestore()
       .collection(collectionName)
       .doc(this.id)
       .delete()
-      .then(() => {isSuccess = true})
-      .catch(() => {isSuccess = false});
+      .then(() => true)
+      .catch(() => false);
     return isSuccess;
   }
 };

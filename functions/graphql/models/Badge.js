@@ -42,9 +42,9 @@ module.exports = class Badge {
   }
   static async getBadge(id) {
     const badge = await firestore()
-    .collection("badges")
-    .doc(id)
-    .get();
+      .collection("badges")
+      .doc(id)
+      .get();
 
     // If this isn't an actual badge from the database, return false
     if (!badge.exists) {

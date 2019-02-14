@@ -50,16 +50,15 @@ module.exports = class BadgeAssignment {
   }
 
   /**
-   * Delete the loaded badge assignment (usally after having claimed it to a user)
+   * Delete the loaded badge assignment (usually after having claimed it to a user)
    */
   async delete() {
-    let isSuccess = false;
-    let deleteAction = await firestore()
-      .collection('badgeAssignments')
+    const isSuccess = await firestore()
+      .collection("badgeAssignments")
       .doc(this.id)
       .delete()
-      .then(() => {isSuccess = true})
-      .catch(() => {isSuccess = false});
+      .then(() => true)
+      .catch(() => false);
     return isSuccess;
   }
 };

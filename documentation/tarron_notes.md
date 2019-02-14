@@ -36,54 +36,49 @@
 - firebase deploy --only functions
 
 ## GraphQL Queries
-```graphql
 
+```graphql
 mutation {
-    badgeClaim(token:"lgg8plx96z") {
-        isSuccess
+  badgeClaim(token: "lgg8plx96z") {
+    isSuccess
     badgeId
-        failureType
-    }
+    failureType
+  }
 }
 
 mutation {
-  badgeAssign (badges: [
-    {badgeId:"2gFkOq4Suoir03olyLm6", flightId:"0LFSd9S3fkbAhRvDHmFV"},    
-    {badgeId:"s1xrzMK1vrq9IUDUIFXO", flightId:"0LFSd9S3fkbAhRvDHmFV"}
-  ]) {
+  badgeAssign(
+    badges: [
+      { badgeId: "2gFkOq4Suoir03olyLm6", flightId: "0LFSd9S3fkbAhRvDHmFV" }
+      { badgeId: "s1xrzMK1vrq9IUDUIFXO", flightId: "0LFSd9S3fkbAhRvDHmFV" }
+    ]
+  ) {
     id
     type
   }
 }
 
 {
-	center(id:"iapR2ol0OgMDDBW1IvVf"){
-		badges {
+  center(id: "iapR2ol0OgMDDBW1IvVf") {
+    badges {
       id
     }
   }
 }
 
-
 mutation {
-  flightTypeCreate(data:{
-    name:"Tarron's Test Flight"
-    flightHours:10
-    classHours:20
-  }){
+  flightTypeCreate(
+    data: { name: "Tarron's Test Flight", flightHours: 10, classHours: 20 }
+  ) {
     id
   }
 }
 
-
 mutation {
-  flightTypeDelete(id:"6a3FKK8JF0j9AaboE2fG")
+  flightTypeDelete(id: "6a3FKK8JF0j9AaboE2fG")
 }
 
 mutation {
-  flightTypeEdit(id:"", data: {
-
-  })
+  flightTypeEdit(id: "", data: {})
 }
-
 ```
