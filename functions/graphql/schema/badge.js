@@ -143,7 +143,16 @@ module.exports.resolver = {
       return badges.map(async ({ badgeId, flightId, userId }) => {
         let user = null;
         let badge = await Badge.getBadge(badgeId);
+
         // Check to see if this is a valid badge
+        if (!badge) {
+          throw new UserInputError('Invalid Badge Id');
+        }
+
+        // Check to see if this center has permissions on this badge/flight
+        if (badge.spaceCenterId !== context.center.id) {
+          throw new ForbiddenError('You do not have access to assign this badge');
+        }
         
         if (typeof userId !== "undefined") {
           user = await User.getUserById(userId);
