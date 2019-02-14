@@ -106,8 +106,9 @@ class AuthDirective extends SchemaDirectiveVisitor {
                     (
                         typeof (center) !== 'undefined' &&
                         // Only check if the object has a matching centerId if the object has data (not a mutation)
+                        // Will only only have to be done this way as long as we aren't assigning roles to centers
                         (
-                            (typeof (data.id) === 'undefined' && typeof (data.centerId) === 'undefined') // Case = doesn't have either ID
+                            (typeof (data.id) === 'undefined' && typeof (data.centerId) === 'undefined') // Case = doesn't have either ID. Mutations only have {}, so they'll get caught in this check
                             || (center.id === data.centerId || center.id === data.id) // Case = has one of the id's and it matches the center id from the token
                         )
                     )
@@ -123,12 +124,19 @@ class AuthDirective extends SchemaDirectiveVisitor {
                     // return the normal resolver
                     return resolve.apply(this, args);
                 }
+
+                // =============================================================
+                // Director Permissions
+                // =============================================================
                 if (
-                    requiredRoles.indexOf("director") > -1 &&
-                    typeof (user) !== 'undefined' && user !== null && user.id === data.directorId
+                    requiredRoles.indexOf("director") > -1 
+                    && typeof (user) !== 'undefined'
+                    && user !== null
+                    && user.id === data.directorId
                 ) {
                     return resolve.apply(this, args);
                 }
+
                 if (
                     // the field has required roles and the user does not have one of those roles
                     field._requiredAuthRoles &&

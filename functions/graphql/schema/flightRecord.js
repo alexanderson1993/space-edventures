@@ -1,4 +1,5 @@
 const { gql } = require("apollo-server-express");
+const { FlightRecord } = require('../models');
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -34,9 +35,9 @@ module.exports.schema = gql`
     # Uses the ID of the flight from Thorium so a flight cannot be recorded twice
     flightRecordCreate(
       flightId: ID!
-      flightType: ID!
+      flightTypeId: ID!
       simulators: [FlightSimulatorInput!]!
-    ): FlightRecord
+    ): FlightRecord @auth(requires: [center, director])
     flightAssign(flightId: ID!, userId: ID, stations: [String]): FlightRecord
   }
   # We can extend other graphQL types using the "extend" keyword.
@@ -52,11 +53,13 @@ module.exports.resolver = {
   },
   Mutation: {
     flightAssign: (rootQuery, { flightId, userId, stations }, context) => {},
-    flightRecordCreate: (rootQuery, { flightId, flightType, simulators }) => {
-      console.log("Got Flight Record Create:");
-      console.log(flightId);
-      console.log(flightType);
-      console.log(simulators);
+    /**
+     * Creates a flight record for the logged in center
+     */
+    flightRecordCreate: (rootQuery, { flightId, flightTypeId, simulators }, context) => {
+      // Make sure this center has this flight ID
+
+      // Make sure this center has these simulators
     }
   },
   Badge: {
