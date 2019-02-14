@@ -1,5 +1,5 @@
 mutation CreateUser {
-  userCreate {
+  userCreate(parentEmail: String) {
     id
     email
   }

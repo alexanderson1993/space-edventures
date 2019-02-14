@@ -12,3 +12,4 @@ export { default as Content } from "./Content";
 export { default as Confirm } from "./Confirm";
 export { default as Modal } from "./Modal";
 export { default as ImageUploader } from "./ImageUploader";
+export { default as DatePicker } from "./DatePicker";

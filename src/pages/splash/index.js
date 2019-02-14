@@ -36,7 +36,7 @@ const Splash = () => {
             width: "60vw"
           }}
         >
-          <Link to="/login">
+          <Link to="/login?signUp">
             <Button>Sign Up</Button>
           </Link>
           <Link to="/login">

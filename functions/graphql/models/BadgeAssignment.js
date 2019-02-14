@@ -55,13 +55,12 @@ module.exports = class BadgeAssignment {
   async delete() {
     console.log(this);
     console.log(this.id);
-    let isSuccess = false;
-    let deleteAction = await firestore()
-      .collection('badgeAssignments')
+    let isSuccess = await firestore()
+      .collection("badgeAssignments")
       .doc(this.id)
       .delete()
-      .then(() => {isSuccess = true})
-      .catch(() => {isSuccess = false});
+      .then(() => true)
+      .catch(() => false);
     return isSuccess;
   }
 };

@@ -12,7 +12,7 @@ module.exports.schema = gql`
   }
 
   extend type Mutation {
-    userCreate: User
+    userCreate(birthDate: Date!, parentEmail: String): User
     userDelete: Boolean
     profileEdit(age: Int, name: String, displayName: String): Profile
     userChangeProfilePicture(id: ID, picture: Upload!): User
@@ -21,8 +21,11 @@ module.exports.schema = gql`
   type Profile @auth(requires: [self, admin]) {
     age: Int
     name: String
+    rank: String
     displayName: String
     profilePicture: String
+    flightHours: Float
+    classHours: Float
   }
 
   type User {
@@ -59,16 +62,22 @@ module.exports.resolver = {
   // Needs to pass in parent of profile so that value can be checked
   Profile: {
     age: (profile, args, context) => {
-      let theDate = new Date(profile.birthDate._seconds * 1000);
+      let theDate = profile.birthDate
+        ? new Date(profile.birthDate._seconds * 1000)
+        : new Date();
       return new Date().getFullYear() - theDate.getFullYear();
-    }
+    },
+    flightHours: (profile, args, context) => {
+      console.log(profile);
+    },
+    classHours: (profile, args, context) => {}
   },
   Mutation: {
     /**
      * Create a user in the firestore database for the current GraphQL user
      * If user already exists, just override the information about that user
      */
-    userCreate: async (rootQuery, args, context) => {
+    userCreate: async (rootQuery, { bithDate, parentEmail }, context) => {
       const { user } = context;
       // If there is a user in context, then the authentication user does exist
       if (!user)
@@ -80,7 +89,10 @@ module.exports.resolver = {
         id: user.id,
         displayName: user.email,
         email: user.email,
-        name: user.email
+        name: user.email,
+        parentEmail,
+        birthDate,
+        locked: Boolean(parentEmail)
       });
     },
     userDelete: async (rootQuery, args, context) => {
