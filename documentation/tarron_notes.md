@@ -14,8 +14,11 @@
 - [x] Add Stripe CustomerID on space center?
 - [x] Make User schema up-to-date
 - [x] Add CRUD for users
+- [x] Add ability to assign multiple badges at once
 - [ ] Flight Assignment and flight records
-- [ ] Need to add centerId to badge assignments so that permissions can be checked appropriately
+- [x] Need to add centerId to badge assignments so that permissions can be checked appropriately
+  - [ ] Add secondary checks for access to objects that don't have the space center id on the object
+- [ ] Check to see if valid badge before badge assign
 
 ## Backlog
 
@@ -42,14 +45,22 @@ mutation {
 }
 
 mutation {
-  badgeAssign (badgeId:"2gFkOq4Suoir03olyLm6", flightId:"0LFSd9S3fkbAhRvDHmFV") {
+  badgeAssign (badges: [
+    {badgeId:"2gFkOq4Suoir03olyLm6", flightId:"0LFSd9S3fkbAhRvDHmFV"},    
+    {badgeId:"s1xrzMK1vrq9IUDUIFXO", flightId:"0LFSd9S3fkbAhRvDHmFV"}
+  ]) {
     id
+    type
   }
 }
 
-query {
-  center {
-    badges
+
+
+{
+	center(id:"iapR2ol0OgMDDBW1IvVf"){
+		badges {
+      id
+    }
   }
 }
 
