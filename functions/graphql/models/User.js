@@ -5,6 +5,9 @@ const {
   ApolloError
 } = require("apollo-server-express");
 const uploadFile = require("../helpers/uploadFile");
+const emailTransport = require("../helpers/email");
+const parentVerify = require("../emails/parentVerify");
+
 module.exports = class User {
   /**
    * Param: params (dictionary)
@@ -100,6 +103,7 @@ module.exports = class User {
       .then(user => {
         if (!user.exists) return null;
         let data = user.data();
+        data.profile = data.profile || {};
         data.profile.id = uid; // Add the user's ID to the profile object, so that permissions can be checked on self
         return { ...data, id: uid };
       })
@@ -173,7 +177,6 @@ module.exports = class User {
     parentEmail,
     locked
   }) {
-    // TODO: Properly handle sending emails for parental permission.
     const user = await firestore()
       .collection("users")
       .doc(id)
@@ -190,7 +193,16 @@ module.exports = class User {
         badges: [],
         roles: []
       });
-
+    // TODO: Add a process to delete locked users after 30 days
+    if (parentEmail) {
+      // Handle sending emails for parental permission.
+      const message = await emailTransport.sendMail({
+        from: `"Space EdVentures" hello@spaceedventures.org`,
+        to: parentEmail,
+        subject: "Your Child Registered at SpaceEdVentures.org",
+        html: parentVerify({ id, email })
+      });
+    }
     return firestore()
       .collection("users")
       .doc(id)
