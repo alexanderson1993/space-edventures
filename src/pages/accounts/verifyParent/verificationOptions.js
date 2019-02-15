@@ -26,6 +26,7 @@ const VerificationOptions = ({ user }) => {
         <a
           href="https://www.ftc.gov/tips-advice/business-center/guidance/complying-coppa-frequently-asked-questions#Verifiable%20Parental"
           target="_blank"
+          rel="noopener noreferrer"
         >
           See the FTC's website on COPPA compliance
         </a>{" "}
