@@ -6,7 +6,7 @@ import css from "@emotion/css";
 
 const VerificationOptions = ({ user }) => {
   const verification = user.verification || {};
-  const [whichVerification, setWhichVerification] = useState("photo");
+  const [whichVerification, setWhichVerification] = useState();
 
   if (whichVerification === "payment")
     return (

@@ -7,7 +7,7 @@ import "react-image-crop/dist/ReactCrop.css";
 const loadImagePromise = import("blueimp-load-image");
 const ReactCrop = React.lazy(() => import("react-image-crop"));
 
-const ImageUploader = ({ src, onChange = () => {}, noSave }) => {
+const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
   const cropDefault = {
     aspect: 1
   };
@@ -129,7 +129,7 @@ const ImageUploader = ({ src, onChange = () => {}, noSave }) => {
           justify-content: center;
         `}
       >
-        {image && (
+        {!noCrop && image && (
           <Button
             type="button"
             block

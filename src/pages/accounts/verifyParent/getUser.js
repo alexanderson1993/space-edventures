@@ -8,13 +8,6 @@ import css from "@emotion/css";
 const GetUser = ({ id, children }) => {
   const [birthDate, setBirthDate] = useState(null);
   const [parentEmail, setParentEmail] = useState("");
-  return children({
-    user: {
-      id: "2Tvmpky2CXZlqONPGGSYpE4p5c32",
-      verification: { stripeCustomerId: "asdf" }
-    }
-  });
-  //data.userToVerify });
 
   return (
     <Query

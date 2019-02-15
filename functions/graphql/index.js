@@ -5,16 +5,7 @@ const schema = require("./schema");
 const { User, Center } = require("./models");
 const admin = require("./connectors/firebase");
 const fileMiddleware = require("express-multipart-file-parser");
-
-function getUser(token) {
-  return {
-    id: 1,
-    username: "Test User",
-    profile: { profilePicture: "", age: 5 },
-    roles: ["staff"]
-  };
-}
-
+const { merge } = require("lodash");
 // cors allows our server to accept requests from different origins
 const cors = require("cors");
 
@@ -44,22 +35,19 @@ function configureServer() {
           prev.concat([[pathArr, req.files.find(f => f.fieldname === key)]]),
         []
       );
-      const mapped = filePaths.reduce(
-        (prev, [paths, file]) => ({
-          ...prev,
-          ...paths.reduce(
-            (p, path) => ({
-              ...p,
-              ...path
-                .split(".")
-                .reverse()
-                .reduce((pp, next) => ({ [next]: pp }), file)
-            }),
-            {}
-          )
-        }),
-        {}
-      );
+      const mapped = filePaths.reduce((prev, [paths, file]) => {
+        const reducedPaths = paths.reduce(
+          (p, path) => ({
+            ...p,
+            ...path
+              .split(".")
+              .reverse()
+              .reduce((pp, next) => ({ [next]: pp }), file)
+          }),
+          {}
+        );
+        return merge(prev, reducedPaths);
+      }, {});
       //  "variables.picture"
       req.body = {
         ...ops,

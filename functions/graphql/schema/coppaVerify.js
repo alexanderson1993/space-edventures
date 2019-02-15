@@ -59,14 +59,17 @@ module.exports.resolver = {
         email: user.parentEmail,
         token
       });
-      user.updateVerification({ stripeCustomerId: customer.id });
-      return user;
+      return user.updateVerification({ stripeCustomerId: customer.id });
     },
     verifyWithPhotos: async (
       rootQuery,
       { userId, parentPhoto, idPhoto },
       context
-    ) => {},
+    ) => {
+      const user = new User(await User.getUserById(userId));
+      return user.addVerificationPhotos(parentPhoto, idPhoto);
+    },
+    verifyConfirm: async (rootQuery, { userId }, context) => {},
     verifyValidation: async (rootQuery, { userId, validated }, context) => {}
   }
 };

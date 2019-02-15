@@ -71,14 +71,17 @@ module.exports = class User {
 
   async changeProfilePicture(picture) {
     const path = `${this.id}/profilePicture`;
-    const file = await uploadFile(picture, path);
-    const userRef = await firestore()
+    const fileRef = uploadFile(picture, path);
+    const userRef = firestore()
       .collection("users")
       .doc(this.id);
 
-    const dbUser = await userRef
+    const dbUserRef = userRef
       .get()
       .then(user => ({ ...user.data(), id: user.id }));
+
+    const file = await fileRef;
+    const dbUser = await dbUserRef;
 
     await userRef.update({
       profile: {
@@ -100,6 +103,39 @@ module.exports = class User {
       .then(user => ({ ...user.data(), id: user.id }));
     const oldVerification = dbUser.verification || {};
     const newVerification = { ...oldVerification, ...verification };
+
+    await userRef.update({
+      verification: newVerification
+    });
+    this.verification = newVerification;
+    return this;
+  }
+
+  async addVerificationPhotos(parentPhoto, idPhoto) {
+    const parentPhotoFileRef = uploadFile(
+      parentPhoto,
+      `${this.id}/parentPhoto`
+    );
+    const idPhotoFileRef = uploadFile(idPhoto, `${this.id}/idPhoto`);
+    const userRef = firestore()
+      .collection("users")
+      .doc(this.id);
+
+    const dbUserRef = userRef
+      .get()
+      .then(user => ({ ...user.data(), id: user.id }));
+
+    // Concurrently await the items.
+    const parentPhotoFile = await parentPhotoFileRef;
+    const idPhotoFile = await idPhotoFileRef;
+    const dbUser = await dbUserRef;
+
+    const oldVerification = dbUser.verification || {};
+    const newVerification = {
+      ...oldVerification,
+      parentPhotoUrl: parentPhotoFile.metadata.mediaLink,
+      idPhotoUrl: idPhotoFile.metadata.mediaLink
+    };
 
     await userRef.update({
       verification: newVerification

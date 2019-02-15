@@ -1,0 +1,10 @@
+mutation SetPhotosVerify($id: ID!, $photo: Upload!, $photoId: Upload!) {
+  verifyWithPhotos(userId: $id, parentPhoto: $photo, idPhoto: $photoId) {
+    id
+    verification {
+      stripeCustomerId
+      parentPhotoUrl
+      idPhotoUrl
+    }
+  }
+}
