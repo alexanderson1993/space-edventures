@@ -48,8 +48,13 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   Query: {
-    flightRecord: (rootQuery, args, context) => {},
-    flightRecords: (rootQuery, args, context) => {}
+    flightRecord: (rootQuery, { id }, context) =>
+      FlightRecord.getFlightRecord(id),
+    flightRecords: (
+      rootQuery,
+      { userId = None, centerId = None, simulatorId = None },
+      context
+    ) => {}
   },
   Mutation: {
     flightAssign: (rootQuery, { flightId, userId, stations }, context) => {},
