@@ -53,7 +53,7 @@ module.exports.resolver = {
     // flightType: (flightRecord, args, context) => FlightType.getFlightType(flightRecord.flightTypeId)
     flightType: (flightRecord, args, context) => {
       const flightType = FlightType.getFlightType(flightRecord.flightTypeId);
-      console.log(flightRecord);
+      return flightType;
     }
   },
   Center: {
