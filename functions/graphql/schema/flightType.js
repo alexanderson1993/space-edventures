@@ -20,6 +20,7 @@ module.exports.schema = gql`
   extend type FlightRecord {
     flightType: FlightType
   }
+
   extend type Center {
     flightTypes: [FlightType] @auth(requires: [director, center])
   }
@@ -43,8 +44,17 @@ module.exports.schema = gql`
 // the functionality in this file. These will be
 // deep merged with the other resolvers.
 module.exports.resolver = {
+  Query: {
+    flightType: (rootObj, { id }, context) => FlightType.getFlightType(id),
+    flightTypes: (rootObj, { centerId }, context) =>
+      FlightType.getFlightTypes(centerId)
+  },
   FlightRecord: {
-    flightType: (flightRecord, args, context) => {}
+    // flightType: (flightRecord, args, context) => FlightType.getFlightType(flightRecord.flightTypeId)
+    flightType: (flightRecord, args, context) => {
+      const flightType = FlightType.getFlightType(flightRecord.flightTypeId);
+      console.log(flightRecord);
+    }
   },
   Center: {
     flightTypes: (center, args, context) => {

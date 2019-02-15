@@ -5,5 +5,6 @@ module.exports = {
   Simulator: require("./Simulator"),
   Badge: require("./Badge"),
   BadgeAssignment: require("./BadgeAssignment"),
-  FlightType: require("./FlightType")
+  FlightType: require("./FlightType"),
+  FlightRecord: require("./FlightRecord")
 };

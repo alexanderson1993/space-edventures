@@ -1,7 +1,7 @@
 const { firestore } = require("../connectors/firebase");
 
 // =============================================================================
-// Class for Querying/Mutating space centers
+// Class for Querying/Mutating flight types
 // =============================================================================
 
 const collectionName = "flightTypes";
