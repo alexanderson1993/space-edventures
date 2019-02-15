@@ -4,9 +4,8 @@
 
 ## TODO
 
-- [ ] Make successful claimBadge return the badge
-- [ ] Delete the badge assignment after successful claiming
 - [ ] Limit centers' permissions on objects that don't directly have the center's ID on the object
+  - Existing resolvers might need to have this check added on them
 
 ## Working on
 
@@ -14,8 +13,14 @@
 - [x] Add Stripe CustomerID on space center?
 - [x] Make User schema up-to-date
 - [x] Add CRUD for users
+- [x] Add ability to assign multiple badges at once
+- [x] Need to add centerId to badge assignments so that permissions can be checked appropriately
+  - [x] Add secondary checks for access to objects that don't have the space center id on the object
+- [x] Check to see if valid badge before badge assign
+- [x] Delete the badge assignment after successful claiming
+- [x] Make successful claimBadge return the badge
 - [ ] Flight Assignment and flight records
-- [ ] Need to add centerId to badge assignments so that permissions can be checked appropriately
+  - [x] Build flight type model and graphql schema
 
 ## Backlog
 
@@ -31,26 +36,49 @@
 - firebase deploy --only functions
 
 ## GraphQL Queries
-```graphql
 
+```graphql
 mutation {
-    badgeClaim(token:"lgg8plx96z") {
-        isSuccess
+  badgeClaim(token: "lgg8plx96z") {
+    isSuccess
     badgeId
-        failureType
-    }
+    failureType
+  }
 }
 
 mutation {
-  badgeAssign (badgeId:"2gFkOq4Suoir03olyLm6", flightId:"0LFSd9S3fkbAhRvDHmFV") {
+  badgeAssign(
+    badges: [
+      { badgeId: "2gFkOq4Suoir03olyLm6", flightId: "0LFSd9S3fkbAhRvDHmFV" }
+      { badgeId: "s1xrzMK1vrq9IUDUIFXO", flightId: "0LFSd9S3fkbAhRvDHmFV" }
+    ]
+  ) {
+    id
+    type
+  }
+}
+
+{
+  center(id: "iapR2ol0OgMDDBW1IvVf") {
+    badges {
+      id
+    }
+  }
+}
+
+mutation {
+  flightTypeCreate(
+    data: { name: "Tarron's Test Flight", flightHours: 10, classHours: 20 }
+  ) {
     id
   }
 }
 
-query {
-  center {
-    badges
-  }
+mutation {
+  flightTypeDelete(id: "6a3FKK8JF0j9AaboE2fG")
 }
 
+mutation {
+  flightTypeEdit(id: "", data: {})
+}
 ```

@@ -45,15 +45,21 @@ module.exports = class Badge {
       .collection("badges")
       .doc(id)
       .get();
+
+    // If this isn't an actual badge from the database, return false
+    if (!badge.exists) {
+      return false;
+    }
+
     return new Badge({ ...badge.data(), id: badge.id });
   }
-  constructor({ id, name, type, description, image, centerId }) {
+  constructor({ id, name, type, description, image, spaceCenterId }) {
     this.id = id;
     this.name = name;
     this.type = type;
     this.description = description;
     this.image = image;
-    this.centerId = centerId;
+    this.spaceCenterId = spaceCenterId;
   }
   async rename(name) {
     this.name = name;

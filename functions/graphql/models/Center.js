@@ -13,6 +13,7 @@ module.exports = class Center {
       .get()
       .then(res => res.docs.map(d => ({ ...d.data(), id: d.id })));
   }
+
   static getCenter(id) {
     return firestore()
       .collection("spaceCenters")
@@ -20,6 +21,23 @@ module.exports = class Center {
       .get()
       .then(res => ({ ...res.data(), id: res.id }));
   }
+
+  static async getCenterByDirector(directorId) {
+    const centers = await firestore()
+      .collection("spaceCenters")
+      .where("directorId", "==", directorId)
+      .get();
+
+    if (centers.length > 1) {
+      throw new Error(
+        "Multiple space centers found for director: director's user id: " +
+          directorId
+      );
+    }
+
+    return centers.docs[0];
+  }
+
   static getByApiToken(token) {
     return firestore()
       .collection("spaceCenters")
@@ -68,11 +86,7 @@ module.exports = class Center {
     }
   }
   static async setApiToken(directorId) {
-    const centers = await firestore()
-      .collection("spaceCenters")
-      .where("directorId", "==", directorId)
-      .get();
-    const center = centers.docs[0];
+    const center = await getCenterByDirector(directorId);
     if (!center || !center.exists)
       throw new UserInputError(
         "The current user is not a director of a space center."

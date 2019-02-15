@@ -247,6 +247,7 @@ module.exports = class User {
         badges: [],
         roles: []
       });
+
     // TODO: Add a process to delete locked users after 30 days
     if (parentEmail) {
       // Handle sending emails for parental permission.
@@ -257,6 +258,7 @@ module.exports = class User {
         html: parentVerify({ id, email })
       });
     }
+
     return firestore()
       .collection("users")
       .doc(id)

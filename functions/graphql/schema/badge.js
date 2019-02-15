@@ -43,9 +43,15 @@ module.exports.schema = gql`
     badgeRename(badgeId: ID!, name: String!): Badge
     badgeChangeDescription(badgeId: ID!, description: String!): Badge
     badgeChangeImage(badgeId: ID!, image: Upload!): Badge
-    badgeAssign(badgeId: ID!, flightId: ID!, userId: ID): Badge
+    badgeAssign(badges: [BadgeAssignInput!]!): [Badge]
       @auth(requires: [center, director])
     badgeClaim(token: String!): ClaimResult @auth(requires: [authenticated])
+  }
+
+  input BadgeAssignInput {
+    badgeId: ID!
+    flightId: ID!
+    userId: ID
   }
 
   type ClaimResult {
@@ -128,23 +134,41 @@ module.exports.resolver = {
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.changeImage(image);
     },
-    badgeAssign: async (rootQuery, { badgeId, flightId, userId }, context) => {
+    /**
+     * Supports batch assignment of badges to users
+     */
+    badgeAssign: async (rootQuery, { badges }, context) => {
       // Either assign the badge directly, or create an assignment object
-      let user = null;
-      let badge = await Badge.getBadge(badgeId);
-      if (typeof userId !== "undefined") {
-        user = await User.getUserById(userId);
-      }
 
-      if (user === null) {
-        // If user does not exist, create assignment object
-        await BadgeAssignment.createAssignment(badgeId, flightId);
+      return badges.map(async ({ badgeId, flightId, userId }) => {
+        let user = null;
+        let badge = await Badge.getBadge(badgeId);
+
+        // Check to see if this is a valid badge
+        if (!badge) {
+          throw new UserInputError("Invalid Badge Id");
+        }
+
+        // Check to see if this center has permissions on this badge/flight
+        if (badge.spaceCenterId !== context.center.id) {
+          throw new ForbiddenError(
+            "You do not have access to assign this badge"
+          );
+        }
+
+        if (typeof userId !== "undefined") {
+          user = await User.getUserById(userId);
+        }
+
+        if (user === null) {
+          // If user does not exist, create assignment object
+          await BadgeAssignment.createAssignment(badgeId, flightId);
+        } else {
+          // If user does exist, append to that user's badges array
+          await User.assignBadge(user.id, badgeMeta);
+        }
         return badge;
-      } else {
-        // If user does exist, append to that user's badges array
-        await User.assignBadge(user.id, badgeMeta);
-        return badge;
-      }
+      });
     },
     /**
      * Assign a Badge Assignment object from the database to a user, then remove
