@@ -5,6 +5,7 @@ import { Input, Words, Button, Navigator, DatePicker } from "../../components";
 import AuthContext from "../../helpers/authContext";
 import styled from "@emotion/styled";
 import AnimateContext from "../../helpers/animateContext";
+import validateEmail from "../../helpers/validateEmail";
 
 const Container = styled("div")`
   display: flex;
@@ -21,11 +22,6 @@ const ButtonContainer = styled("div")`
 const Center = styled("div")`
   text-align: center;
 `;
-
-function validateEmail(email) {
-  var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
-}
 
 const Login = ({ signingUp = false, to = "/", location }) => {
   const { login, signUp: signUpMethod, magicLink } = useContext(AuthContext);
@@ -45,7 +41,6 @@ const Login = ({ signingUp = false, to = "/", location }) => {
   useEffect(() => {
     if (!magicLinkAllowed) {
       auth.fetchSignInMethodsForEmail(email).then(function(signInMethods) {
-        console.log(signInMethods);
         if (
           signInMethods.indexOf(
             baseAuth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD

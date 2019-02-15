@@ -90,6 +90,24 @@ module.exports = class User {
     return this;
   }
 
+  async updateVerification(verification = {}) {
+    const userRef = await firestore()
+      .collection("users")
+      .doc(this.id);
+
+    const dbUser = await userRef
+      .get()
+      .then(user => ({ ...user.data(), id: user.id }));
+    const oldVerification = dbUser.verification || {};
+    const newVerification = { ...oldVerification, ...verification };
+
+    await userRef.update({
+      verification: newVerification
+    });
+    this.verification = newVerification;
+    return this;
+  }
+
   /**
    * Should only be used in private circumstances.
    * Param: uid (string)

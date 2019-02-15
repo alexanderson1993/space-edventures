@@ -9,9 +9,6 @@ module.exports.schema = gql`
   extend type Query {
     me: User
     user(id: ID!): User @auth(requires: [self, admin, director])
-    # When verifying an underage user, that user's information can be collected
-    # by the parent by providing the ID, birthDate, and parent's email.
-    userToVerify(id: ID!, birthDate: Date!, parentEmail: String!): User
   }
 
   extend type Mutation {
@@ -60,19 +57,6 @@ module.exports.resolver = {
     me: (_, __, context) => context.user,
     user: (_, { id }, context) => {
       return User.getUserById(id);
-    },
-    userToVerify: async (
-      _,
-      { id, birthDate = new Date(), parentEmail },
-      context
-    ) => {
-      const user = await User.getUserById(id);
-      if (
-        user.parentEmail !== parentEmail ||
-        user.birthDate.toDate().getTime() !== birthDate.getTime()
-      )
-        return null;
-      return user;
     }
   },
   // Needs to pass in parent of profile so that value can be checked
