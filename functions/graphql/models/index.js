@@ -4,5 +4,6 @@ module.exports = {
   Center: require("./Center"),
   Simulator: require("./Simulator"),
   Badge: require("./Badge"),
-  BadgeAssignment: require("./BadgeAssignment")
+  BadgeAssignment: require("./BadgeAssignment"),
+  FlightType: require("./FlightType")
 };

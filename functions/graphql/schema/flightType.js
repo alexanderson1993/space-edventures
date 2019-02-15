@@ -1,4 +1,5 @@
-const { gql } = require("apollo-server-express");
+const { gql, UserInputError } = require("apollo-server-express");
+const { FlightType, Center } = require("../models");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -22,6 +23,20 @@ module.exports.schema = gql`
   extend type Center {
     flightTypes: [FlightType] @auth(requires: [director, center])
   }
+
+  extend type Mutation {
+    flightTypeCreate(data: FlightTypeInput!): FlightType
+      @auth(requires: [director])
+    flightTypeDelete(id: ID!): Boolean @auth(requires: [director])
+    flightTypeEdit(id: ID!, data: FlightTypeInput!): Boolean
+      @auth(requires: [director])
+  }
+
+  input FlightTypeInput {
+    name: String
+    flightHours: Int
+    classHours: Int
+  }
 `;
 
 // We define all of the resolvers necessary for
@@ -33,21 +48,39 @@ module.exports.resolver = {
   },
   Center: {
     flightTypes: (center, args, context) => {
-      // Stub for testing
-      return [
-        {
-          id: "testing-short-flight-id",
-          name: "2.5 Hour Flight",
-          flightHours: 1.5,
-          classHours: 1
-        },
-        {
-          id: "testing-long-flight-id",
-          name: "5 Hour Flight",
-          flightHours: 3.5,
-          classHours: 1.5
+      return FlightType.getFlightTypes(center.id);
+    }
+  },
+  Mutation: {
+    flightTypeCreate: async (rootObj, { data }, context) => {
+      let center = await Center.getCenterByDirector(context.user.id);
+      let existingFlightTypes = await FlightType.getFlightTypes(center.id);
+
+      existingFlightTypes.forEach(obj => {
+        if (obj.name === data.name) {
+          throw new UserInputError(
+            "Flight type already exists for this space center. Flight type id: " +
+              obj.id
+          );
         }
-      ];
+      });
+
+      let flightType = await FlightType.createFlightType({
+        ...data,
+        spaceCenterId: center.id
+      });
+      return flightType;
+    },
+    flightTypeDelete: async (rootObj, { id }, context) => {
+      let flightType = await FlightType.getFlightType(id);
+      return flightType.delete();
+    },
+    flightTypeEdit: async (rootObj, { id, data }, context) => {
+      let flightType = await FlightType.getFlightType(id);
+      if (!flightType) {
+        throw new UserInputError("Invalid Flight Type Id.");
+      }
+      return flightType.editFlightType(data);
     }
   }
 };
