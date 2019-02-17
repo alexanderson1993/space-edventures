@@ -69,7 +69,7 @@ const Profile = () => {
         <Button size="sm">Login</Button>
       </Link>{" "}
       <span style={{ margin: "0 10px" }}>or</span>{" "}
-      <Link to="/login">
+      <Link to="/login?signUp">
         <Button size="sm">Sign Up</Button>
       </Link>
     </div>

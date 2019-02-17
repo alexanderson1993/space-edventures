@@ -5,6 +5,9 @@ const {
   ApolloError
 } = require("apollo-server-express");
 const uploadFile = require("../helpers/uploadFile");
+const emailTransport = require("../helpers/email");
+const parentVerify = require("../emails/parentVerify");
+
 module.exports = class User {
   /**
    * Param: params (dictionary)
@@ -68,14 +71,17 @@ module.exports = class User {
 
   async changeProfilePicture(picture) {
     const path = `${this.id}/profilePicture`;
-    const file = await uploadFile(picture, path);
-    const userRef = await firestore()
+    const fileRef = uploadFile(picture, path);
+    const userRef = firestore()
       .collection("users")
       .doc(this.id);
 
-    const dbUser = await userRef
+    const dbUserRef = userRef
       .get()
       .then(user => ({ ...user.data(), id: user.id }));
+
+    const file = await fileRef;
+    const dbUser = await dbUserRef;
 
     await userRef.update({
       profile: {
@@ -84,6 +90,57 @@ module.exports = class User {
       }
     });
     this.profile.profilePicture = file.metadata.mediaLink;
+    return this;
+  }
+
+  async updateVerification(verification = {}) {
+    const userRef = await firestore()
+      .collection("users")
+      .doc(this.id);
+
+    const dbUser = await userRef
+      .get()
+      .then(user => ({ ...user.data(), id: user.id }));
+    const oldVerification = dbUser.verification || {};
+    const newVerification = { ...oldVerification, ...verification };
+
+    await userRef.update({
+      verification: newVerification
+    });
+    this.verification = newVerification;
+    return this;
+  }
+
+  async addVerificationPhotos(parentPhoto, idPhoto) {
+    const parentPhotoFileRef = uploadFile(
+      parentPhoto,
+      `${this.id}/parentPhoto`
+    );
+    const idPhotoFileRef = uploadFile(idPhoto, `${this.id}/idPhoto`);
+    const userRef = firestore()
+      .collection("users")
+      .doc(this.id);
+
+    const dbUserRef = userRef
+      .get()
+      .then(user => ({ ...user.data(), id: user.id }));
+
+    // Concurrently await the items.
+    const parentPhotoFile = await parentPhotoFileRef;
+    const idPhotoFile = await idPhotoFileRef;
+    const dbUser = await dbUserRef;
+
+    const oldVerification = dbUser.verification || {};
+    const newVerification = {
+      ...oldVerification,
+      parentPhotoUrl: parentPhotoFile.metadata.mediaLink,
+      idPhotoUrl: idPhotoFile.metadata.mediaLink
+    };
+
+    await userRef.update({
+      verification: newVerification
+    });
+    this.verification = newVerification;
     return this;
   }
 
@@ -100,6 +157,7 @@ module.exports = class User {
       .then(user => {
         if (!user.exists) return null;
         let data = user.data();
+        data.profile = data.profile || {};
         data.profile.id = uid; // Add the user's ID to the profile object, so that permissions can be checked on self
         return { ...data, id: uid };
       })
@@ -164,12 +222,23 @@ module.exports = class User {
   /**
    * Create or Id a user
    */
-  static async createUser({ id, email, displayName, name }) {
+  static async createUser({
+    id,
+    email,
+    displayName,
+    name,
+    birthDate,
+    parentEmail,
+    locked
+  }) {
     const user = await firestore()
       .collection("users")
       .doc(id)
       .set({
         email,
+        parentEmail,
+        locked,
+        birthDate,
         displayName,
         name,
         registeredDate: new Date(),
@@ -178,6 +247,17 @@ module.exports = class User {
         badges: [],
         roles: []
       });
+
+    // TODO: Add a process to delete locked users after 30 days
+    if (parentEmail) {
+      // Handle sending emails for parental permission.
+      const message = await emailTransport.sendMail({
+        from: `"Space EdVentures" hello@spaceedventures.org`,
+        to: parentEmail,
+        subject: "Your Child Registered at SpaceEdVentures.org",
+        html: parentVerify({ id, email })
+      });
+    }
 
     return firestore()
       .collection("users")

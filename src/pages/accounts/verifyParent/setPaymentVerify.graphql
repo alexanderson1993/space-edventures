@@ -1,0 +1,10 @@
+mutation SetPaymentVerify($id: ID!, $token: String!) {
+  verifyWithStripeToken(userId: $id, token: $token) {
+    id
+    verification {
+      stripeCustomerId
+      parentPhotoUrl
+      idPhotoUrl
+    }
+  }
+}

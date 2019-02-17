@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import { Router } from "@reach/router";
 import { css } from "@emotion/core";
+import VerifyParent from "./pages/accounts/verifyParent";
 const SentMagicLink = lazy(() => import("./pages/accounts/sentMagicLink"));
 const MagicLinkWithNav = lazy(() => import("./pages/accounts/magicLinkPage"));
 const Splash = lazy(() => import("./pages/splash"));
@@ -23,6 +24,7 @@ const Routes = () => {
       <Splash path="/" />
       <Participant path="/*" />
       <Login path="login" />
+      <VerifyParent path="parentVerify" />
       <SentMagicLink path="sentMagicLink" />
       <MagicLinkWithNav path="magicLink" />
       <GraphQL path="graphql" />

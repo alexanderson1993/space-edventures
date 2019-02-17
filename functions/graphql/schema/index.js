@@ -22,6 +22,10 @@ const {
 } = require("./testing");
 
 const { schema: StripeSchema, resolver: StripeResolver } = require("./stripe");
+const {
+  schema: CoppaVerifySchema,
+  resolver: CoppaVerifyResolver
+} = require("./coppaVerify");
 
 const { schema: directivesSchema, schemaDirectives } = require("./directives");
 
@@ -56,7 +60,8 @@ module.exports = makeExecutableSchema({
     FlightTypeSchema,
     SimulatorSchema,
     TestingSchema,
-    StripeSchema
+    StripeSchema,
+    CoppaVerifySchema
   ].concat(directivesSchema),
   resolvers: merge(
     MainResolver,
@@ -68,7 +73,8 @@ module.exports = makeExecutableSchema({
     FlightTypeResolver,
     SimulatorResolver,
     TestingResolver,
-    StripeResolver
+    StripeResolver,
+    CoppaVerifyResolver
   ),
   schemaDirectives
 });

@@ -1,0 +1,7 @@
+.react-date-picker {
+  display: flex;
+}
+.react-date-picker__wrapper {
+  width: 100%;
+  border: none;
+}

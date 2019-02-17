@@ -75,7 +75,6 @@ exports[`login snapshot 1`] = `
           <div
             class="Sounds(Frame)-root-0-1-8 Sounds(Frame)-root-0-1-26 Sounds(Frame)-exited-0-1-25"
             id="email"
-            value=""
           >
             <div
               class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-28 Sounds(Frame)-borderLeft-0-1-12"
@@ -298,69 +297,6 @@ exports[`login snapshot 1`] = `
                           class="Sounds(Words)-children-0-1-2"
                         >
                           Create Account
-                        </span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="Sounds(Button)-root-0-1-42"
-          style="display: block; text-align: center;"
-          type="button"
-        >
-          <div
-            class="Sounds(Frame)-root-0-1-8 Sounds(Frame)-root-0-1-70 Sounds(Frame)-hover-0-1-21 Sounds(Frame)-exited-0-1-25"
-          >
-            <div
-              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderLeft-0-1-12"
-            />
-            <div
-              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderRight-0-1-13"
-            />
-            <div
-              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderTop-0-1-14"
-            />
-            <div
-              class="Sounds(Frame)-border-0-1-11 Sounds(Frame)-border-0-1-72 Sounds(Frame)-borderBottom-0-1-15"
-            />
-            <div
-              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerLT-0-1-17 Sounds(Frame)-cornerLT-0-1-74"
-            />
-            <div
-              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerLB-0-1-18 Sounds(Frame)-cornerLB-0-1-75"
-            />
-            <div
-              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerRT-0-1-19 Sounds(Frame)-cornerRT-0-1-76"
-            />
-            <div
-              class="Sounds(Frame)-corner-0-1-16 Sounds(Frame)-corner-0-1-73 Sounds(Frame)-cornerRB-0-1-20 Sounds(Frame)-cornerRB-0-1-77"
-            />
-            <div
-              class="Sounds(Frame)-box-0-1-9 Sounds(Frame)-box-0-1-71"
-            >
-              <div
-                class="Sounds(Frame)-children-0-1-10"
-              >
-                <div
-                  class="Highlight-root-0-1-53"
-                >
-                  <div
-                    class="Highlight-children-0-1-55"
-                  >
-                    <button
-                      class="Sounds(Button)-button-0-1-43 Sounds(Button)-button-0-1-69"
-                    >
-                      <span
-                        class="Sounds(Words)-root-0-1-1 Sounds(Words)-root-0-1-79 Sounds(Words)-hide-0-1-5"
-                      >
-                        <span
-                          class="Sounds(Words)-children-0-1-2"
-                        >
-                          Send Magic Link
                         </span>
                       </span>
                     </button>

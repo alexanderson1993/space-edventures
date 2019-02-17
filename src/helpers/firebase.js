@@ -22,3 +22,4 @@ var config = {
 firebase.initializeApp(process.env.REACT_APP_IS_LIVE ? config : betaConfig);
 
 export const auth = firebase.auth();
+export const baseAuth = firebase.auth;
