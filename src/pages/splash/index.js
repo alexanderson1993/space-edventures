@@ -14,9 +14,6 @@ const Splash = () => {
           Join the Space Center community and track your rank!
         </Header>
         <div>
-          <Link to="/imageLoader">Image Loader</Link>
-        </div>
-        <div>
           <Link to="/login">
             <Button>Join Now</Button>
           </Link>

@@ -43,7 +43,7 @@ module.exports.resolver = {
     ) => {
       const user = await User.getUserById(id);
       if (
-        user.parentEmail !== parentEmail ||
+        user.parentEmail.toLowerCase() !== parentEmail.toLowerCase() ||
         user.birthDate.toDate().getTime() !== birthDate.getTime()
       )
         return null;
