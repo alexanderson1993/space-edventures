@@ -124,6 +124,4 @@ module.exports.resolver = {
 
 // TODO add way to get the user from the flight record
 // TODO get badge from flight record
-// TODO get flight records
-// TODO if director is logged in, get add his center to the context
-// TODO Make sure badges exist for the center
+// Assign/claim flight records
