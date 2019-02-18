@@ -26,6 +26,11 @@ module.exports = class Simulator {
       .collection("simulators")
       .doc(id)
       .get();
+
+    if (!simulator.exists) {
+      return false;
+    }
+    
     return new Simulator({ ...simulator.data(), id: simulator.id });
   }
   constructor({ id, name, centerId }) {
