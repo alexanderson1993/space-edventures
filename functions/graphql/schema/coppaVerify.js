@@ -6,6 +6,7 @@ module.exports.schema = gql`
     # When verifying an underage user, that user's information can be collected
     # by the parent by providing the ID, birthDate, and parent's email.
     userToVerify(id: ID!, birthDate: Date!, parentEmail: String!): User
+    usersVerified: [User] @auth(requires: [admin])
   }
 
   extend type Mutation {
@@ -48,6 +49,9 @@ module.exports.resolver = {
       )
         return null;
       return user;
+    },
+    usersVerified: async () => {
+      return User.getUnverifiedUsers();
     }
   },
 
@@ -69,7 +73,13 @@ module.exports.resolver = {
       const user = new User(await User.getUserById(userId));
       return user.addVerificationPhotos(parentPhoto, idPhoto);
     },
-    verifyConfirm: async (rootQuery, { userId }, context) => {},
-    verifyValidation: async (rootQuery, { userId, validated }, context) => {}
+    verifyConfirm: async (rootQuery, { userId }, context) => {
+      const user = new User(await User.getUserById(userId));
+      return user.confirmVerification();
+    },
+    verifyValidation: async (rootQuery, { userId, validated }, context) => {
+      const user = new User(await User.getUserById(userId));
+      return user.verifyValidation(validated);
+    }
   }
 };

@@ -1,0 +1,13 @@
+query GetUnverifiedAccounts {
+  usersVerified {
+    id
+    email
+    registeredDate
+    locked
+    verification {
+      idPhotoUrl
+      parentPhotoUrl
+      stripeCustomerId
+    }
+  }
+}

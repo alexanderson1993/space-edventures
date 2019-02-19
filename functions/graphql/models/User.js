@@ -1,12 +1,22 @@
-const { auth, firestore, clientSideApp } = require("../connectors/firebase");
+const {
+  auth,
+  firestore,
+  storage,
+  clientSideApp
+} = require("../connectors/firebase");
 const {
   SyntaxError,
   AuthenticationError,
+  ValidationError,
   ApolloError
 } = require("apollo-server-express");
+const Stripe = require("./Stripe");
 const uploadFile = require("../helpers/uploadFile");
 const emailTransport = require("../helpers/email");
 const parentVerify = require("../emails/parentVerify");
+const parentConsent = require("../emails/parentConsent");
+const childConsent = require("../emails/childConsent");
+const parentReverify = require("../emails/parentReverify");
 
 module.exports = class User {
   /**
@@ -144,6 +154,91 @@ module.exports = class User {
     return this;
   }
 
+  async confirmVerification() {
+    if (
+      !this.verification ||
+      !this.verification.parentPhotoUrl ||
+      !this.verification.idPhotoUrl ||
+      !this.verification.stripeCustomerId
+    )
+      throw new ValidationError(
+        "Verification steps are not complete. Please complete all verification steps before attempting to complete the verification process."
+      );
+    const userRef = firestore()
+      .collection("users")
+      .doc(this.id);
+
+    // Unlock the user account
+    userRef.update({ locked: false, approved: false });
+
+    // Send an email to the parent informing them
+    // that the verification process is complete.
+    emailTransport.sendMail({
+      from: `"Space EdVentures" hello@spaceedventures.org`,
+      to: this.parentEmail,
+      subject: "We have verified your consent",
+      html: parentConsent()
+    });
+
+    // Send an email to the child telling them that
+    // they can now use the service.
+    emailTransport.sendMail({
+      from: `"Space EdVentures" hello@spaceedventures.org`,
+      to: this.email,
+      subject: "We have verified your account",
+      html: childConsent()
+    });
+
+    return this;
+  }
+
+  async verifyValidation(validated) {
+    const userRef = firestore()
+      .collection("users")
+      .doc(this.id);
+
+    // We should delete all of the information we have collected
+
+    // Delete the files
+    try {
+      const parentPhotoFileRef = storage()
+        .bucket()
+        .file(`${this.id}/parentPhoto`)
+        .delete();
+      const idPhotoFileRef = storage()
+        .bucket()
+        .file(`${this.id}/idPhoto`)
+        .delete();
+      // Run these operations concurrently
+      await parentPhotoFileRef;
+      await idPhotoFileRef;
+      await Stripe.deleteCustomer(this.verification.stripeCustomerId);
+    } catch (_) {
+      // Swallow the error - it probably is because the objects don't exist
+    }
+
+    if (validated) {
+      await userRef.update({ locked: false, approved: true, verification: {} });
+      this.locked = false;
+      this.approved = true;
+    } else {
+      await userRef.update({ locked: true, approved: false, verification: {} });
+      this.locked = true;
+      this.approved = false;
+      // Send an email to the parent informing them
+      // that the verification process needs to be restarted.
+      await emailTransport.sendMail({
+        from: `"Space EdVentures" hello@spaceedventures.org`,
+        to: this.parentEmail,
+        subject: "There was a problem with verifying your consent",
+        html: parentReverify()
+      });
+    }
+
+    this.verification = {};
+
+    return this;
+  }
   /**
    * Should only be used in private circumstances.
    * Param: uid (string)
@@ -275,5 +370,22 @@ module.exports = class User {
       .catch(error => {
         throw new FirebaseException("Unable to delete your user.");
       });
+  }
+
+  static async getUnverifiedUsers() {
+    const lockedUsers = await firestore()
+      .collection("users")
+      .where("locked", "==", false)
+      .where("approved", "==", false)
+      .get();
+    return lockedUsers.docs
+      .map(d => ({ ...d.data(), id: d.id }))
+      .filter(
+        d =>
+          d.verification &&
+          d.verification.parentPhotoUrl &&
+          d.verification.idPhotoUrl &&
+          d.verification.stripeCustomerId
+      );
   }
 };
