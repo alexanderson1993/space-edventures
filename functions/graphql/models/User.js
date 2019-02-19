@@ -250,7 +250,7 @@ module.exports = class User {
       .doc(uid)
       .get()
       .then(user => {
-        if (!user.exists) return null;
+        if (!user.exists) return false;
         let data = user.data();
         data.profile = data.profile || {};
         data.profile.id = uid; // Add the user's ID to the profile object, so that permissions can be checked on self

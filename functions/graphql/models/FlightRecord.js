@@ -1,5 +1,5 @@
 const { firestore } = require("../connectors/firebase");
-
+const tokenGenerator = require("../helpers/tokenGenerator");
 // =============================================================================
 // Class for Querying/Mutating flight records
 // =============================================================================
@@ -11,14 +11,12 @@ module.exports = class FlightRecord {
     id,
     date,
     spaceCenterId,
-    participantId,
     simulatorId,
     flightTypeId
   }) {
     this.id = id;
     this.date = date;
     this.spaceCenterId = spaceCenterId;
-    this.participantId = participantId;
     this.simulatorId = simulatorId;
     this.flightTypeId = flightTypeId;
   }
@@ -36,23 +34,68 @@ module.exports = class FlightRecord {
     return new FlightRecord({ ...flightRecord.data(), id: flightRecord.id });
   }
 
-  static getFlightRecords(userId) {
-    return firestore()
-      .collection(collectionName)
-      .where("participantId", "==", userId)
-      .get()
-      .then(ref => {
-        return ref.docs.map(
-          doc => new FlightRecord({ ...doc.data(), id: doc.id })
+  static getFlightRecords(userId, centerId, simulatorId) {
+    let matchingRecords = firestore().collection(collectionName)
+    
+    if (typeof(centerId) !== 'undefined') {
+      matchingRecords = matchingRecords.where("spaceCenterId", "==", centerId);
+    }
+      
+    // return Promise.all(
+    return matchingRecords.get()
+    .then(ref => {
+      return ref.docs.map(
+        doc => {
+          return new FlightRecord({ ...doc.data(), id: doc.id })
+        }
+      );
+    })
+    .then((results) => {
+      return results.filter((result) => {
+        let matchesSim = (typeof(simulatorId) !== 'undefined' ? result.simulatorId === simulatorId : true);
+        let matchesUser = (typeof(userId) !== 'undefined' 
+          ? result.stations.reduce(
+            (accumulator, currentValue)=>(accumulator || currentValue.userId === userId), false
+          ) 
+          : true
         );
-      });
+        return (matchesSim && matchesUser);
+      })
+    })
   }
 
-  static async createFlightRecord(data) {
+  static async createFlightRecord(centerId, thoriumFlightId, flightTypeId, simulators) {
     // Make sure the required properties are provided, and the related objects exist
-    // if (typeof data.spaceCenterId === "undefined") {
-    //   throw new Error("Flight types require a space center id.");
-    // }
+    if (typeof centerId === "undefined") {
+      throw new Error("Flight records require a space center id.");
+    }
+
+    
+    // Build out the simulators in a way for firestore to recognize it
+    let simulatorInput = simulators.map(
+      sim => ({id: sim.id, stations: sim.stations.map(
+        (station)=>{
+          let stationData = {name: station.name, badges: station.badges};
+
+          // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
+          if (typeof(station.userId) !== 'undefined') {
+            stationData.userId = station.userId;
+          } else {
+            stationData.token = tokenGenerator();
+          }
+
+          return stationData;
+        }
+      )})
+    );
+
+    let data = {
+      spaceCenterId: centerId,
+      thoriumFlightId: thoriumFlightId,
+      flightTypeId: flightTypeId,
+      simulatorInput: simulatorInput,
+      date: new Date() // Set the record to be the current datetime
+    };
 
     let newId = (await firestore()
       .collection(collectionName)

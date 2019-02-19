@@ -21,3 +21,4 @@
   and connect with people. Discounts?
 - Some way to subscribe to text/email notifications about messages or content,
   or crew joining their group
+- Officers log (entries sent from Thorium)

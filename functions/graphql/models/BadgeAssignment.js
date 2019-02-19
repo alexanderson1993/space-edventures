@@ -1,5 +1,6 @@
 const { firestore } = require("../connectors/firebase");
 const { ApolloError } = require("apollo-server-express");
+const tokenGenerator = require("../helpers/tokenGenerator");
 // =============================================================================
 // Class for Querying/Mutating Assignments
 // =============================================================================
@@ -19,7 +20,7 @@ module.exports = class BadgeAssignment {
         badgeId,
         flightRecordId,
         dateAwarded: new Date(),
-        token: generateFriendlyToken()
+        token: tokenGenerator()
       });
 
     return assignmentData;
@@ -62,13 +63,3 @@ module.exports = class BadgeAssignment {
     return isSuccess;
   }
 };
-
-function generateFriendlyToken() {
-  var length = 10,
-    charset = "abcdefghijklmnopqrstuvwxyz0123456789",
-    retVal = "";
-  for (var i = 0, n = charset.length; i < length; ++i) {
-    retVal += charset.charAt(Math.floor(Math.random() * n));
-  }
-  return retVal;
-}
