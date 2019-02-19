@@ -7,13 +7,7 @@ const tokenGenerator = require("../helpers/tokenGenerator");
 const collectionName = "flightRecords";
 
 module.exports = class FlightRecord {
-  constructor({
-    id,
-    date,
-    spaceCenterId,
-    simulatorId,
-    flightTypeId
-  }) {
+  constructor({ id, date, spaceCenterId, simulatorId, flightTypeId }) {
     this.id = id;
     this.date = date;
     this.spaceCenterId = spaceCenterId;
@@ -35,59 +29,66 @@ module.exports = class FlightRecord {
   }
 
   static getFlightRecords(userId, centerId, simulatorId) {
-    let matchingRecords = firestore().collection(collectionName)
-    
-    if (typeof(centerId) !== 'undefined') {
+    let matchingRecords = firestore().collection(collectionName);
+
+    if (typeof centerId !== "undefined") {
       matchingRecords = matchingRecords.where("spaceCenterId", "==", centerId);
     }
-      
+
     // return Promise.all(
-    return matchingRecords.get()
-    .then(ref => {
-      return ref.docs.map(
-        doc => {
-          return new FlightRecord({ ...doc.data(), id: doc.id })
-        }
-      );
-    })
-    .then((results) => {
-      return results.filter((result) => {
-        let matchesSim = (typeof(simulatorId) !== 'undefined' ? result.simulatorId === simulatorId : true);
-        let matchesUser = (typeof(userId) !== 'undefined' 
-          ? result.stations.reduce(
-            (accumulator, currentValue)=>(accumulator || currentValue.userId === userId), false
-          ) 
-          : true
-        );
-        return (matchesSim && matchesUser);
+    return matchingRecords
+      .get()
+      .then(ref => {
+        return ref.docs.map(doc => {
+          return new FlightRecord({ ...doc.data(), id: doc.id });
+        });
       })
-    })
+      .then(results => {
+        return results.filter(result => {
+          let matchesSim =
+            typeof simulatorId !== "undefined"
+              ? result.simulatorId === simulatorId
+              : true;
+          let matchesUser =
+            typeof userId !== "undefined"
+              ? result.stations.reduce(
+                  (accumulator, currentValue) =>
+                    accumulator || currentValue.userId === userId,
+                  false
+                )
+              : true;
+          return matchesSim && matchesUser;
+        });
+      });
   }
 
-  static async createFlightRecord(centerId, thoriumFlightId, flightTypeId, simulators) {
+  static async createFlightRecord(
+    centerId,
+    thoriumFlightId,
+    flightTypeId,
+    simulators
+  ) {
     // Make sure the required properties are provided, and the related objects exist
     if (typeof centerId === "undefined") {
       throw new Error("Flight records require a space center id.");
     }
 
-    
     // Build out the simulators in a way for firestore to recognize it
-    let simulatorInput = simulators.map(
-      sim => ({id: sim.id, stations: sim.stations.map(
-        (station)=>{
-          let stationData = {name: station.name, badges: station.badges};
+    let simulatorInput = simulators.map(sim => ({
+      id: sim.id,
+      stations: sim.stations.map(station => {
+        let stationData = { name: station.name, badges: station.badges };
 
-          // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
-          if (typeof(station.userId) !== 'undefined') {
-            stationData.userId = station.userId;
-          } else {
-            stationData.token = tokenGenerator();
-          }
-
-          return stationData;
+        // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
+        if (typeof station.userId !== "undefined") {
+          stationData.userId = station.userId;
+        } else {
+          stationData.token = tokenGenerator();
         }
-      )})
-    );
+
+        return stationData;
+      })
+    }));
 
     let data = {
       spaceCenterId: centerId,

@@ -83,18 +83,22 @@ mutation {
 }
 
 mutation {
-  flightRecordCreate(thoriumFlightId:"tarrontest",flightTypeId:"B34b963R6IOUdREeglqQ",simulators:[
-    {
-      id:"4sQ4jMVAXR0ZpjxTGrLN"
-    	stations:[{
-      	name:"Weapons"
-        badges:[
-          "2gFkOq4Suoir03olyLm6"
+  flightRecordCreate(
+    thoriumFlightId: "tarrontest"
+    flightTypeId: "B34b963R6IOUdREeglqQ"
+    simulators: [
+      {
+        id: "4sQ4jMVAXR0ZpjxTGrLN"
+        stations: [
+          {
+            name: "Weapons"
+            badges: ["2gFkOq4Suoir03olyLm6"]
+            userId: "he isn't real"
+          }
         ]
-        userId:"he isn't real"
-      }]
-    }
-  ]) {
+      }
+    ]
+  ) {
     id
   }
 }
