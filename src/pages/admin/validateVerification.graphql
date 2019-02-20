@@ -1,0 +1,6 @@
+mutation ValidateVerification($userId: ID!, $validated: Boolean!) {
+  verifyValidation(userId: $userId, validated: $validated) {
+    id
+    locked
+  }
+}

@@ -9,18 +9,9 @@
 
 ## Working on
 
-- [x] Modify the generate script so that it will tie users to actual firebase users
-- [x] Add Stripe CustomerID on space center?
-- [x] Make User schema up-to-date
-- [x] Add CRUD for users
-- [x] Add ability to assign multiple badges at once
-- [x] Need to add centerId to badge assignments so that permissions can be checked appropriately
-  - [x] Add secondary checks for access to objects that don't have the space center id on the object
-- [x] Check to see if valid badge before badge assign
-- [x] Delete the badge assignment after successful claiming
-- [x] Make successful claimBadge return the badge
 - [ ] Flight Assignment and flight records
-  - [x] Build flight type model and graphql schema
+  - [ ] From user, get flight records
+    - [ ] In order for this to be more straight forward, I am thinking of storing the link on the user object
 
 ## Backlog
 
@@ -83,18 +74,28 @@ mutation {
 }
 
 mutation {
-  flightRecordCreate(thoriumFlightId:"tarrontest",flightTypeId:"B34b963R6IOUdREeglqQ",simulators:[
-    {
-      id:"4sQ4jMVAXR0ZpjxTGrLN"
-    	stations:[{
-      	name:"Weapons"
-        badges:[
-          "2gFkOq4Suoir03olyLm6"
+  flightRecordCreate(
+    thoriumFlightId: "tarrontest"
+    flightTypeId: "B34b963R6IOUdREeglqQ"
+    simulators: [
+      {
+        id: "4sQ4jMVAXR0ZpjxTGrLN"
+        stations: [
+          {
+            name: "Weapons"
+            badges: ["2gFkOq4Suoir03olyLm6"]
+            userId: "he isn't real"
+          }
         ]
-        userId:"he isn't real"
-      }]
-    }
-  ]) {
+      }
+    ]
+  ) {
+    id
+  }
+}
+
+{
+  flightRecords(centerId: "iapR2ol0OgMDDBW1IvVf") {
     id
   }
 }

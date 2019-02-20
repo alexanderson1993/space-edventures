@@ -1,6 +1,6 @@
 # User Frontend Ideas
 
-- Class activities and learning oportunities
+- Class activities and learning opportunities
 - Portal/link to other space centers
 - List of possible missions, simulators, space centers, and stations that the
   participant has done and what they can still do
@@ -8,6 +8,7 @@
 - Starfleet Database with library entries about the universe, spaceships,
   aliens, missions, etc. Include actual curriculum points. One separate portal
   for each universe - Star Trek, Farpoint, etc
+  - Characters encountered during the missions.
 - Social feature - invite friends to a list, send them messages in the app, see
   updates on what recent missions their friends have done, include photo uploads
 - a "Post-to-Facebook" type feature where they can post a blurb and image to

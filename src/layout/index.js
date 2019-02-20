@@ -14,9 +14,13 @@ import {
 import AnimateContext from "../helpers/animateContext";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
+import { Link } from "../components";
 
-const Center = styled("div")`
-  text-align: center;
+const FooterContent = styled("div")`
+  width: 960px;
+  max-width: 80%;
+  display: flex;
+  justify-content: space-around;
 `;
 
 const resources = {
@@ -89,15 +93,15 @@ class ArwesContainer extends Component {
             }
             pattern={isAdmin ? adminResources.pattern : resources.pattern}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100vh"
-              }}
+            <Content
+              css={css`
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+              `}
             >
               <Header show={show} />
-              <Content
+              <div
                 css={css`
                   flex: 1;
                   display: flex;
@@ -105,11 +109,17 @@ class ArwesContainer extends Component {
                 `}
               >
                 {children}
-              </Content>
+              </div>
               <Footer animate>
-                <Center>Copyright © 2018</Center>
+                <FooterContent>
+                  <span>
+                    <Link to="/privacyPolicy">Privacy Policy</Link> |{" "}
+                    <Link to="/termsOfService">Terms of Service</Link>
+                  </span>
+                  <span>Copyright © 2018</span>
+                </FooterContent>
               </Footer>
-            </div>
+            </Content>
           </Arwes>
         </>
       </AnimateContext.Provider>

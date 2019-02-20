@@ -1,0 +1,6 @@
+mutation CompleteVerify($userId: ID!) {
+  verifyConfirm(userId: $userId) {
+    id
+    locked
+  }
+}

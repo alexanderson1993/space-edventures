@@ -34,7 +34,7 @@ module.exports.schema = gql`
     username: String @auth(requires: [self])
     profile: Profile
     registeredDate: Date
-
+    locked: Boolean
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
     roles: [String]

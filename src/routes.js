@@ -5,10 +5,14 @@ import VerifyParent from "./pages/accounts/verifyParent";
 const SentMagicLink = lazy(() => import("./pages/accounts/sentMagicLink"));
 const MagicLinkWithNav = lazy(() => import("./pages/accounts/magicLinkPage"));
 const Splash = lazy(() => import("./pages/splash"));
-const Admin = lazy(() => import("./pages/director"));
+const Director = lazy(() => import("./pages/director"));
+const Admin = lazy(() => import("./pages/admin"));
 const Login = lazy(() => import("./pages/accounts/login"));
 const Participant = lazy(() => import("./pages/participant"));
 const Staff = lazy(() => import("./pages/staff"));
+
+const PrivacyPolicy = lazy(() => import("./pages/support/privacy"));
+const TermsOfService = lazy(() => import("./pages/support/tos"));
 
 const Routes = () => {
   return (
@@ -26,8 +30,11 @@ const Routes = () => {
       <VerifyParent path="parentVerify" />
       <SentMagicLink path="sentMagicLink" />
       <MagicLinkWithNav path="magicLink" />
-      <Admin path="/director/*" />
       <Staff path="/staff/*" />
+      <Director path="/director/*" />
+      <Admin path="/admin/*" />
+      <PrivacyPolicy path="privacyPolicy" />
+      <TermsOfService path="termsOfService" />
     </Router>
   );
 };

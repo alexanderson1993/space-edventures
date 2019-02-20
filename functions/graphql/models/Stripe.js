@@ -41,6 +41,14 @@ module.exports = class Stripe {
   }
 
   /**
+   * Param id
+   * Return Promise(boolean)
+   */
+  static deleteCustomer(id) {
+    return stripe.customers.del(id);
+  }
+
+  /**
    * Params customerId (string), planId(string), trial (bool)
    * Returns Promise(subscription create event)
    */
