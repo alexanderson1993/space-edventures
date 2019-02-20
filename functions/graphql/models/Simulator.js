@@ -30,7 +30,7 @@ module.exports = class Simulator {
     if (!simulator.exists) {
       return false;
     }
-    
+
     return new Simulator({ ...simulator.data(), id: simulator.id });
   }
   constructor({ id, name, centerId }) {

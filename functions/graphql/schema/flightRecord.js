@@ -1,5 +1,11 @@
 const { gql, UserInputError } = require("apollo-server-express");
-const { FlightRecord, FlightType, Simulator, Badge, User } = require("../models");
+const {
+  FlightRecord,
+  FlightType,
+  Simulator,
+  Badge,
+  User
+} = require("../models");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -55,25 +61,29 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   Query: {
-    flightRecord: (rootQuery, { id }, context) => FlightRecord.getFlightRecord(id),
-    flightRecords: (rootQuery, { userId, centerId, simulatorId }, context) => FlightRecord.getFlightRecords(userId, centerId, simulatorId)
+    flightRecord: (rootQuery, { id }, context) =>
+      FlightRecord.getFlightRecord(id),
+    flightRecords: (rootQuery, { userId, centerId, simulatorId }, context) =>
+      FlightRecord.getFlightRecords(userId, centerId, simulatorId)
   },
   Mutation: {
     /**
      * Assign a flight record to a user, or create a flight assignment object if the user id is not specified
      */
-    flightAssign: (rootQuery, { flightId, userId, stations }, context) => {
-
-    },
+    flightAssign: (rootQuery, { flightId, userId, stations }, context) => {},
 
     /**
      * Creates a flight record for the logged in center
      */
-    flightRecordCreate: async ( rootQuery, { thoriumFlightId, flightTypeId, simulators }, context) => {
+    flightRecordCreate: async (
+      rootQuery,
+      { thoriumFlightId, flightTypeId, simulators },
+      context
+    ) => {
       // Make sure this center has this flight type ID
       let flightType = await FlightType.getFlightType(flightTypeId);
       if (!flightType) {
-        throw new UserInputError('Invalid flight type id provided.');
+        throw new UserInputError("Invalid flight type id provided.");
       }
 
       // Get the center id (if this is a director and not a center)
@@ -81,7 +91,7 @@ module.exports.resolver = {
       if (!centerIdValue) {
         const center = await getCenter(context.user);
         if (!center) {
-          throw new UserInputError('No Valid center found for user or token.');
+          throw new UserInputError("No Valid center found for user or token.");
         }
         centerIdValue = center.id;
       }
@@ -90,35 +100,46 @@ module.exports.resolver = {
       let simulator;
       let badge;
       let user;
-      await Promise.all(simulators.map(async(sim) => {
-        simulator = await Simulator.getSimulator(sim.id);
-        if (!simulator || simulator.centerId !== centerIdValue) {
-          throw new UserInputError('Invalid simulator id provided');
-        }
-        await Promise.all(sim.stations.map(async (station) => {
-          // Make sure the center has these badges
-          await Promise.all(station.badges.map(async(badgeId) => {
-            badge = await Badge.getBadge(badgeId);
-            if (!badge) {
-              throw new UserInputError('Invalid badge id provided');
-            }
-          }));
-
-          // Make sure these users exist, and assign tokens if not
-          user = await User.getUserById(station.userId);
-          if (station.userId === 'undefined' || !user) {
-            // Add a token to the simulator station, and remove the invalid user id
-            delete station.userId;
+      await Promise.all(
+        simulators.map(async sim => {
+          simulator = await Simulator.getSimulator(sim.id);
+          if (!simulator || simulator.centerId !== centerIdValue) {
+            throw new UserInputError("Invalid simulator id provided");
           }
-        }));
-      }));
+          await Promise.all(
+            sim.stations.map(async station => {
+              // Make sure the center has these badges
+              await Promise.all(
+                station.badges.map(async badgeId => {
+                  badge = await Badge.getBadge(badgeId);
+                  if (!badge) {
+                    throw new UserInputError("Invalid badge id provided");
+                  }
+                })
+              );
+
+              // Make sure these users exist, and assign tokens if not
+              user = await User.getUserById(station.userId);
+              if (station.userId === "undefined" || !user) {
+                // Add a token to the simulator station, and remove the invalid user id
+                delete station.userId;
+              }
+            })
+          );
+        })
+      );
 
       // Create the flight record object and include the simulator/station information
-      return FlightRecord.createFlightRecord(centerIdValue, thoriumFlightId, flightTypeId, simulators);
+      return FlightRecord.createFlightRecord(
+        centerIdValue,
+        thoriumFlightId,
+        flightTypeId,
+        simulators
+      );
     }
   },
   Badge: {
-    flight: (badge, args, context) => { }
+    flight: (badge, args, context) => {}
   }
 };
 

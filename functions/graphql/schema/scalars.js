@@ -22,12 +22,10 @@ module.exports.resolver = {
     name: "Date",
     description: "Date custom scalar type",
     parseValue(value) {
-      console.log("parseValue", value);
       return new Date(value); // value from the client
     },
     serialize(value) {
       // Parse firestore dates
-      console.log("serialized", value);
       if (value.toDate) return value.toDate().getTime();
       if (typeof value === "number") return value;
       return value.getTime(); // value sent to the client

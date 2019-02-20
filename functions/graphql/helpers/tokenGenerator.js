@@ -6,4 +6,4 @@ module.exports = () => {
     retVal += charset.charAt(Math.floor(Math.random() * n));
   }
   return retVal;
-}
+};
