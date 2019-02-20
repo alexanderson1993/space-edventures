@@ -1,5 +1,6 @@
 const { gql, UserInputError } = require("apollo-server-express");
 const { FlightType, Center } = require("../models");
+const getCenter = require("../helpers/getCenter");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -46,8 +47,21 @@ module.exports.schema = gql`
 module.exports.resolver = {
   Query: {
     flightType: (rootObj, { id }, context) => FlightType.getFlightType(id),
-    flightTypes: (rootObj, { centerId }, context) =>
-      FlightType.getFlightTypes(centerId)
+    flightTypes: async (rootObj, { centerId }, context) => {
+      let centerIdValue = centerId;
+      if (!centerIdValue) {
+        try {
+          const center = await getCenter(context.user);
+          if (!center) {
+            throw new UserInputError('"centerId" is a required parameter.');
+          }
+          centerIdValue = center.id;
+        } catch (err) {
+          null;
+        }
+      }
+      FlightType.getFlightTypes(centerIdValue);
+    }
   },
   FlightRecord: {
     // flightType: (flightRecord, args, context) => FlightType.getFlightType(flightRecord.flightTypeId)

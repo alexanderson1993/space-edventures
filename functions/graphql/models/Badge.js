@@ -53,6 +53,14 @@ module.exports = class Badge {
 
     return new Badge({ ...badge.data(), id: badge.id });
   }
+  static async badgeCount(centerId, type) {
+    const docs = await firestore()
+      .collection("simulators")
+      .where("spaceCenterId", "==", centerId)
+      .where("type", "==", type)
+      .get();
+    return docs.size;
+  }
   constructor({ id, name, type, description, image, spaceCenterId }) {
     this.id = id;
     this.name = name;

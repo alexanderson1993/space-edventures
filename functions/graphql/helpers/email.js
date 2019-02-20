@@ -15,8 +15,6 @@ let transporter =
 transporter.verify(error => {
   if (error) {
     console.log(error);
-  } else {
-    console.log("Server is ready to send email messages");
   }
 });
 

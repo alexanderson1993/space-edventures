@@ -30,8 +30,15 @@ module.exports = class Simulator {
     if (!simulator.exists) {
       return false;
     }
-    
+
     return new Simulator({ ...simulator.data(), id: simulator.id });
+  }
+  static async centerCount(centerId) {
+    const docs = await firestore()
+      .collection("simulators")
+      .where("centerId", "==", centerId)
+      .get();
+    return docs.size;
   }
   constructor({ id, name, centerId }) {
     this.id = id;

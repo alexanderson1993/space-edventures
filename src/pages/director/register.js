@@ -50,7 +50,6 @@ const Register = () => {
     planId: null
   });
   const [error, setError] = useState(null);
-  const [registering, setRegistering] = useState(false);
   const runDispatch = e => {
     if (error && e.target.name === error.field) setError(null);
     dispatch({ name: e.target.name, value: e.target.value });
@@ -75,126 +74,110 @@ const Register = () => {
         field: "email",
         message: "Please enter a valid email address."
       });
-    setRegistering(true);
-    action({ variables: { ...state, token: state.token.id } })
-      .then(() => {
-        navigate("./dashboard");
-      })
-      .catch(() => {
-        setRegistering(false);
-      });
+    action({ variables: { ...state, token: state.token.id } }).then(() => {
+      navigate("./director");
+    });
   };
-  if (registering)
-    return (
-      <Container>
-        <Loading animate />
-      </Container>
-    );
   return (
-    <Container>
-      <h2>Before continuing, you must register your Space Center.</h2>
-      <Navigator>
-        {navigate => (
-          <Form>
-            <Spacer>
-              <label>Name of Space Center: </label>
-              <Input
-                block
-                required
-                type="text"
-                name={"name"}
-                value={state.name}
-                onChange={runDispatch}
-              />
-              {error && error.field === "name" && <Error {...error} />}
-            </Spacer>
-            <Spacer>
-              <label>Website: </label>
-              <Input
-                block
-                required
-                type="url"
-                name={"website"}
-                value={state.website}
-                onChange={runDispatch}
-              />
-            </Spacer>
-            <Spacer>
-              <label>Contact Email: </label>
-              <Input
-                block
-                required
-                type="email"
-                name={"email"}
-                value={state.email}
-                onChange={runDispatch}
-              />
-              {error && error.field === "email" && <Error {...error} />}
-            </Spacer>
-            <Spacer>
-              <label>Payment Method: </label>
+    <Mutation mutation={CREATE_CENTER}>
+      {(action, { loading, error }) =>
+        loading ? (
+          <Loading animate />
+        ) : (
+          <Container>
+            <h2>Before continuing, you must register your Space Center.</h2>
+            <Navigator>
+              {navigate => (
+                <Form>
+                  <Spacer>
+                    <label>Name of Space Center: </label>
+                    <Input
+                      block
+                      required
+                      type="text"
+                      name={"name"}
+                      value={state.name}
+                      onChange={runDispatch}
+                    />
+                    {error && error.field === "name" && <Error {...error} />}
+                  </Spacer>
+                  <Spacer>
+                    <label>Website: </label>
+                    <Input
+                      block
+                      required
+                      type="url"
+                      name={"website"}
+                      value={state.website}
+                      onChange={runDispatch}
+                    />
+                  </Spacer>
+                  <Spacer>
+                    <label>Contact Email: </label>
+                    <Input
+                      block
+                      required
+                      type="email"
+                      name={"email"}
+                      value={state.email}
+                      onChange={runDispatch}
+                    />
+                    {error && error.field === "email" && <Error {...error} />}
+                  </Spacer>
+                  <Spacer>
+                    <label>Payment Method: </label>
 
-              {state.token ? (
-                <div>
-                  <h4
-                    css={css`
-                      text-align: center;
-                    `}
-                  >
-                    <Words>Payment Method Accepted</Words>
-                  </h4>
-                  <Button
-                    block
-                    onClick={() => dispatch({ name: "token", value: null })}
-                  >
-                    Enter Different Payment
-                  </Button>
-                </div>
-              ) : (
-                <PaymentEntry
-                  setToken={({ token }) =>
-                    dispatch({ name: "token", value: token })
-                  }
-                />
-              )}
-              {error && error.field === "token" && <Error {...error} />}
-            </Spacer>
-            <Spacer>
-              <Query query={STRIPE_PLANS}>
-                {graphQLHelper(({ stripe: { plans } }) => {
-                  if (plans.length === 1) {
-                    if (state.planId !== plans[0].id) {
-                      dispatch({ name: "planId", value: plans[0].id });
-                    }
-                    return (
-                      <p>
-                        You will be subscribed to the {plans[0].nickname} plan,
-                        billed ${plans[0].amount / 100} every{" "}
-                        {plans[0].interval_count === 1
-                          ? ""
-                          : `${plans[0].interval_count} `}
-                        {plans[0].interval} with a {plans[0].trial_period_days}{" "}
-                        day trial.
-                      </p>
-                    );
-                  }
-                  return <div />;
-                })}
-              </Query>
-            </Spacer>
-            <Spacer>
-              <Mutation mutation={CREATE_CENTER}>
-                {(action, { loading, error }) =>
-                  loading ? (
-                    <Loading animate />
-                  ) : error ? (
-                    <Blockquote>
-                      {(() => {
-                        const message = `Error: ${error.message}`;
-                        return <Words>{message}</Words>;
-                      })()}
-                    </Blockquote>
-                  ) : (
+                    {state.token ? (
+                      <div>
+                        <h4
+                          css={css`
+                            text-align: center;
+                          `}
+                        >
+                          <Words>Payment Method Accepted</Words>
+                        </h4>
+                        <Button
+                          block
+                          onClick={() =>
+                            dispatch({ name: "token", value: null })
+                          }
+                        >
+                          Enter Different Payment
+                        </Button>
+                      </div>
+                    ) : (
+                      <PaymentEntry
+                        setToken={({ token }) =>
+                          dispatch({ name: "token", value: token })
+                        }
+                      />
+                    )}
+                    {error && error.field === "token" && <Error {...error} />}
+                  </Spacer>
+                  <Spacer>
+                    <Query query={STRIPE_PLANS}>
+                      {graphQLHelper(({ stripe: { plans } }) => {
+                        if (plans.length === 1) {
+                          if (state.planId !== plans[0].id) {
+                            dispatch({ name: "planId", value: plans[0].id });
+                          }
+                          return (
+                            <p>
+                              You will be subscribed to the {plans[0].nickname}{" "}
+                              plan, billed ${plans[0].amount / 100} every{" "}
+                              {plans[0].interval_count === 1
+                                ? ""
+                                : `${plans[0].interval_count} `}
+                              {plans[0].interval} with a{" "}
+                              {plans[0].trial_period_days} day trial.
+                            </p>
+                          );
+                        }
+                        return <div />;
+                      })}
+                    </Query>
+                  </Spacer>
+                  <Spacer>
                     <Button
                       block
                       type="button"
@@ -203,14 +186,22 @@ const Register = () => {
                     >
                       Register
                     </Button>
-                  )
-                }
-              </Mutation>
-            </Spacer>
-          </Form>
-        )}
-      </Navigator>
-    </Container>
+                  </Spacer>
+                  {error && (
+                    <Blockquote layer="alert">
+                      {(() => {
+                        const message = `Error: ${error.message}`;
+                        return <Words>{message}</Words>;
+                      })()}
+                    </Blockquote>
+                  )}
+                </Form>
+              )}
+            </Navigator>
+          </Container>
+        )
+      }
+    </Mutation>
   );
 };
 export default Register;

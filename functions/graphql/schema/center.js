@@ -10,9 +10,11 @@ module.exports.schema = gql`
     id: ID!
     name: String
     description: String
+    imageUrl: String
     registeredDate: Date
     website: String
-    email: String @auth(requires: [center])
+    email: String
+
     apiToken: String @auth(requires: [director])
   }
 

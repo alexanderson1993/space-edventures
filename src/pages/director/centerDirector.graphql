@@ -4,6 +4,12 @@ query CenterDirector {
     center {
       id
       name
+      description
+      imageUrl
+      website
+      simulatorCount
+      badgeCount
+      missionCount
       stripeCustomer {
         email
         subscriptions {
