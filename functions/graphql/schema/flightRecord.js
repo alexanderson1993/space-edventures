@@ -6,6 +6,7 @@ const {
   Badge,
   User
 } = require("../models");
+const getCenter = require("../helpers/getCenter")
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -17,7 +18,6 @@ module.exports.schema = gql`
 
     # There are several properties added through extension:
     # Flight Type
-    # User
     # Simulator
     # Center
   }
@@ -51,7 +51,7 @@ module.exports.schema = gql`
       simulators: [FlightSimulatorInput!]!
     ): FlightRecord @auth(requires: [center, director])
 
-    flightAssign(flightId: ID!, userId: ID, stations: [String]): FlightRecord
+    flightClaim(token: String!): FlightRecord @auth(requires: [authenticated])
   }
   # We can extend other graphQL types using the "extend" keyword.
 `;
@@ -68,9 +68,18 @@ module.exports.resolver = {
   },
   Mutation: {
     /**
-     * Assign a flight record to a user, or create a flight assignment object if the user id is not specified
+     * Assign a flight record to a user, based on the token. Assign to currently authentiated graphql user
      */
-    flightAssign: (rootQuery, { flightId, userId, stations }, context) => {},
+    flightClaim: async (rootQuery, { token }, context) => {
+      // User id of currently logged in user to claim the token
+      let flightRecord = await FlightRecord.getFlightRecordByToken(token);
+
+      if (!flightRecord) {
+        throw new UserInputError("No flight records were found for this token.");
+      }
+      
+      return flightRecord.claim(context.user.id);
+    },
 
     /**
      * Creates a flight record for the logged in center
@@ -85,9 +94,15 @@ module.exports.resolver = {
       if (!flightType) {
         throw new UserInputError("Invalid flight type id provided.");
       }
+      
+      // Make sure this flight record doesn't already exist
+      let flightRecord = await FlightRecord.getFlightTypeByThoriumId(thoriumFlightId);
+      if (flightRecord) {
+        throw new UserInputError("This Thorium flight already exists in the system.");
+      }
 
       // Get the center id (if this is a director and not a center)
-      let centerIdValue = context.center.id;
+      let centerIdValue = typeof(context.center) !== "undefined" ? context.center.id : null;
       if (!centerIdValue) {
         const center = await getCenter(context.user);
         if (!center) {
@@ -143,6 +158,4 @@ module.exports.resolver = {
   }
 };
 
-// TODO add way to get the user from the flight record
-// TODO get badge from flight record
 // Assign/claim flight records
