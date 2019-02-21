@@ -37,6 +37,10 @@ module.exports.schema = gql`
     flight: FlightRecord
   }
 
+  extend type User {
+    flights: [FlightRecord] @auth(requires: [authenticated])
+  }
+
   extend type Query {
     flightRecord(id: ID!): FlightRecord
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
@@ -96,7 +100,7 @@ module.exports.resolver = {
       }
       
       // Make sure this flight record doesn't already exist
-      let flightRecord = await FlightRecord.getFlightTypeByThoriumId(thoriumFlightId);
+      let flightRecord = await FlightRecord.getFlightRecordByThoriumId(thoriumFlightId);
       if (flightRecord) {
         throw new UserInputError("This Thorium flight already exists in the system.");
       }
@@ -155,6 +159,12 @@ module.exports.resolver = {
   },
   Badge: {
     flight: (badge, args, context) => {}
+  },
+
+  User: {
+    flights: (user, args, context) => { 
+      return FlightRecord.getFlightRecordsByUser(user.id);
+    }
   }
 };
 
