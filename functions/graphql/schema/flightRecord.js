@@ -18,7 +18,7 @@ module.exports.schema = gql`
 
     # There are several properties added through extension:
     # Flight Type
-    # Simulator
+    # Simulators
     # Center
   }
 

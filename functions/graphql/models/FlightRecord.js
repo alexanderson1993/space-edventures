@@ -139,7 +139,6 @@ module.exports = class FlightRecord {
 
   static async getFlightRecordsByUser (userId) {
     let allFlightRecords = await firestore().collection(collectionName).get().then(ref => ref.docs);
-
     let matchingDocs = allFlightRecords
       // Filter down to just records that have the token
       .filter(doc => doc.data().simulators
@@ -154,7 +153,11 @@ module.exports = class FlightRecord {
       // Map the filtered results to flight record objects
       .map(doc => new FlightRecord({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
+        // Only include the simulators or stations that the user is on
+        // simulators: doc.data().simulators.map(
+
+        // )
       }))
     return matchingDocs;
   }
