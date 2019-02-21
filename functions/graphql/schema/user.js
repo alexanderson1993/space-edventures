@@ -37,6 +37,7 @@ module.exports.schema = gql`
     locked: Boolean
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
+    # flights
     roles: [String]
   }
 

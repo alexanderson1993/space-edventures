@@ -130,11 +130,36 @@ module.exports = class FlightRecord {
    * Return the flight record based on the throium flight id
    * @param {str} thoriumFlightId 
    */
-  static async getFlightTypeByThoriumId(thoriumFlightId) {
+  static async getFlightRecordByThoriumId(thoriumFlightId) {
     return firestore().collection(collectionName)
       .where("thoriumFlightId", "==", thoriumFlightId)
       .get()
       .then(ref => (ref.docs.length > 0 ? new FlightRecord({...ref.docs[0].data(), id: ref.docs[0].id}) : false));
+  }
+
+  static async getFlightRecordsByUser (userId) {
+    let allFlightRecords = await firestore().collection(collectionName).get().then(ref => ref.docs);
+    let matchingDocs = allFlightRecords
+      // Filter down to just records that have the token
+      .filter(doc => doc.data().simulators
+        .reduce(
+          (prev,simulator) => simulator.stations
+            .reduce(
+              (prev, next) => (prev = (typeof(next.userId) !== "undefined" && next.userId === userId) || prev), false
+            )
+          ,false
+        )
+      )
+      // Map the filtered results to flight record objects
+      .map(doc => new FlightRecord({
+        id: doc.id,
+        ...doc.data(),
+        // Only include the simulators or stations that the user is on
+        // simulators: doc.data().simulators.map(
+
+        // )
+      }))
+    return matchingDocs;
   }
 
   /**
@@ -188,9 +213,6 @@ module.exports = class FlightRecord {
         redeemingToken: token
       }))
     return matchingDoc[0];
-    // return allFlightRecords.docs.map(
-    //   (doc) => doc.data().
-    // );
   }
 
   async editFlightRecord(newData) {

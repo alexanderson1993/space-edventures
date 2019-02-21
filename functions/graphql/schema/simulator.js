@@ -12,6 +12,12 @@ module.exports.schema = gql`
   type Simulator {
     id: ID!
     name: String
+    stations: [Station!]
+  }
+
+  type Station {
+    badges: [ID]
+    name: String!
   }
 
   # We can extend other graphQL types using the "extend" keyword.
@@ -29,7 +35,7 @@ module.exports.schema = gql`
     simulators: [Simulator]
   }
   extend type FlightRecord {
-    simulator: Simulator
+    simulators: [Simulator]
   }
 `;
 
@@ -76,7 +82,18 @@ module.exports.resolver = {
     }
   },
   FlightRecord: {
-    simulator: (flightRecord, args, context) => {}
+    // Add the name and stations to the simulator object
+    simulators: (flightRecord, args, context) => {
+      console.log(flightRecord.simulators);
+      return flightRecord.simulators.map(async sim => {
+        let simulator = await Simulator.getSimulator(sim.id);
+        console.log(sim);
+        return ({
+          ...sim,
+          ...simulator
+        })
+      });
+    }
   },
   Center: {
     simulators: (center, args, context) => {
