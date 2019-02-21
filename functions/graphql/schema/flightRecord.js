@@ -56,6 +56,8 @@ module.exports.schema = gql`
     ): FlightRecord @auth(requires: [center, director])
 
     flightClaim(token: String!): FlightRecord @auth(requires: [authenticated])
+
+    flightDelete(id: ID!): Boolean @auth(requires: [director])
   }
   # We can extend other graphQL types using the "extend" keyword.
 `;
@@ -155,6 +157,21 @@ module.exports.resolver = {
         flightTypeId,
         simulators
       );
+    }, // End flight record create
+    flightDelete: async (rootObj, { id }, context) => {
+      let flightRecord = await FlightRecord.getFlightRecord(id);
+
+      // Make sure they have permissions for this flight record
+      // console.log(flightRecord);
+      let center = await getCenter(context.user);
+      
+      console.log(center.id);
+      console.log(flightRecord.spaceCenterId);
+      if (flightRecord.spaceCenterId !== center.id) {
+        throw new UserInputError("Insufficient permissions");
+      }
+      
+      return flightRecord.delete();
     }
   },
   Badge: {
