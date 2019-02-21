@@ -57,6 +57,14 @@ module.exports.schema = gql`
 
     flightClaim(token: String!): FlightRecord @auth(requires: [authenticated])
 
+    flightEdit(
+      id: ID!
+      thoriumFlightId: ID
+      date: Date
+      flightTypeId: ID
+      simulators: [FlightSimulatorInput]
+    ): FlightRecord @auth(requires: [director])
+
     flightDelete(id: ID!): Boolean @auth(requires: [director])
   }
   # We can extend other graphQL types using the "extend" keyword.
