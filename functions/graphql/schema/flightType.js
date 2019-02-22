@@ -94,7 +94,7 @@ module.exports.resolver = {
 
       let flightType = await FlightType.createFlightType({
         ...data,
-        spaceCenterId: center.id
+        spaceCenterId: centerId
       });
       return flightType;
     },
