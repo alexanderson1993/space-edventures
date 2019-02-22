@@ -48,8 +48,8 @@ class ArwesContainer extends Component {
     this.state = {
       show: false,
       loaded: false,
-      hide: () => this.setState({ show: false }),
-      reveal: () => this.setState({ show: true })
+      hide: () => null, //this.setState({ show: false }),
+      reveal: () => null //this.setState({ show: true })
     };
   }
 

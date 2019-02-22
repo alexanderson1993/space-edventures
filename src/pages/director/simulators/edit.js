@@ -20,7 +20,18 @@ const EditSimulator = ({ simulator, create, simulatorId }) => {
         {navigate => (
           <Mutation mutation={RENAME_SIMULATOR}>
             {(renameSim, { loading: loading1 }) => (
-              <Mutation mutation={CREATE_SIMULATOR}>
+              <Mutation
+                mutation={CREATE_SIMULATOR}
+                update={(cache, { data: { simulatorCreate } }) => {
+                  const { simulators } = cache.readQuery({
+                    query: SIMULATORS_QUERY
+                  });
+                  cache.writeQuery({
+                    query: SIMULATORS_QUERY,
+                    data: { simulators: simulators.concat([simulatorCreate]) }
+                  });
+                }}
+              >
                 {(createSim, { loading: loading2 }) =>
                   loading1 || loading2 ? (
                     <Loading animate />

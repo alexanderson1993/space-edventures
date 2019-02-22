@@ -95,4 +95,9 @@ module.exports = class Center {
     center.ref.update({ apiToken });
     return { ...center.data(), apiToken, id: center.id };
   }
+  constructor(params) {}
+  async updateName() {}
+  async updateDescription() {}
+  async updateWebsite() {}
+  async updateImage() {}
 };

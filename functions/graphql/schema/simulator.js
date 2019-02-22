@@ -51,7 +51,6 @@ module.exports.resolver = {
         }
         centerIdValue = center.id;
       }
-      console.log(centerIdValue);
       return Simulator.getSimulators(centerIdValue);
     }
   },

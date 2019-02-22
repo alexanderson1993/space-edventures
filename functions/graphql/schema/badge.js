@@ -90,7 +90,7 @@ module.exports.resolver = {
           }
           centerIdValue = center.id;
         } catch (err) {
-          null;
+          throw new UserInputError(err);
         }
       }
       return Badge.getBadges(type, centerIdValue);

@@ -162,8 +162,8 @@ module.exports = class FlightRecord {
               ) {
                 delete station.token;
                 station.userId = userId;
-                return station;
               }
+              return station;
             })
           }))
         },

@@ -67,9 +67,7 @@ module.exports.resolver = {
         : new Date();
       return new Date().getFullYear() - theDate.getFullYear();
     },
-    flightHours: (profile, args, context) => {
-      console.log(profile);
-    },
+    flightHours: (profile, args, context) => {},
     classHours: (profile, args, context) => {}
   },
   Mutation: {

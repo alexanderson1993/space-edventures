@@ -1,0 +1,5 @@
+mutation UpdateDescription {
+  badgeChangeDescription(badgeId: "1", description: "1") {
+    id
+  }
+}

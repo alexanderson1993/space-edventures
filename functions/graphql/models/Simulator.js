@@ -12,7 +12,7 @@ module.exports = class Simulator {
         name,
         centerId
       });
-    return new Simulator(simulatorData);
+    return new Simulator({ id: simulatorData.id, name });
   }
   static async getSimulators(centerId) {
     const simulators = await firestore()

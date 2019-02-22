@@ -33,6 +33,14 @@ module.exports.schema = gql`
       planId: String!
     ): Center @auth(requires: [authenticated])
     centerSetApiToken: Center
+    centerUpdateName(centerId: ID!, name: String!): Center
+      @auth(requires: [director])
+    centerUpdateDescription(centerId: ID!, description: String!): Center
+      @auth(requires: [director])
+    centerUpdateWebsite(centerId: ID!, website: String!): Center
+      @auth(requires: [director])
+    centerUpdateImage(centerId: ID!, image: Upload!): Center
+      @auth(requires: [director])
   }
 
   extend type FlightType {
@@ -62,6 +70,30 @@ module.exports.resolver = {
     },
     centerSetApiToken: (rootQuery, args, context) => {
       return Center.setApiToken(context.user.id);
+    },
+    centerUpdateName: (rootQuery, { centerId, name }, context) => {
+      const center = new Center(Center.getCenter(centerId));
+      center.updateName(name);
+      return center;
+    },
+    centerUpdateDescription: (
+      rootQuery,
+      { centerId, description },
+      context
+    ) => {
+      const center = new Center(Center.getCenter(centerId));
+      center.updateDescription(description);
+      return center;
+    },
+    centerUpdateWebsite: (rootQuery, { centerId, website }, context) => {
+      const center = new Center(Center.getCenter(centerId));
+      center.updateWebsite(website);
+      return center;
+    },
+    centerUpdateImage: (rootQuery, { centerId, image }, context) => {
+      const center = new Center(Center.getCenter(centerId));
+      center.updateImage(image);
+      return center;
     }
   },
   FlightType: {

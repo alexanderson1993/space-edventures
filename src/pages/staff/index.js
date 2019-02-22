@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React from "react";
 import { Router } from "@reach/router";
 import { Link, Words, Content } from "../../components";
 
