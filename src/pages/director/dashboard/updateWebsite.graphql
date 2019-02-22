@@ -1,0 +1,8 @@
+mutation UpdateWebsite($centerId: ID!, $website: String!) {
+  centerUpdateWebsite(centerId: $centerId, website: $website) {
+    id
+    name
+    description
+    website
+  }
+}

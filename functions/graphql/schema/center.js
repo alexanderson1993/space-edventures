@@ -71,28 +71,28 @@ module.exports.resolver = {
     centerSetApiToken: (rootQuery, args, context) => {
       return Center.setApiToken(context.user.id);
     },
-    centerUpdateName: (rootQuery, { centerId, name }, context) => {
-      const center = new Center(Center.getCenter(centerId));
-      center.updateName(name);
+    centerUpdateName: async (rootQuery, { centerId, name }, context) => {
+      const center = new Center(await Center.getCenter(centerId));
+      await center.updateName(name);
       return center;
     },
-    centerUpdateDescription: (
+    centerUpdateDescription: async (
       rootQuery,
       { centerId, description },
       context
     ) => {
-      const center = new Center(Center.getCenter(centerId));
-      center.updateDescription(description);
+      const center = new Center(await Center.getCenter(centerId));
+      await center.updateDescription(description);
       return center;
     },
-    centerUpdateWebsite: (rootQuery, { centerId, website }, context) => {
-      const center = new Center(Center.getCenter(centerId));
+    centerUpdateWebsite: async (rootQuery, { centerId, website }, context) => {
+      const center = new Center(await Center.getCenter(centerId));
       center.updateWebsite(website);
       return center;
     },
-    centerUpdateImage: (rootQuery, { centerId, image }, context) => {
-      const center = new Center(Center.getCenter(centerId));
-      center.updateImage(image);
+    centerUpdateImage: async (rootQuery, { centerId, image }, context) => {
+      const center = new Center(await Center.getCenter(centerId));
+      await center.updateImage(image);
       return center;
     }
   },

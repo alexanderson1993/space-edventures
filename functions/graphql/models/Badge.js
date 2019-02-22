@@ -57,7 +57,7 @@ module.exports = class Badge {
   }
   static async badgeCount(centerId, type) {
     const docs = await firestore()
-      .collection("simulators")
+      .collection("badges")
       .where("centerId", "==", centerId)
       .where("type", "==", type)
       .get();

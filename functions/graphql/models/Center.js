@@ -2,6 +2,8 @@ const Stripe = require("./Stripe");
 const { firestore } = require("../connectors/firebase");
 const { UserInputError } = require("apollo-server-express");
 const uuid = require("uuid");
+const uploadFile = require("../helpers/uploadFile");
+
 // =============================================================================
 // Class for Querying/Mutating space centers
 // =============================================================================
@@ -70,17 +72,18 @@ module.exports = class Center {
     try {
       const customer = await Stripe.createCustomer({ name, email, token });
       await Stripe.subscribe(customer.id, planId, true);
+      const newData = {
+        name,
+        email,
+        website,
+        registeredDate: new Date(),
+        stripeCustomer: customer.id,
+        directorId,
+        apiToken: uuid.v4()
+      };
       return firestore()
         .collection("spaceCenters")
-        .add({
-          name,
-          email,
-          website,
-          registeredDate: new Date(),
-          stripeCustomer: customer.id,
-          directorId,
-          apiToken: uuid.v4()
-        });
+        .add(newData);
     } catch (err) {
       throw new UserInputError(`Unable to create center: ${err.message}`);
     }
@@ -95,9 +98,42 @@ module.exports = class Center {
     center.ref.update({ apiToken });
     return { ...center.data(), apiToken, id: center.id };
   }
-  constructor(params) {}
-  async updateName() {}
-  async updateDescription() {}
-  async updateWebsite() {}
-  async updateImage() {}
+  constructor(params) {
+    this.id = params.id;
+    this.name = params.name;
+    this.description = params.description;
+    this.website = params.website;
+    this.imageUrl = params.imageUrl;
+  }
+  async updateName(name) {
+    await firestore()
+      .collection("spaceCenters")
+      .doc(this.id)
+      .update({ name });
+    this.name = name;
+    return this;
+  }
+  async updateDescription(description) {
+    await firestore()
+      .collection("spaceCenters")
+      .doc(this.id)
+      .update({ description });
+    this.description = description;
+    return this;
+  }
+  async updateWebsite(website) {
+    this.website = website;
+    return this;
+  }
+  async updateImage(image) {
+    const path = `centers/${this.id}/image`;
+    const file = await uploadFile(image, path);
+    await firestore()
+      .collection("spaceCenters")
+      .doc(this.id)
+      .update({ imageUrl: file.metadata.mediaLink });
+
+    this.imageUrl = file.metadata.mediaLink;
+    return this;
+  }
 };
