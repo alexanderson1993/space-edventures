@@ -48,6 +48,7 @@ const Routes = ({ director = {} }) => {
   const { user } = useContext(AuthContext);
   let { center } = director;
   //if (process.env.NODE_ENV !== "production") center = {};
+  console.log(director);
   return user ? (
     center ? (
       <Navigation>

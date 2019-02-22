@@ -24,17 +24,15 @@ export const Navigator = withStyles(() => {})(
       }
       publish("routeChanged");
 
-      setTimeout(() => {
-        if (href.indexOf("/director") === 0 && !isAdmin) setIsAdmin(true);
-        else if (href.indexOf("/director") !== 0 && isAdmin) setIsAdmin(false);
-        if (target) {
-          window.open(href);
-        } else if (isExtern.test(href)) {
-          window.location.href = href;
-        } else {
-          navigate(href).then(reveal);
-        }
-      }, theme.animTime);
+      if (href.indexOf("/director") === 0 && !isAdmin) setIsAdmin(true);
+      else if (href.indexOf("/director") !== 0 && isAdmin) setIsAdmin(false);
+      if (target) {
+        window.open(href);
+      } else if (isExtern.test(href)) {
+        window.location.href = href;
+      } else {
+        navigate(href).then(reveal);
+      }
     };
     return (
       <AnimateContext.Consumer>

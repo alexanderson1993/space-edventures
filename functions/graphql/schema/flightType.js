@@ -1,5 +1,6 @@
 const { gql, UserInputError } = require("apollo-server-express");
 const { FlightType, Center } = require("../models");
+const getCenter = require("../helpers/getCenter");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -26,7 +27,7 @@ module.exports.schema = gql`
   }
 
   extend type Mutation {
-    flightTypeCreate(data: FlightTypeInput!): FlightType
+    flightTypeCreate(centerId: ID!, data: FlightTypeInput!): FlightType
       @auth(requires: [director])
     flightTypeDelete(id: ID!): Boolean @auth(requires: [director])
     flightTypeEdit(id: ID!, data: FlightTypeInput!): Boolean
@@ -35,8 +36,8 @@ module.exports.schema = gql`
 
   input FlightTypeInput {
     name: String
-    flightHours: Int
-    classHours: Int
+    flightHours: Float
+    classHours: Float
   }
 `;
 
@@ -46,8 +47,25 @@ module.exports.schema = gql`
 module.exports.resolver = {
   Query: {
     flightType: (rootObj, { id }, context) => FlightType.getFlightType(id),
-    flightTypes: (rootObj, { centerId }, context) =>
-      FlightType.getFlightTypes(centerId)
+    flightTypes: async (rootObj, { centerId }, context) => {
+      let centerIdValue = centerId;
+      console.log(centerIdValue);
+      if (!centerIdValue) {
+        console.log("trying");
+        try {
+          console.log("Getting center");
+          const center = await getCenter(context.user);
+          console.log(center);
+          if (!center) {
+            throw new UserInputError('"centerId" is a required parameter.');
+          }
+          centerIdValue = center.id;
+        } catch (err) {
+          console.log(err);
+        }
+      }
+      return FlightType.getFlightTypes(centerIdValue);
+    }
   },
   FlightRecord: {
     // flightType: (flightRecord, args, context) => FlightType.getFlightType(flightRecord.flightTypeId)
@@ -62,9 +80,8 @@ module.exports.resolver = {
     }
   },
   Mutation: {
-    flightTypeCreate: async (rootObj, { data }, context) => {
-      let center = await Center.getCenterByDirector(context.user.id);
-      let existingFlightTypes = await FlightType.getFlightTypes(center.id);
+    flightTypeCreate: async (rootObj, { centerId, data }, context) => {
+      let existingFlightTypes = await FlightType.getFlightTypes(centerId);
 
       existingFlightTypes.forEach(obj => {
         if (obj.name === data.name) {

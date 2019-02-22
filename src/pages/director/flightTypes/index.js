@@ -1,7 +1,7 @@
 import React from "react";
 import { Query } from "react-apollo";
 import styled from "@emotion/styled";
-import FLIGHT_TYPES_QUERY from "../../../queries/flightTypes.graphql";
+import FLIGHT_TYPES_QUERY from "./flightTypes.graphql";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Link, Button } from "../../../components";
 const ButtonAlign = styled("div")`

@@ -1,0 +1,16 @@
+mutation CreateFlightType(
+  $centerId: ID!
+  $name: String!
+  $flightHours: Float!
+  $classHours: Float!
+) {
+  flightTypeCreate(
+    centerId: $centerId
+    data: { name: $name, flightHours: $flightHours, classHours: $classHours }
+  ) {
+    id
+    name
+    flightHours
+    classHours
+  }
+}
