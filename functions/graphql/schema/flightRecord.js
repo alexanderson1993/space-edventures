@@ -18,7 +18,7 @@ module.exports.schema = gql`
 
     # There are several properties added through extension:
     # Flight Type
-    # Simulator
+    # Simulators
     # Center
   }
 
@@ -37,6 +37,10 @@ module.exports.schema = gql`
     flight: FlightRecord
   }
 
+  extend type User {
+    flights: [FlightRecord] @auth(requires: [authenticated])
+  }
+
   extend type Query {
     flightRecord(id: ID!): FlightRecord
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
@@ -52,6 +56,16 @@ module.exports.schema = gql`
     ): FlightRecord @auth(requires: [center, director])
 
     flightClaim(token: String!): FlightRecord @auth(requires: [authenticated])
+
+    flightEdit(
+      id: ID!
+      thoriumFlightId: ID
+      date: Date
+      flightTypeId: ID
+      simulators: [FlightSimulatorInput]
+    ): FlightRecord @auth(requires: [director])
+
+    flightDelete(id: ID!): Boolean @auth(requires: [director])
   }
   # We can extend other graphQL types using the "extend" keyword.
 `;
@@ -158,10 +172,31 @@ module.exports.resolver = {
         flightTypeId,
         simulators
       );
+    }, // End flight record create
+    flightDelete: async (rootObj, { id }, context) => {
+      let flightRecord = await FlightRecord.getFlightRecord(id);
+
+      // Make sure they have permissions for this flight record
+      // console.log(flightRecord);
+      let center = await getCenter(context.user);
+      
+      console.log(center.id);
+      console.log(flightRecord.spaceCenterId);
+      if (flightRecord.spaceCenterId !== center.id) {
+        throw new UserInputError("Insufficient permissions");
+      }
+      
+      return flightRecord.delete();
     }
   },
   Badge: {
     flight: (badge, args, context) => {}
+  },
+
+  User: {
+    flights: (user, args, context) => { 
+      return FlightRecord.getFlightRecordsByUser(user.id);
+    }
   }
 };
 

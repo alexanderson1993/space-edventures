@@ -6,10 +6,13 @@
 
 - [ ] Limit centers' permissions on objects that don't directly have the center's ID on the object
   - Existing resolvers might need to have this check added on them
+- [ ] flight type from record
+    - center
 
 ## Working on
 
 - [ ] Flight Assignment and flight records
+    - [ ] Edit flight record
   - [ ] From user, get flight records
     - [ ] In order for this to be more straight forward, I am thinking of storing the link on the user object
 
