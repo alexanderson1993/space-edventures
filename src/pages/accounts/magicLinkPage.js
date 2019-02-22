@@ -13,7 +13,7 @@ const MagicLink = ({ location, navigate }) => {
     completeMagicLinkSignin(location.href)
       .then(() => navigate(to))
       .catch(error => setError(error));
-  }, [location.href]);
+  }, [completeMagicLinkSignin, location.href, navigate]);
   return error ? (
     <Blockquote layer="alert">
       <Words>{error.message}</Words>
