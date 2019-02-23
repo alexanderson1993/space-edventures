@@ -29,8 +29,9 @@ module.exports.schema = gql`
   extend type Mutation {
     flightTypeCreate(centerId: ID!, data: FlightTypeInput!): FlightType
       @auth(requires: [director])
-    flightTypeDelete(id: ID!): Boolean @auth(requires: [director])
-    flightTypeEdit(id: ID!, data: FlightTypeInput!): Boolean
+    flightTypeDelete(centerId: ID!, id: ID!): Boolean
+      @auth(requires: [director])
+    flightTypeEdit(centerId: ID!, id: ID!, data: FlightTypeInput!): FlightType
       @auth(requires: [director])
   }
 
@@ -49,19 +50,15 @@ module.exports.resolver = {
     flightType: (rootObj, { id }, context) => FlightType.getFlightType(id),
     flightTypes: async (rootObj, { centerId }, context) => {
       let centerIdValue = centerId;
-      console.log(centerIdValue);
       if (!centerIdValue) {
-        console.log("trying");
         try {
-          console.log("Getting center");
           const center = await getCenter(context.user);
-          console.log(center);
           if (!center) {
             throw new UserInputError('"centerId" is a required parameter.');
           }
           centerIdValue = center.id;
         } catch (err) {
-          console.log(err);
+          throw new UserInputError(err);
         }
       }
       return FlightType.getFlightTypes(centerIdValue);

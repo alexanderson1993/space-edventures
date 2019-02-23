@@ -2,6 +2,7 @@ import React from "react";
 import FLIGHT_TYPES_QUERY from "./flightTypes.graphql";
 import { Query } from "react-apollo";
 import graphQLHelper from "../../../helpers/graphQLHelper";
+import { Button, Link } from "../../../components";
 
 const SimulatorDetail = ({ flightTypeId }) => {
   return (
@@ -14,6 +15,9 @@ const SimulatorDetail = ({ flightTypeId }) => {
             <h1>Flight Type: {flightType.name}</h1>
             <p>Flight Hours: {flightType.flightHours}</p>
             <p>Class Hours: {flightType.classHours}</p>
+            <Link to={`/director/flightTypes/edit/${flightTypeId}`}>
+              <Button>Edit</Button>
+            </Link>
           </div>
         );
       })}

@@ -63,14 +63,15 @@ module.exports = class FlightType {
     return new FlightType({ ...newFlightType.data(), id: newFlightType.id });
   }
 
-  async editFlightType(newData) {
-    let isSuccess = await firestore()
+  async editFlightType({ name, flightHours, classHours }) {
+    await firestore()
       .collection(collectionName)
       .doc(this.id)
-      .set(newData, { merge: true })
-      .then(() => true)
-      .catch(() => false);
-    return isSuccess;
+      .set({ name, flightHours, classHours }, { merge: true });
+    if (name) this.name = name;
+    if (flightHours || flightHours === 0) this.flightHours = flightHours;
+    if (classHours || classHours === 0) this.classHours = classHours;
+    return this;
   }
 
   async delete() {
