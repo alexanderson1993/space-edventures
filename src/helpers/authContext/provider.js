@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
         setUser(null);
       }
     });
-  }, []);
+  }, [loading]);
 
   const actions = {
     login: ({ email, password }) => {

@@ -4,6 +4,7 @@ import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import css from "@emotion/css";
 import { Mutation } from "react-apollo";
 import CREATE_BADGE from "./createBadge.graphql";
+import BADGES_QUERY from "./badges.graphql";
 import { Loading } from "@arwes/arwes";
 
 const EditBadge = ({ create }) => {
@@ -16,6 +17,13 @@ const EditBadge = ({ create }) => {
         <Mutation
           mutation={CREATE_BADGE}
           variables={{ name, description, image, type: "badge" }}
+          update={(cache, { data: { badgeCreate } }) => {
+            const { badges } = cache.readQuery({ query: BADGES_QUERY });
+            cache.writeQuery({
+              query: BADGES_QUERY,
+              data: { badges: badges.concat([badgeCreate]) }
+            });
+          }}
         >
           {(create, { loading }) =>
             loading ? (

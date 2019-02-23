@@ -103,7 +103,7 @@ mutation {
 }
 
 {
-	flightRecords(centerId:"iapR2ol0OgMDDBW1IvVf") {
+  flightRecords(centerId: "iapR2ol0OgMDDBW1IvVf") {
     id
   }
 }

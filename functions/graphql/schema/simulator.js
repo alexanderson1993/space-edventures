@@ -33,6 +33,7 @@ module.exports.schema = gql`
   }
   extend type Center {
     simulators: [Simulator]
+    simulatorCount: Int
   }
   extend type FlightRecord {
     simulators: [Simulator]
@@ -89,13 +90,16 @@ module.exports.resolver = {
         return ({
           ...sim,
           ...simulator
-        })
+        });
       });
     }
   },
   Center: {
     simulators: (center, args, context) => {
       return Simulator.getSimulators(center.id);
+    },
+    simulatorCount: center => {
+      return Simulator.centerCount(center.id);
     }
   }
 };

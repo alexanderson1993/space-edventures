@@ -7,10 +7,9 @@ import graphqlHelper from "../../helpers/graphQLHelper";
 
 export const DirectorContext = React.createContext({});
 
-const Welcome = lazy(() => import("./welcome"));
+const Dashboard = lazy(() => import("./dashboard"));
 const Splash = lazy(() => import("./splash"));
 const Register = lazy(() => import("./register"));
-const Dashboard = lazy(() => import("./dashboard"));
 const Navigation = lazy(() => import("./navigation"));
 
 // Management Pages
@@ -47,14 +46,12 @@ const RouteData = () => {
 const Routes = ({ director = {} }) => {
   const { user } = useContext(AuthContext);
   let { center } = director;
-  //if (process.env.NODE_ENV !== "production") center = {};
   return user ? (
     center ? (
       <Navigation>
         <DirectorContext.Provider value={{ director }}>
           <Router>
-            <Welcome path="/" />
-            <Dashboard path="dashboard" />
+            <Dashboard path="/" />
 
             <SimulatorIndex path="simulators" />
             <SimulatorDetail path="simulators/:simulatorId" />

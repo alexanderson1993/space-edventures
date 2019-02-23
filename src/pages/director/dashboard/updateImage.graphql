@@ -1,0 +1,9 @@
+mutation pdateImage($centerId: ID!, $image: Upload!) {
+  centerUpdateImage(centerId: $centerId, image: $image) {
+    id
+    name
+    description
+    website
+    imageUrl
+  }
+}

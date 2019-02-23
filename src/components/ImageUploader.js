@@ -118,6 +118,9 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
             flex: 1;
             text-align: center;
             font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           `}
         >
           No Image Loaded

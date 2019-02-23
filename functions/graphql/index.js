@@ -56,6 +56,7 @@ function configureServer() {
     }
     next();
   });
+
   const server = new ApolloServer({
     schema,
     engine: process.env.ENGINE_API_KEY,
