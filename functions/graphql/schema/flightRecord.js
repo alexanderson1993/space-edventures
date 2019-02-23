@@ -63,7 +63,7 @@ module.exports.schema = gql`
       date: Date
       flightTypeId: ID
       simulators: [FlightSimulatorInput]
-    ): FlightRecord @auth(requires: [director])
+    ): Boolean @auth(requires: [director])
 
     flightDelete(id: ID!): Boolean @auth(requires: [director])
   }
@@ -165,21 +165,38 @@ module.exports.resolver = {
         flightTypeId,
         simulators
       );
-    }, // End flight record create
+    },
+    // End flight record create
     flightDelete: async (rootObj, { id }, context) => {
       let flightRecord = await FlightRecord.getFlightRecord(id);
 
       // Make sure they have permissions for this flight record
-      // console.log(flightRecord);
       let center = await getCenter(context.user);
       
-      console.log(center.id);
-      console.log(flightRecord.spaceCenterId);
       if (flightRecord.spaceCenterId !== center.id) {
         throw new UserInputError("Insufficient permissions");
       }
       
       return flightRecord.delete();
+    },
+
+    /**
+     * Edit a Flight Record
+     * Supports changing anything but the space center id
+     * If you don't include a property, it stays the same
+     * If you include a property, it will overwrite the value for it in the database
+     */
+    flightEdit: async (rootObj, { id, thoriumFlightId, date, flightTypeId, simulators }, context) => {
+      let center = await getCenter(context.user);
+
+      return FlightRecord.createFlightRecord(
+        center.id,
+        thoriumFlightId,
+        flightTypeId,
+        simulators,
+        id,
+        date
+      )
     }
   },
   Badge: {
