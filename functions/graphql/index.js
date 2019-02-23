@@ -64,7 +64,7 @@ function configureServer() {
     uploads: false,
     context: async ({ req }) => {
       // PRODUCTION VERSION
-      // const token = (req.headers.authorization || "").replace("Bearer ", "");
+      const token = (req.headers.authorization || "").replace("Bearer ", "");
 
       // If you need to test a specific user's graphQL abilities
       // FOR DEBUGGING, COMMENT OUT IN PRODUCTION
