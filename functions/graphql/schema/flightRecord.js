@@ -63,7 +63,7 @@ module.exports.schema = gql`
       date: Date
       flightTypeId: ID
       simulators: [FlightSimulatorInput]
-    ): Boolean @auth(requires: [director])
+    ): FlightRecord @auth(requires: [director])
 
     flightDelete(id: ID!): Boolean @auth(requires: [director])
   }
