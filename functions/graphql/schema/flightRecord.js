@@ -6,7 +6,7 @@ const {
   Badge,
   User
 } = require("../models");
-const getCenter = require("../helpers/getCenter")
+const getCenter = require("../helpers/getCenter");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -89,9 +89,11 @@ module.exports.resolver = {
       let flightRecord = await FlightRecord.getFlightRecordByToken(token);
 
       if (!flightRecord) {
-        throw new UserInputError("No flight records were found for this token.");
+        throw new UserInputError(
+          "No flight records were found for this token."
+        );
       }
-      
+
       return flightRecord.claim(context.user.id);
     },
 
@@ -108,15 +110,20 @@ module.exports.resolver = {
       if (!flightType) {
         throw new UserInputError("Invalid flight type id provided.");
       }
-      
+
       // Make sure this flight record doesn't already exist
-      let flightRecord = await FlightRecord.getFlightRecordByThoriumId(thoriumFlightId);
+      let flightRecord = await FlightRecord.getFlightRecordByThoriumId(
+        thoriumFlightId
+      );
       if (flightRecord) {
-        throw new UserInputError("This Thorium flight already exists in the system.");
+        throw new UserInputError(
+          "This Thorium flight already exists in the system."
+        );
       }
 
       // Get the center id (if this is a director and not a center)
-      let centerIdValue = typeof(context.center) !== "undefined" ? context.center.id : null;
+      let centerIdValue =
+        typeof context.center !== "undefined" ? context.center.id : null;
       if (!centerIdValue) {
         const center = await getCenter(context.user);
         if (!center) {
@@ -172,13 +179,11 @@ module.exports.resolver = {
       // Make sure they have permissions for this flight record
       // console.log(flightRecord);
       let center = await getCenter(context.user);
-      
-      console.log(center.id);
-      console.log(flightRecord.spaceCenterId);
+
       if (flightRecord.spaceCenterId !== center.id) {
         throw new UserInputError("Insufficient permissions");
       }
-      
+
       return flightRecord.delete();
     }
   },
@@ -187,7 +192,7 @@ module.exports.resolver = {
   },
 
   User: {
-    flights: (user, args, context) => { 
+    flights: (user, args, context) => {
       return FlightRecord.getFlightRecordsByUser(user.id);
     }
   }

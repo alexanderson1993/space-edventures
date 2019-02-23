@@ -9,7 +9,7 @@ const {
 } = require("apollo-server-express");
 const { SchemaDirectiveVisitor } = require("graphql-tools");
 const { defaultFieldResolver, GraphQLString } = require("graphql");
-
+const { Center } = require("../../models");
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -125,13 +125,14 @@ class AuthDirective extends SchemaDirectiveVisitor {
         // =============================================================
         // Director Permissions
         // =============================================================
-        if (
-          requiredRoles.indexOf("director") > -1 &&
-          typeof user !== "undefined" &&
-          user !== null &&
-          user.id === data.directorId
-        ) {
-          return resolve.apply(this, args);
+        if (requiredRoles.indexOf("director") > -1 && user) {
+          if (user.id === data.directorId) return resolve.apply(this, args);
+          // Permissions for a director using a mutation on a center
+          // The mutation must use the centerId arg to work properly
+          const userCenter = await Center.getCenterByDirector(user.id);
+          if (userCenter && userCenter.id === queryArgs.centerId) {
+            return resolve.apply(this, args);
+          }
         }
 
         if (
