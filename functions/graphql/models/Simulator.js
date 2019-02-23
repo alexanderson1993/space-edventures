@@ -12,7 +12,7 @@ module.exports = class Simulator {
         name,
         centerId
       });
-    return new Simulator(simulatorData);
+    return new Simulator({ id: simulatorData.id, name });
   }
   static async getSimulators(centerId) {
     const simulators = await firestore()
@@ -32,6 +32,13 @@ module.exports = class Simulator {
     }
 
     return new Simulator({ ...simulator.data(), id: simulator.id });
+  }
+  static async centerCount(centerId) {
+    const docs = await firestore()
+      .collection("simulators")
+      .where("centerId", "==", centerId)
+      .get();
+    return docs.size;
   }
   constructor({ id, name, centerId }) {
     this.id = id;

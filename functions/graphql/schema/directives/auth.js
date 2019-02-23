@@ -99,7 +99,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
               objectType.name}" using the API.`
           );
         }
-
         // Allow centers to see their own information
         if (
           requiredRoles.indexOf("center") > -1 &&
@@ -112,7 +111,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
         ) {
           return resolve.apply(this, args);
         }
-
         if (
           requiredRoles.indexOf("self") > -1 &&
           (user.id === data.userId || user.id === data.id)

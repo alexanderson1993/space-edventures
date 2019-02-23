@@ -10,9 +10,11 @@ module.exports.schema = gql`
     id: ID!
     name: String
     description: String
+    imageUrl: String
     registeredDate: Date
     website: String
-    email: String @auth(requires: [center])
+    email: String
+
     apiToken: String @auth(requires: [director])
   }
 
@@ -31,6 +33,14 @@ module.exports.schema = gql`
       planId: String!
     ): Center @auth(requires: [authenticated])
     centerSetApiToken: Center
+    centerUpdateName(centerId: ID!, name: String!): Center
+      @auth(requires: [director])
+    centerUpdateDescription(centerId: ID!, description: String!): Center
+      @auth(requires: [director])
+    centerUpdateWebsite(centerId: ID!, website: String!): Center
+      @auth(requires: [director])
+    centerUpdateImage(centerId: ID!, image: Upload!): Center
+      @auth(requires: [director])
   }
 
   extend type FlightType {
@@ -60,6 +70,30 @@ module.exports.resolver = {
     },
     centerSetApiToken: (rootQuery, args, context) => {
       return Center.setApiToken(context.user.id);
+    },
+    centerUpdateName: async (rootQuery, { centerId, name }, context) => {
+      const center = new Center(await Center.getCenter(centerId));
+      await center.updateName(name);
+      return center;
+    },
+    centerUpdateDescription: async (
+      rootQuery,
+      { centerId, description },
+      context
+    ) => {
+      const center = new Center(await Center.getCenter(centerId));
+      await center.updateDescription(description);
+      return center;
+    },
+    centerUpdateWebsite: async (rootQuery, { centerId, website }, context) => {
+      const center = new Center(await Center.getCenter(centerId));
+      center.updateWebsite(website);
+      return center;
+    },
+    centerUpdateImage: async (rootQuery, { centerId, image }, context) => {
+      const center = new Center(await Center.getCenter(centerId));
+      await center.updateImage(image);
+      return center;
     }
   },
   FlightType: {

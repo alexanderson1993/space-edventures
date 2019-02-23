@@ -14,18 +14,20 @@ module.exports = class Badge {
         description,
         centerId
       });
-
-    const file = await uploadFile(image, `badges/${badgeData.id}`);
-    await firestore()
-      .collection("badges")
-      .doc(badgeData.id)
-      .update({ image: file.metadata.mediaLink });
+    let file = null;
+    if (image) {
+      file = await uploadFile(image, `badges/${badgeData.id}`);
+      await firestore()
+        .collection("badges")
+        .doc(badgeData.id)
+        .update({ image: file.metadata.mediaLink });
+    }
     const actualBadgeData = await badgeData.get();
 
     return new Badge({
       ...actualBadgeData.data(),
       id: actualBadgeData.id,
-      image: file.metadata.mediaLink
+      image: file && file.metadata.mediaLink
     });
   }
   static async getBadges(type, centerId) {
@@ -34,7 +36,7 @@ module.exports = class Badge {
       ref = ref.where("type", "==", type);
     }
     if (centerId) {
-      ref = ref.where("spaceCenterId", "==", centerId);
+      ref = ref.where("centerId", "==", centerId);
     }
 
     const badges = await ref.get();
@@ -53,13 +55,21 @@ module.exports = class Badge {
 
     return new Badge({ ...badge.data(), id: badge.id });
   }
-  constructor({ id, name, type, description, image, spaceCenterId }) {
+  static async badgeCount(centerId, type) {
+    const docs = await firestore()
+      .collection("badges")
+      .where("centerId", "==", centerId)
+      .where("type", "==", type)
+      .get();
+    return docs.size;
+  }
+  constructor({ id, name, type, description, image, centerId }) {
     this.id = id;
     this.name = name;
     this.type = type;
     this.description = description;
     this.image = image;
-    this.spaceCenterId = spaceCenterId;
+    this.centerId = centerId;
   }
   async rename(name) {
     this.name = name;

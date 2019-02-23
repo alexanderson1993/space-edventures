@@ -9,6 +9,7 @@ const Director = lazy(() => import("./pages/director"));
 const Admin = lazy(() => import("./pages/admin"));
 const Login = lazy(() => import("./pages/accounts/login"));
 const Participant = lazy(() => import("./pages/participant"));
+const Staff = lazy(() => import("./pages/staff"));
 
 const PrivacyPolicy = lazy(() => import("./pages/support/privacy"));
 const TermsOfService = lazy(() => import("./pages/support/tos"));
@@ -29,6 +30,7 @@ const Routes = () => {
       <VerifyParent path="parentVerify" />
       <SentMagicLink path="sentMagicLink" />
       <MagicLinkWithNav path="magicLink" />
+      <Staff path="/staff/*" />
       <Director path="/director/*" />
       <Admin path="/admin/*" />
       <PrivacyPolicy path="privacyPolicy" />

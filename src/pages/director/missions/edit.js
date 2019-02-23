@@ -4,6 +4,8 @@ import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import css from "@emotion/css";
 import { Mutation } from "react-apollo";
 import CREATE_MISSION from "./createMission.graphql";
+import MISSIONS_QUERY from "./missions.graphql";
+
 import { Loading } from "@arwes/arwes";
 
 const EditMission = ({ create }) => {
@@ -16,6 +18,13 @@ const EditMission = ({ create }) => {
         <Mutation
           mutation={CREATE_MISSION}
           variables={{ name, description, image, type: "mission" }}
+          update={(cache, { data: { missionCreate } }) => {
+            const { missions } = cache.readQuery({ query: MISSIONS_QUERY });
+            cache.writeQuery({
+              query: MISSIONS_QUERY,
+              data: { missions: missions.concat([missionCreate]) }
+            });
+          }}
         >
           {(create, { loading }) =>
             loading ? (

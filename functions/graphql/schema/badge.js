@@ -70,6 +70,8 @@ module.exports.schema = gql`
 
   extend type Center {
     badges(type: BADGE_TYPE): [Badge]
+    missionCount: Int
+    badgeCount: Int
   }
 `;
 
@@ -88,7 +90,7 @@ module.exports.resolver = {
           }
           centerIdValue = center.id;
         } catch (err) {
-          null;
+          throw new UserInputError(err);
         }
       }
       return Badge.getBadges(type, centerIdValue);
@@ -215,6 +217,12 @@ module.exports.resolver = {
   Center: {
     badges: async (center, { type }, context) => {
       return await Badge.getBadges(type, center.id);
+    },
+    missionCount: center => {
+      return Badge.badgeCount(center.id, "mission");
+    },
+    badgeCount: center => {
+      return Badge.badgeCount(center.id, "badge");
     }
   }
 };
