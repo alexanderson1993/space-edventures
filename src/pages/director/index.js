@@ -45,7 +45,7 @@ const RouteData = () => {
 
 const Routes = ({ director = {} }) => {
   const { user } = useContext(AuthContext);
-  let center = director ? director.center : null;
+  let { center } = director;
   return user ? (
     center ? (
       <Navigation>

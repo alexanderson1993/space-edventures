@@ -27,17 +27,18 @@ module.exports.schema = gql`
   }
 
   extend type Mutation {
-    flightTypeCreate(data: FlightTypeInput!): FlightType
+    flightTypeCreate(centerId: ID!, data: FlightTypeInput!): FlightType
       @auth(requires: [director])
-    flightTypeDelete(id: ID!): Boolean @auth(requires: [director])
-    flightTypeEdit(id: ID!, data: FlightTypeInput!): Boolean
+    flightTypeDelete(centerId: ID!, id: ID!): Boolean
+      @auth(requires: [director])
+    flightTypeEdit(centerId: ID!, id: ID!, data: FlightTypeInput!): FlightType
       @auth(requires: [director])
   }
 
   input FlightTypeInput {
     name: String
-    flightHours: Int
-    classHours: Int
+    flightHours: Float
+    classHours: Float
   }
 `;
 
@@ -57,10 +58,10 @@ module.exports.resolver = {
           }
           centerIdValue = center.id;
         } catch (err) {
-          null;
+          throw new UserInputError(err);
         }
       }
-      FlightType.getFlightTypes(centerIdValue);
+      return FlightType.getFlightTypes(centerIdValue);
     }
   },
   FlightRecord: {
@@ -76,9 +77,8 @@ module.exports.resolver = {
     }
   },
   Mutation: {
-    flightTypeCreate: async (rootObj, { data }, context) => {
-      let center = await Center.getCenterByDirector(context.user.id);
-      let existingFlightTypes = await FlightType.getFlightTypes(center.id);
+    flightTypeCreate: async (rootObj, { centerId, data }, context) => {
+      let existingFlightTypes = await FlightType.getFlightTypes(centerId);
 
       existingFlightTypes.forEach(obj => {
         if (obj.name === data.name) {
@@ -91,7 +91,7 @@ module.exports.resolver = {
 
       let flightType = await FlightType.createFlightType({
         ...data,
-        spaceCenterId: center.id
+        spaceCenterId: centerId
       });
       return flightType;
     },

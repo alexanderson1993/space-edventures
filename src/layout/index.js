@@ -49,7 +49,7 @@ class ArwesContainer extends Component {
       show: false,
       loaded: false,
       hide: () => null, //this.setState({ show: false }),
-      reveal: () => null //this.setState({ show: true })
+      reveal: () => null // this.setState({ show: true })
     };
   }
 

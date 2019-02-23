@@ -1,0 +1,18 @@
+mutation UpdateFlightType(
+  $id: ID!
+  $name: String!
+  $centerId: ID!
+  $flightHours: Float!
+  $classHours: Float!
+) {
+  flightTypeEdit(
+    id: $id
+    centerId: $centerId
+    data: { name: $name, flightHours: $flightHours, classHours: $classHours }
+  ) {
+    id
+    name
+    flightHours
+    classHours
+  }
+}

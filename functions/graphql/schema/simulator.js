@@ -85,14 +85,12 @@ module.exports.resolver = {
   FlightRecord: {
     // Add the name and stations to the simulator object
     simulators: (flightRecord, args, context) => {
-      console.log(flightRecord.simulators);
       return flightRecord.simulators.map(async sim => {
         let simulator = await Simulator.getSimulator(sim.id);
-        console.log(sim);
-        return ({
+        return {
           ...sim,
           ...simulator
-        })
+        };
       });
     }
   },

@@ -53,7 +53,7 @@ const Login = ({ signingUp = false, to = "/", location }) => {
         }
       });
     }
-  }, [email]);
+  }, [email, magicLinkAllowed]);
   const checkError = type => {
     if (!email) {
       setError({ field: "email", message: "Email is a required field." });

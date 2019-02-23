@@ -112,7 +112,7 @@ module.exports.resolver = {
       }
 
       // Make sure this flight record doesn't already exist
-      let flightRecord = await FlightRecord.getFlightTypeByThoriumId(
+      let flightRecord = await FlightRecord.getFlightRecordByThoriumId(
         thoriumFlightId
       );
       if (flightRecord) {
@@ -179,13 +179,11 @@ module.exports.resolver = {
       // Make sure they have permissions for this flight record
       // console.log(flightRecord);
       let center = await getCenter(context.user);
-      
-      console.log(center.id);
-      console.log(flightRecord.spaceCenterId);
+
       if (flightRecord.spaceCenterId !== center.id) {
         throw new UserInputError("Insufficient permissions");
       }
-      
+
       return flightRecord.delete();
     }
   },
@@ -194,7 +192,7 @@ module.exports.resolver = {
   },
 
   User: {
-    flights: (user, args, context) => { 
+    flights: (user, args, context) => {
       return FlightRecord.getFlightRecordsByUser(user.id);
     }
   }
