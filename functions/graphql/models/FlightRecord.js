@@ -74,7 +74,9 @@ module.exports = class FlightRecord {
     centerId,
     thoriumFlightId,
     flightTypeId,
-    simulators
+    simulators,
+    overwriteId,
+    date
   ) {
     // Make sure the required properties are provided, and the related objects exist
     if (typeof centerId === "undefined") {
@@ -82,48 +84,65 @@ module.exports = class FlightRecord {
     }
 
     // Build out the simulators in a way for firestore to recognize it
-    let simulatorInput = simulators.map(sim => ({
-      id: sim.id,
-      stations: sim.stations.map(station => {
-        let stationData = { name: station.name, badges: station.badges };
+    let simulatorInput;
 
-        // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
-        if (typeof station.userId !== "undefined") {
-          stationData.userId = station.userId;
-        } else {
-          stationData.token = tokenGenerator();
-        }
-
-        return stationData;
-      })
-    }));
-
-    let data = {
-      spaceCenterId: centerId,
-      thoriumFlightId: thoriumFlightId,
-      flightTypeId: flightTypeId,
-      simulators: simulatorInput,
-      date: new Date() // Set the record to be the current datetime
-    };
-
-    let newId = (await firestore()
-      .collection(collectionName)
-      .add(data)).id;
-
-    // If successfully added the id
-    if (typeof newId === "undefined") {
-      throw new Error("Unable to add new flight record");
+    if (typeof(simulators) !== "undefined") {
+      simulatorInput = simulators.map(sim => ({
+        id: sim.id,
+        stations: sim.stations.map(station => {
+          let stationData = { name: station.name, badges: station.badges };
+  
+          // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
+          if (typeof station.userId !== "undefined") {
+            stationData.userId = station.userId;
+          } else {
+            stationData.token = tokenGenerator();
+          }
+  
+          return stationData;
+        })
+      }));
     }
 
-    let newFlightRecord = await firestore()
-      .collection(collectionName)
-      .doc(newId)
-      .get();
+    // These parameters will be 
+    let data = {
+      spaceCenterId: centerId,
+      date: new Date()
+    };
 
-    return new FlightRecord({
-      ...newFlightRecord.data(),
-      id: newFlightRecord.id
-    });
+    if (typeof(thoriumFlightId) !== "undefined") data.thoriumFlightId = thoriumFlightId;
+    if (typeof(flightTypeId) !== "undefined") data.flightTypeId = flightTypeId;
+    if (typeof(simulatorInput) !== "undefined") data.simulators = simulatorInput;
+    if (typeof(date) !== "undefined") data.date = date;
+
+    
+    // If they provided an overwrite ID, merge with existing object, otherwise create a new object
+    if (typeof(overwriteId) !== "undefined") {
+      // --- Edit existing object --- //
+      let result = await firestore().collection(collectionName).doc(overwriteId).set(data,{merge:true});
+      return true;
+    } 
+    else {
+      // --- Create a new object --- //
+      let newId = (await firestore()
+      .collection(collectionName)
+      .add(data)).id;
+      
+      // If successfully added the id
+      if (typeof newId === "undefined") {
+        throw new Error("Unable to add new flight record");
+      }
+      
+      let newFlightRecord = await firestore()
+        .collection(collectionName)
+        .doc(newId)
+        .get();
+
+        return new FlightRecord({
+          ...newFlightRecord.data(),
+          id: newFlightRecord.id
+        });
+    }
   }
 
   /**
@@ -144,12 +163,15 @@ module.exports = class FlightRecord {
   static async getFlightRecordsByUser (userId) {
     let allFlightRecords = await firestore().collection(collectionName).get().then(ref => ref.docs);
     let matchingDocs = allFlightRecords
-      // Filter down to just records that have the token
+      // Filter down to just records that have the user's id
       .filter(doc => doc.data().simulators
         .reduce(
           (prev,simulator) => simulator.stations
             .reduce(
-              (prev, next) => (prev = (typeof(next.userId) !== "undefined" && next.userId === userId) || prev), false
+              (prev, next) => {
+                return (prev = (typeof(next.userId) !== "undefined" && next.userId === userId) || prev)
+              },
+              prev
             )
           ,false
         )
@@ -158,17 +180,21 @@ module.exports = class FlightRecord {
       .map(doc => new FlightRecord({
         id: doc.id,
         ...doc.data(),
-        // Only include the simulators or stations that the user is on
-        // simulators: doc.data().simulators.map(
-
-        // )
+        // Only include the stations or stations that the user is on
+        simulators: doc.data().simulators.map(sim => ({...sim, stations: sim.stations.filter(
+          station => typeof(station.userId) !== "undefined" && station.userId === userId
+        )}))
+        // Only include the simulators that have the user on a flight
+        .filter(
+          sim => sim.stations.reduce(((prev, next) =>(prev = (next.userId == userId || prev))), false)
+        )
       }))
     return matchingDocs;
   }
 
   /**
    * Assign the user to the current flght record and save to firestore
-   * Retrn the new flight record
+   * Return the new flight record
    */
   async claim(userId) {
     let newId = await firestore()
