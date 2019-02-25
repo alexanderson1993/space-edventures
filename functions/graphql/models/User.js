@@ -29,8 +29,14 @@ module.exports = class User {
    * additionally add the user id to the object's profile attribute
    */
   constructor(params) {
-    Object.entries(params).forEach(([key, value]) => (this[key] = value));
-    this.profile = { ...(this.profile || {}), userId: this.id };
+    this.id = params.id;
+    this.profile = { ...params.profile, userId: params.id };
+    this.roles = params.roles;
+    this.email = params.email;
+    this.parentEmail = params.parentEmail;
+    this.locked = params.locked;
+    this.registeredDate = params.registeredDate;
+    this.birthDate = params.birthDate;
   }
 
   /**
@@ -77,6 +83,21 @@ module.exports = class User {
         (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
         false
       );
+  }
+
+  async update({ name, displayName }) {
+    const update = {};
+    if (name) {
+      this.profile.name = name;
+    }
+    if (displayName) {
+      this.profile.displayName = displayName;
+    }
+    await firestore()
+      .collection("users")
+      .doc(this.id)
+      .update({ profile: this.profile });
+    return this;
   }
 
   async changeProfilePicture(picture) {

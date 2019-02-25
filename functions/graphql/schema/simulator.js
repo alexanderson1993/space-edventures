@@ -87,10 +87,10 @@ module.exports.resolver = {
     simulators: (flightRecord, args, context) => {
       return flightRecord.simulators.map(async sim => {
         let simulator = await Simulator.getSimulator(sim.id);
-        return ({
+        return {
           ...sim,
           ...simulator
-        });
+        };
       });
     }
   },

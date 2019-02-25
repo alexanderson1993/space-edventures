@@ -179,7 +179,7 @@ module.exports.resolver = {
 
       // Make sure they have permissions for this flight record
       let center = await getCenter(context.user);
-      
+
       if (flightRecord.spaceCenterId !== center.id) {
         throw new UserInputError("Insufficient permissions");
       }
@@ -193,7 +193,11 @@ module.exports.resolver = {
      * If you don't include a property, it stays the same
      * If you include a property, it will overwrite the value for it in the database
      */
-    flightEdit: async (rootObj, { id, thoriumFlightId, date, flightTypeId, simulators }, context) => {
+    flightEdit: async (
+      rootObj,
+      { id, thoriumFlightId, date, flightTypeId, simulators },
+      context
+    ) => {
       let center = await getCenter(context.user);
 
       return FlightRecord.createFlightRecord(
@@ -203,7 +207,7 @@ module.exports.resolver = {
         simulators,
         id,
         date
-      )
+      );
     }
   },
   Badge: {
