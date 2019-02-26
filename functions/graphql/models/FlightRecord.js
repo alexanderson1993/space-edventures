@@ -1,5 +1,6 @@
 const { firestore } = require("../connectors/firebase");
 const tokenGenerator = require("../helpers/tokenGenerator");
+const { flightRecordLoader } = require("../loaders");
 // =============================================================================
 // Class for Querying/Mutating flight records
 // =============================================================================
@@ -24,16 +25,8 @@ module.exports = class FlightRecord {
   }
 
   static async getFlightRecord(id) {
-    let flightRecord = await firestore()
-      .collection(collectionName)
-      .doc(id)
-      .get();
-
-    if (!flightRecord.exists) {
-      return false;
-    }
-
-    return new FlightRecord({ ...flightRecord.data(), id: flightRecord.id });
+    const flightRecord = await flightRecordLoader.load(id);
+    return new FlightRecord(flightRecord);
   }
 
   static getFlightRecords(userId, centerId, simulatorId) {
