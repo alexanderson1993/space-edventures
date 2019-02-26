@@ -1,7 +1,8 @@
 const {
   gql,
   AuthenticationError,
-  ForbiddenError
+  ForbiddenError,
+  UserInputError
 } = require("apollo-server-express");
 let User = require("../models/User");
 
@@ -14,7 +15,7 @@ module.exports.schema = gql`
   extend type Mutation {
     userCreate(birthDate: Date!, parentEmail: String): User
     userDelete: Boolean
-    profileEdit(age: Int, name: String, displayName: String): Profile
+    profileEdit(name: String, displayName: String): User
     userChangeProfilePicture(id: ID, picture: Upload!): User
   }
 
@@ -93,6 +94,20 @@ module.exports.resolver = {
         birthDate,
         locked: Boolean(parentEmail)
       });
+    },
+    profileEdit: async (rootQuery, args, context) => {
+      const { user } = context;
+      if (!user)
+        throw new AuthenticationError(
+          "Must be logged in to edit your profile."
+        );
+      const userObj = new User(await User.getUserById(user.id));
+      console.log(userObj);
+      if (!userObj)
+        throw new UserInputError(
+          "Unable to update user profile: profile cannot be found."
+        );
+      return userObj.update(args);
     },
     userDelete: async (rootQuery, args, context) => {
       const { user } = context;

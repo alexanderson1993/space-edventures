@@ -15,7 +15,9 @@ import ProfileContext from "../../helpers/profileContext";
 import css from "@emotion/css";
 import { Mutation } from "react-apollo";
 import SET_PROFILE_PICTURE from "./setProfilePicture.graphql";
+import UPDATE_PROFILE from "./updateProfile.graphql";
 import { dataURItoBlob } from "../../helpers/dataURIToBlob";
+import { titleCase } from "change-case";
 
 const Container = styled("div")`
   display: grid;
@@ -45,9 +47,38 @@ const Table = styled("table")`
   width: 100%;
 `;
 
+const Updater = ({ title, value, editMode }) => {
+  const [newValue, setNewValue] = useState(value);
+  return !editMode ? (
+    <h3>
+      {titleCase(title)}: {newValue}
+    </h3>
+  ) : (
+    <Mutation mutation={UPDATE_PROFILE}>
+      {action => (
+        <FormGroup>
+          <Label>
+            {titleCase(title)}
+            <Input
+              block
+              type="text"
+              defaultValue={value}
+              onBlur={e => {
+                setNewValue(e.target.value);
+                action({ variables: { [title]: e.target.value } });
+              }}
+            />
+          </Label>
+        </FormGroup>
+      )}
+    </Mutation>
+  );
+};
 const Profile = () => {
   const { user } = useContext(ProfileContext);
+  const [editMode, setEditMode] = useState(false);
   const [editPicture, setEditPicture] = useState(false);
+  console.log(user);
   if (user)
     return user.loading ? (
       <Loading animate />
@@ -63,18 +94,16 @@ const Profile = () => {
           </Button>
         </ProfilePictureGrid>
         <UserData>
-          <FormGroup>
-            <Label>
-              Name
-              <Input block type="text" defaultValue={user.name} />
-            </Label>
-          </FormGroup>
-          <FormGroup>
-            <Label>
-              Display Name
-              <Input block type="text" defaultValue={user.displayName} />
-            </Label>
-          </FormGroup>
+          <Updater
+            title={"name"}
+            value={user.profile.name}
+            editMode={editMode}
+          />
+          <Updater
+            title={"displayName"}
+            value={user.profile.displayName}
+            editMode={editMode}
+          />
           <FormGroup>
             <Label>Rank</Label>
             <h3>{user.rank}</h3>
@@ -84,6 +113,9 @@ const Profile = () => {
           <Link to="/profile/certificate">
             <Button>View Rank Certificate</Button>
           </Link>
+          <Button onClick={() => setEditMode(!editMode)}>
+            {editMode ? "Done Editing" : "Edit Profile"}
+          </Button>
         </UserData>
         <History>
           <div>
