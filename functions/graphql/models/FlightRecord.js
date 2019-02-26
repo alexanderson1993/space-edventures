@@ -162,6 +162,7 @@ module.exports = class FlightRecord {
 
   static async getFlightRecordsByUser (userId) {
     let allFlightRecords = await firestore().collection(collectionName).get().then(ref => ref.docs);
+    
     let matchingDocs = allFlightRecords
       // Filter down to just records that have the user's id
       .filter(doc => doc.data().simulators

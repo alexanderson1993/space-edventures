@@ -86,11 +86,45 @@ module.exports.resolver = {
       FlightRecord.getFlightRecords(userId, centerId, simulatorId)
   },
   Profile: {
-    flightHours: (profile, args, context) => {
-      console.log(profile);
+    flightHours: async (profile, args, context) => {
+      let flightHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
+        .then(
+          async records => {
+            let result = await
+              records.reduce(async (prev, record) => {
+                return prev.then(
+                  async prevVal => {
+                    let flightType = await FlightType.getFlightType(record.flightTypeId);
+                    prevVal += (flightType.flightHours || 0);
+                    return prevVal;
+                  }
+                )
+              }, Promise.resolve([]).then(()=>0))
+            ;
+            return result;
+          }
+        );
+      return flightHours;
     },
-    classHours: (profile, args, context) => {
-
+    classHours: async (profile, args, context) => {
+      let classHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
+        .then(
+          async records => {
+            let result = await
+              records.reduce(async (prev, record) => {
+                return prev.then(
+                  async prevVal => {
+                    let flightType = await FlightType.getFlightType(record.flightTypeId);
+                    prevVal += (flightType.classHours || 0);
+                    return prevVal;
+                  }
+                )
+              }, Promise.resolve([]).then(()=>0))
+            ;
+            return result;
+          }
+        );
+      return classHours;
     }
   },
   Mutation: {
