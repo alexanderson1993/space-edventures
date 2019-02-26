@@ -46,6 +46,11 @@ module.exports.schema = gql`
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
   }
 
+  extend type Profile {
+    flightHours: Float
+    classHours: Float
+  }
+
   extend type Mutation {
     # Creates the record of the flight
     # Uses the ID of the flight from Thorium so a flight cannot be recorded twice
@@ -79,6 +84,14 @@ module.exports.resolver = {
       FlightRecord.getFlightRecord(id),
     flightRecords: (rootQuery, { userId, centerId, simulatorId }, context) =>
       FlightRecord.getFlightRecords(userId, centerId, simulatorId)
+  },
+  Profile: {
+    flightHours: (profile, args, context) => {
+      console.log(profile);
+    },
+    classHours: (profile, args, context) => {
+
+    }
   },
   Mutation: {
     /**

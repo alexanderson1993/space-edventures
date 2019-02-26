@@ -24,8 +24,8 @@ module.exports.schema = gql`
     rank: String
     displayName: String
     profilePicture: String
-    flightHours: Float
-    classHours: Float
+    # flightHours: Float # added in flight record schema
+    # classHours: Float # added in flight record schema
   }
 
   type User {
