@@ -8,12 +8,11 @@ const { User } = require("../../../graphql/models");
 describe("User model", () => {
   test("it instantiates", () => {
     const user = new User({
-      name: "Alex",
-      displayName: "Starblaze",
+      profile: { name: "Alex", displayName: "Starblaze" },
       roles: ["admin", "director"]
     });
-    expect(user.name).toEqual("Alex");
-    expect(user.displayName).toEqual("Starblaze");
+    expect(user.profile.name).toEqual("Alex");
+    expect(user.profile.displayName).toEqual("Starblaze");
   });
   test("hasOneOfRoles", () => {
     const user = new User({

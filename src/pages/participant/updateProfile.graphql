@@ -1,0 +1,9 @@
+mutation UpdateProfile($name: String, $displayName: String) {
+  profileEdit(name: $name, displayName: $displayName) {
+    id
+    profile {
+      name
+      displayName
+    }
+  }
+}
