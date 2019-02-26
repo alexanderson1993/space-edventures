@@ -46,6 +46,11 @@ module.exports.schema = gql`
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
   }
 
+  extend type Profile {
+    flightHours: Float
+    classHours: Float
+  }
+
   extend type Mutation {
     # Creates the record of the flight
     # Uses the ID of the flight from Thorium so a flight cannot be recorded twice
@@ -79,6 +84,48 @@ module.exports.resolver = {
       FlightRecord.getFlightRecord(id),
     flightRecords: (rootQuery, { userId, centerId, simulatorId }, context) =>
       FlightRecord.getFlightRecords(userId, centerId, simulatorId)
+  },
+  Profile: {
+    flightHours: async (profile, args, context) => {
+      let flightHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
+        .then(
+          async records => {
+            let result = await
+              records.reduce(async (prev, record) => {
+                return prev.then(
+                  async prevVal => {
+                    let flightType = await FlightType.getFlightType(record.flightTypeId);
+                    prevVal += (flightType.flightHours || 0);
+                    return prevVal;
+                  }
+                )
+              }, Promise.resolve([]).then(()=>0))
+            ;
+            return result;
+          }
+        );
+      return flightHours;
+    },
+    classHours: async (profile, args, context) => {
+      let classHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
+        .then(
+          async records => {
+            let result = await
+              records.reduce(async (prev, record) => {
+                return prev.then(
+                  async prevVal => {
+                    let flightType = await FlightType.getFlightType(record.flightTypeId);
+                    prevVal += (flightType.classHours || 0);
+                    return prevVal;
+                  }
+                )
+              }, Promise.resolve([]).then(()=>0))
+            ;
+            return result;
+          }
+        );
+      return classHours;
+    }
   },
   Mutation: {
     /**
