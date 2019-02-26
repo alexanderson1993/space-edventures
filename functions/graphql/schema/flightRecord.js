@@ -7,7 +7,7 @@ const {
   User
 } = require("../models");
 const getCenter = require("../helpers/getCenter");
-
+const { hoursLoader } = require("../loaders");
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -86,36 +86,17 @@ module.exports.resolver = {
       FlightRecord.getFlightRecords(userId, centerId, simulatorId)
   },
   Profile: {
-    // TODO: These can be improved with Dataloader caching.
     flightHours: async (profile, args, context) => {
-      const flightRecords = await FlightRecord.getFlightRecordsByUser(
-        profile.userId
-      );
-      const flightTypes = await Promise.all(
-        flightRecords.map(record =>
-          FlightType.getFlightType(record.flightTypeId)
-        )
-      );
-      const flightHours = flightTypes.reduce(
-        (prev, type) => prev + (type.flightHours || 0),
-        0
-      );
-      return flightHours;
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "flightHours"
+      });
     },
     classHours: async (profile, args, context) => {
-      const flightRecords = await FlightRecord.getFlightRecordsByUser(
-        profile.userId
-      );
-      const flightTypes = await Promise.all(
-        flightRecords.map(record =>
-          FlightType.getFlightType(record.flightTypeId)
-        )
-      );
-      const flightHours = flightTypes.reduce(
-        (prev, type) => prev + (type.classHours || 0),
-        0
-      );
-      return flightHours;
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "classHours"
+      });
     }
   },
   Mutation: {

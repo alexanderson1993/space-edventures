@@ -37,6 +37,19 @@ module.exports = class Rank {
       });
   }
 
+  static async getByHours(flightHours, classHours) {
+    const ranks = await Rank.getRanks();
+    // The rank will be the one with the highest combined flight and class hours
+    return ranks
+      .filter(r => r.flightHours <= flightHours && r.classHours <= classHours)
+      .sort((a, b) => {
+        if (a.flightHours + a.classHours > b.flightHours + b.classHours)
+          return -1;
+        if (a.flightHours + a.classHours < b.flightHours + b.classHours)
+          return 1;
+        return 0;
+      })[0];
+  }
   static async create(data) {
     // Turns any undefined entry into an empty string.
     const parsedData = Object.entries(data).reduce(

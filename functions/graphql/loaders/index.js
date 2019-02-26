@@ -1,4 +1,5 @@
 module.exports = {
   flightTypeLoader: require("./flightType"),
-  flightRecordLoader: require("./flightRecord")
+  ...require("./flightRecord"),
+  hoursLoader: require("./hoursLoader")
 };

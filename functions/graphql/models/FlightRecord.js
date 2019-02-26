@@ -1,6 +1,6 @@
 const { firestore } = require("../connectors/firebase");
 const tokenGenerator = require("../helpers/tokenGenerator");
-const { flightRecordLoader } = require("../loaders");
+const { flightRecordLoader, flightRecordUserLoader } = require("../loaders");
 // =============================================================================
 // Class for Querying/Mutating flight records
 // =============================================================================
@@ -157,51 +157,7 @@ module.exports = class FlightRecord {
   }
 
   static async getFlightRecordsByUser(userId) {
-    let allFlightRecords = await firestore()
-      .collection(collectionName)
-      .get()
-      .then(ref => ref.docs);
-    let matchingDocs = allFlightRecords
-      // Filter down to just records that have the user's id
-      .filter(doc =>
-        doc.data().simulators.reduce(
-          (prev, simulator) =>
-            simulator.stations.reduce((prev, next) => {
-              return (prev =
-                (typeof next.userId !== "undefined" &&
-                  next.userId === userId) ||
-                prev);
-            }, prev),
-          false
-        )
-      )
-      // Map the filtered results to flight record objects
-      .map(
-        doc =>
-          new FlightRecord({
-            id: doc.id,
-            ...doc.data(),
-            // Only include the stations or stations that the user is on
-            simulators: doc
-              .data()
-              .simulators.map(sim => ({
-                ...sim,
-                stations: sim.stations.filter(
-                  station =>
-                    typeof station.userId !== "undefined" &&
-                    station.userId === userId
-                )
-              }))
-              // Only include the simulators that have the user on a flight
-              .filter(sim =>
-                sim.stations.reduce(
-                  (prev, next) => (prev = next.userId === userId || prev),
-                  false
-                )
-              )
-          })
-      );
-    return matchingDocs;
+    return flightRecordUserLoader.load(userId);
   }
 
   /**

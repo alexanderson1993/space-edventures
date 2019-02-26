@@ -1,6 +1,6 @@
 const { gql } = require("apollo-server-express");
 const { Rank } = require("../models");
-
+const { hoursLoader } = require("../loaders");
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -74,6 +74,17 @@ module.exports.resolver = {
     }
   },
   Profile: {
-    rank: (profile, args, context) => {}
+    rank: async (user, args, context) => {
+      const flightHours = await hoursLoader.load({
+        userId: user.userId,
+        hourType: "flightHours"
+      });
+      const classHours = await hoursLoader.load({
+        userId: user.userId,
+        hourType: "classHours"
+      });
+
+      return Rank.getByHours(flightHours, classHours);
+    }
   }
 };
