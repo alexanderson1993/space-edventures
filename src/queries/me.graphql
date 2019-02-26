@@ -6,7 +6,10 @@ query Me {
       name
       displayName
       profilePicture
-      rank
+      rank {
+        id
+        name
+      }
       flightHours
       classHours
     }

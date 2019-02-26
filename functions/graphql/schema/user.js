@@ -22,7 +22,7 @@ module.exports.schema = gql`
   type Profile @auth(requires: [self, admin]) {
     age: Int
     name: String
-    rank: String
+    # rank: String
     displayName: String
     profilePicture: String
     # flightHours: Float # added in flight record schema

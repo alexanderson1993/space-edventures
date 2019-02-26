@@ -1,0 +1,21 @@
+mutation UpdateRank(
+  $id: ID!
+  $name: String
+  $description: String
+  $flightHours: Float
+  $classHours: Float
+) {
+  rankUpdate(
+    id: $id
+    name: $name
+    description: $description
+    flightHours: $flightHours
+    classHours: $classHours
+  ) {
+    id
+    name
+    description
+    flightHours
+    classHours
+  }
+}

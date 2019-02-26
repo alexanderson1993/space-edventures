@@ -1,0 +1,19 @@
+mutation CreateRank(
+  $name: String!
+  $description: String
+  $flightHours: Float!
+  $classHours: Float!
+) {
+  rankCreate(
+    name: $name
+    description: $description
+    flightHours: $flightHours
+    classHours: $classHours
+  ) {
+    id
+    name
+    description
+    flightHours
+    classHours
+  }
+}

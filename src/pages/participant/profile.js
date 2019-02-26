@@ -105,7 +105,7 @@ const Profile = () => {
           />
           <FormGroup>
             <Label>Rank</Label>
-            <h3>{user.profile.rank}</h3>
+            <h3>{user.profile.rank && user.profile.rank.name}</h3>
             <div>Flight Hours: {user.profile.flightHours}</div>
             <div>Class Hours: {user.profile.classHours}</div>
           </FormGroup>

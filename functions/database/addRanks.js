@@ -3,33 +3,39 @@ module.exports = function addRanks(db) {
     {
       name: "Cadet",
       description: "You're just starting out",
-      order: 1
+      flightHours: 0,
+      classHours: 0
     },
     {
       name: "Padawan",
       description: "You started a while ago",
-      order: 2
+      flightHours: 2,
+      classHours: 2
     },
     {
       name: "Acolyte",
       description: "You've learned magic too, Yay",
-      order: 3
+      flightHours: 4,
+      classHours: 4
     },
     {
       name: "Graduate",
       description: "You're ready for actual combat",
-      order: 4
+      flightHours: 8,
+      classHours: 8
     },
     {
       name: "Ensign",
       description:
         "You can now be trusted with a weapon, but you still only get a red shirt",
-      order: 5
+      flightHours: 12,
+      classHours: 10
     },
     {
       name: "Admiral",
       description: "Seems like you've made it to the top",
-      order: 6
+      flightHours: 20,
+      classHours: 15
     }
   ];
   return Promise.all(ranks.map(rank => db.collection("ranks").add(rank)));

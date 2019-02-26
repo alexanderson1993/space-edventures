@@ -8,6 +8,9 @@ const Menu = () => (
       <li>
         <Link to="/admin/verify">COPPA Account Verification</Link>
       </li>
+      <li>
+        <Link to="/admin/ranks">Ranks</Link>
+      </li>
     </ul>
   </div>
 );
