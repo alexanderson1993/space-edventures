@@ -6,6 +6,9 @@ query Me {
       name
       displayName
       profilePicture
+      rank
+      flightHours
+      classHours
     }
     roles
   }

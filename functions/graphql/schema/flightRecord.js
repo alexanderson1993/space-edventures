@@ -86,45 +86,36 @@ module.exports.resolver = {
       FlightRecord.getFlightRecords(userId, centerId, simulatorId)
   },
   Profile: {
+    // TODO: These can be improved with Dataloader caching.
     flightHours: async (profile, args, context) => {
-      let flightHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
-        .then(
-          async records => {
-            let result = await
-              records.reduce(async (prev, record) => {
-                return prev.then(
-                  async prevVal => {
-                    let flightType = await FlightType.getFlightType(record.flightTypeId);
-                    prevVal += (flightType.flightHours || 0);
-                    return prevVal;
-                  }
-                )
-              }, Promise.resolve([]).then(()=>0))
-            ;
-            return result;
-          }
-        );
+      const flightRecords = await FlightRecord.getFlightRecordsByUser(
+        profile.userId
+      );
+      const flightTypes = await Promise.all(
+        flightRecords.map(record =>
+          FlightType.getFlightType(record.flightTypeId)
+        )
+      );
+      const flightHours = flightTypes.reduce(
+        (prev, type) => prev + (type.flightHours || 0),
+        0
+      );
       return flightHours;
     },
     classHours: async (profile, args, context) => {
-      let classHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
-        .then(
-          async records => {
-            let result = await
-              records.reduce(async (prev, record) => {
-                return prev.then(
-                  async prevVal => {
-                    let flightType = await FlightType.getFlightType(record.flightTypeId);
-                    prevVal += (flightType.classHours || 0);
-                    return prevVal;
-                  }
-                )
-              }, Promise.resolve([]).then(()=>0))
-            ;
-            return result;
-          }
-        );
-      return classHours;
+      const flightRecords = await FlightRecord.getFlightRecordsByUser(
+        profile.userId
+      );
+      const flightTypes = await Promise.all(
+        flightRecords.map(record =>
+          FlightType.getFlightType(record.flightTypeId)
+        )
+      );
+      const flightHours = flightTypes.reduce(
+        (prev, type) => prev + (type.classHours || 0),
+        0
+      );
+      return flightHours;
     }
   },
   Mutation: {

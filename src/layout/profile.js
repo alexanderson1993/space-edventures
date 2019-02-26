@@ -23,11 +23,11 @@ const Profile = () => {
         <div className="profile" onClick={() => setOpen(!open)}>
           <div className="profile-info">
             <p className="profile-rank">
-              <Words>{user.rank}</Words>
+              <Words>{user.profile.rank}</Words>
             </p>
             <div className="profile-hours">
-              <p>Flight: {user.flightHours}</p>
-              <p>Class: {user.classHours}</p>
+              <p>Flight: {user.profile.flightHours}</p>
+              <p>Class: {user.profile.classHours}</p>
             </div>
           </div>
           <ProfilePicture
