@@ -1,5 +1,5 @@
 const { firestore } = require("../connectors/firebase");
-
+const { flightTypeLoader } = require("../loaders");
 // =============================================================================
 // Class for Querying/Mutating flight types
 // =============================================================================
@@ -16,16 +16,9 @@ module.exports = class FlightType {
   }
 
   static async getFlightType(id) {
-    let flightType = await firestore()
-      .collection(collectionName)
-      .doc(id)
-      .get();
+    const flightType = await flightTypeLoader.load(id);
 
-    if (!flightType.exists) {
-      return false;
-    }
-
-    return new FlightType({ ...flightType.data(), id: flightType.id });
+    return new FlightType(flightType);
   }
 
   static getFlightTypes(centerId) {

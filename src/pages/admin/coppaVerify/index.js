@@ -1,9 +1,9 @@
 import React from "react";
 import GET_ACCOUNTS from "./getUnverifiedAccounts.graphql";
-import graphQLHelper from "../../helpers/graphQLHelper";
+import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Query, Mutation } from "react-apollo";
 import css from "@emotion/css";
-import { Button } from "../../components";
+import { Button } from "../../../components";
 import VERIFY_VALIDATION from "./validateVerification.graphql";
 import { Loading } from "@arwes/arwes";
 

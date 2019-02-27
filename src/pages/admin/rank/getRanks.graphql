@@ -1,0 +1,9 @@
+query Ranks {
+  ranks {
+    id
+    name
+    description
+    flightHours
+    classHours
+  }
+}
