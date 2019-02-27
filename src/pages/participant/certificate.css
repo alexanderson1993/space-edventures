@@ -1,0 +1,5 @@
+@font-face {
+  font-family: "Diploma";
+  src: local("Diploma"), url(./diploma.woff) format("woff"),
+    url(./diploma.ttf) format("ttf");
+}
