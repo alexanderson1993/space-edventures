@@ -7,7 +7,7 @@ const {
   User
 } = require("../models");
 const getCenter = require("../helpers/getCenter");
-
+const { hoursLoader } = require("../loaders");
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -87,44 +87,16 @@ module.exports.resolver = {
   },
   Profile: {
     flightHours: async (profile, args, context) => {
-      let flightHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
-        .then(
-          async records => {
-            let result = await
-              records.reduce(async (prev, record) => {
-                return prev.then(
-                  async prevVal => {
-                    let flightType = await FlightType.getFlightType(record.flightTypeId);
-                    prevVal += (flightType.flightHours || 0);
-                    return prevVal;
-                  }
-                )
-              }, Promise.resolve([]).then(()=>0))
-            ;
-            return result;
-          }
-        );
-      return flightHours;
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "flightHours"
+      });
     },
     classHours: async (profile, args, context) => {
-      let classHours = await FlightRecord.getFlightRecordsByUser(profile.userId)
-        .then(
-          async records => {
-            let result = await
-              records.reduce(async (prev, record) => {
-                return prev.then(
-                  async prevVal => {
-                    let flightType = await FlightType.getFlightType(record.flightTypeId);
-                    prevVal += (flightType.classHours || 0);
-                    return prevVal;
-                  }
-                )
-              }, Promise.resolve([]).then(()=>0))
-            ;
-            return result;
-          }
-        );
-      return classHours;
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "classHours"
+      });
     }
   },
   Mutation: {

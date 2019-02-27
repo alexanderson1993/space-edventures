@@ -56,10 +56,9 @@ function configureServer() {
     }
     next();
   });
-
   const server = new ApolloServer({
     schema,
-    engine: process.env.ENGINE_API_KEY,
+    engine: { apiKey: process.env.ENGINE_API_KEY },
     tracing: process.env.NODE_ENV !== "production",
     uploads: false,
     context: async ({ req }) => {

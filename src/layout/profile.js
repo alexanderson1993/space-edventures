@@ -17,17 +17,18 @@ const Profile = () => {
   const { user: authUser, loading, logout } = useContext(AuthContext);
   const { user } = useContext(ProfileContext);
   if (loading || user.loading) return <Loading animate small />;
+  console.log(user);
   if (authUser)
     return (
       <div className="profile-container">
         <div className="profile" onClick={() => setOpen(!open)}>
           <div className="profile-info">
             <p className="profile-rank">
-              <Words>{user.rank}</Words>
+              <Words>{user.profile.rank ? user.profile.rank.name : ""}</Words>
             </p>
             <div className="profile-hours">
-              <p>Flight: {user.flightHours}</p>
-              <p>Class: {user.classHours}</p>
+              <p>Flight: {user.profile.flightHours}</p>
+              <p>Class: {user.profile.classHours}</p>
             </div>
           </div>
           <ProfilePicture

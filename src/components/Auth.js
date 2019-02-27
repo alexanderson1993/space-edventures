@@ -12,7 +12,7 @@ const Auth = ({ roles, children, userId }) => {
   return null;
 };
 
-Auth.PropTypes = {
+Auth.propTypes = {
   roles: PropTypes.arrayOf(PropTypes.string).isRequired,
   children: PropTypes.element.isRequired,
   userId: PropTypes.string

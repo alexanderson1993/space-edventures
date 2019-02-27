@@ -4,7 +4,9 @@ import { Link, Words, Content } from "../../components";
 import Auth from "../../components/Auth";
 const Menu = lazy(() => import("./menu"));
 const CoppaVerify = lazy(() => import("./coppaVerify"));
-
+const Ranks = lazy(() => import("./rank"));
+const RankCreate = lazy(() => import("./rank/create"));
+const RankEdit = lazy(() => import("./rank/edit"));
 const NotFound = () => (
   <div>
     <h1>
@@ -25,6 +27,9 @@ export default () => {
         <Router>
           <Menu path="/" />
           <CoppaVerify path="verify" />
+          <Ranks path="ranks" />
+          <RankCreate path="ranks/create" />
+          <RankEdit path="ranks/:id" />
           <NotFound default />
         </Router>
       </Content>

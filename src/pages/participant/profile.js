@@ -78,7 +78,6 @@ const Profile = () => {
   const { user } = useContext(ProfileContext);
   const [editMode, setEditMode] = useState(false);
   const [editPicture, setEditPicture] = useState(false);
-  console.log(user);
   if (user)
     return user.loading ? (
       <Loading animate />
@@ -106,9 +105,9 @@ const Profile = () => {
           />
           <FormGroup>
             <Label>Rank</Label>
-            <h3>{user.rank}</h3>
-            <div>Flight Hours: {user.flightHours}</div>
-            <div>Class Hours: {user.classHours}</div>
+            <h3>{user.profile.rank && user.profile.rank.name}</h3>
+            <div>Flight Hours: {user.profile.flightHours}</div>
+            <div>Class Hours: {user.profile.classHours}</div>
           </FormGroup>
           <Link to="/profile/certificate">
             <Button>View Rank Certificate</Button>
