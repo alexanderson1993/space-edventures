@@ -10,6 +10,7 @@ query CenterDirector {
       simulatorCount
       badgeCount
       missionCount
+      flightRecordCount
       stripeCustomer {
         email
         subscriptions {

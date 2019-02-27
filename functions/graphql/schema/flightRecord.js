@@ -30,7 +30,7 @@ module.exports.schema = gql`
   input FlightStationInput {
     name: String! # The name of the station. Required
     badges: [ID]! # The list of badges that the station earned. Includes missions
-    userId: ID! # ID of the user who was at this station for this flight
+    userId: ID # ID of the user who was at this station for this flight
   }
 
   extend type Badge {
@@ -43,12 +43,17 @@ module.exports.schema = gql`
 
   extend type Query {
     flightRecord(id: ID!): FlightRecord
-    flightRecords(userId: ID, centerId: ID, simulatorId: ID): FlightRecord
+    flightRecords(userId: ID, centerId: ID, simulatorId: ID): [FlightRecord]
   }
 
   extend type Profile {
     flightHours: Float
     classHours: Float
+  }
+
+  extend type Center {
+    flightRecordCount: Int
+    flightRecords(limit: Int, skip: Int): [FlightRecord]
   }
 
   extend type Mutation {
@@ -82,8 +87,19 @@ module.exports.resolver = {
   Query: {
     flightRecord: (rootQuery, { id }, context) =>
       FlightRecord.getFlightRecord(id),
-    flightRecords: (rootQuery, { userId, centerId, simulatorId }, context) =>
-      FlightRecord.getFlightRecords(userId, centerId, simulatorId)
+    flightRecords: async (
+      rootQuery,
+      { userId, centerId, simulatorId },
+      context
+    ) => {
+      const records = await FlightRecord.getFlightRecords(
+        userId,
+        centerId,
+        simulatorId
+      );
+      console.log(records);
+      return records;
+    }
   },
   Profile: {
     flightHours: async (profile, args, context) => {
@@ -129,11 +145,11 @@ module.exports.resolver = {
       if (!flightType) {
         throw new UserInputError("Invalid flight type id provided.");
       }
-
       // Make sure this flight record doesn't already exist
       let flightRecord = await FlightRecord.getFlightRecordByThoriumId(
         thoriumFlightId
       );
+
       if (flightRecord) {
         throw new UserInputError(
           "This Thorium flight already exists in the system."
@@ -155,42 +171,59 @@ module.exports.resolver = {
       let simulator;
       let badge;
       let user;
-      await Promise.all(
-        simulators.map(async sim => {
-          simulator = await Simulator.getSimulator(sim.id);
-          if (!simulator || simulator.centerId !== centerIdValue) {
+
+      const simChecks = simulators.map(sim =>
+        Simulator.getSimulator(sim.id).then(sim => {
+          if (!sim || sim.centerId !== centerIdValue) {
             throw new UserInputError("Invalid simulator id provided");
           }
-          await Promise.all(
-            sim.stations.map(async station => {
-              // Make sure the center has these badges
-              await Promise.all(
-                station.badges.map(async badgeId => {
-                  badge = await Badge.getBadge(badgeId);
-                  if (!badge) {
-                    throw new UserInputError("Invalid badge id provided");
-                  }
-                })
-              );
-
-              // Make sure these users exist, and assign tokens if not
-              user = await User.getUserById(station.userId);
-              if (station.userId === "undefined" || !user) {
-                // Add a token to the simulator station, and remove the invalid user id
-                delete station.userId;
-              }
-            })
-          );
+          return;
         })
       );
+      const stations = simulators.reduce(
+        (prev, sim) => prev.concat(sim.stations),
+        []
+      );
+      const badgesCheck = stations.map(station =>
+        station.badges.map(badgeId =>
+          Badge.getBadge(badgeId).then(badge => {
+            if (!badge) {
+              throw new UserInputError("Invalid badge id provided");
+            }
+            return;
+          })
+        )
+      );
+      const usersCheck = stations
+        .filter(s => s.userId)
+        .map(station =>
+          User.getUserById(station.userId).then(user => {
+            if (!user) {
+              // TODO: Add a token to the simulator station, and remove the invalid user id
+            }
+            return;
+          })
+        );
 
+      // Do all of the checks at once.
+      // It will error if there is a problem
+      await Promise.all(
+        []
+          .concat(simChecks)
+          .concat(badgesCheck)
+          .concat(usersCheck)
+      );
       // Create the flight record object and include the simulator/station information
-      return FlightRecord.createFlightRecord(
+      const record = await FlightRecord.createFlightRecord(
         centerIdValue,
         thoriumFlightId,
         flightTypeId,
         simulators
       );
+
+      console.log("Record created");
+      console.log(record);
+      return record;
     },
     // End flight record create
     flightDelete: async (rootObj, { id }, context) => {
@@ -237,6 +270,12 @@ module.exports.resolver = {
     flights: (user, args, context) => {
       return FlightRecord.getFlightRecordsByUser(user.id);
     }
+  },
+  Center: {
+    flightRecordCount: (center, args, context) => {
+      return FlightRecord.flightRecordCount(center.id);
+    },
+    flightRecords: (center, { limit, skip }, context) => {}
   }
 };
 

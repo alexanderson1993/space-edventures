@@ -1,0 +1,16 @@
+query GetFlights($centerId: ID!) {
+  flightRecords(centerId: $centerId) {
+    id
+    flightType {
+      id
+      name
+    }
+    simulators {
+      id
+      name
+      stations {
+        name
+      }
+    }
+  }
+}

@@ -228,22 +228,33 @@ const Dashboard = () => {
       <Website {...center} editMode={editMode} />
       <div
         css={css`
-          display: flex;
-          justify-content: space-around;
+          margin-top: 60px;
         `}
       >
-        <Highlight>
-          <Num>{center.simulatorCount}</Num>
-          <p>Simulators</p>
-        </Highlight>
-        <Highlight>
-          <Num>{center.missionCount}</Num>
-          <p>Missions</p>
-        </Highlight>
-        <Highlight>
-          <Num>{center.badgeCount}</Num>
-          <p>Badges</p>
-        </Highlight>
+        <h2>Statistics</h2>
+        <div
+          css={css`
+            display: flex;
+            justify-content: space-around;
+          `}
+        >
+          <Highlight>
+            <Num>{center.simulatorCount}</Num>
+            <p>Simulators</p>
+          </Highlight>
+          <Highlight>
+            <Num>{center.missionCount}</Num>
+            <p>Missions</p>
+          </Highlight>
+          <Highlight>
+            <Num>{center.badgeCount}</Num>
+            <p>Badges</p>
+          </Highlight>
+          <Highlight>
+            <Num>{center.flightRecordCount}</Num>
+            <p>Flights</p>
+          </Highlight>
+        </div>
       </div>
     </>
   );
