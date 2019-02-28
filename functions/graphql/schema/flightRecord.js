@@ -8,6 +8,7 @@ const {
 } = require("../models");
 const getCenter = require("../helpers/getCenter");
 const { hoursLoader } = require("../loaders");
+
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -42,8 +43,9 @@ module.exports.schema = gql`
   }
 
   extend type Query {
-    flightRecord(id: ID!): FlightRecord
+    flightRecord(id: ID!): FlightRecord @auth(requires: [director])
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): [FlightRecord]
+      @auth(requires: [director])
   }
 
   extend type Profile {
@@ -92,12 +94,12 @@ module.exports.resolver = {
       { userId, centerId, simulatorId },
       context
     ) => {
+      const center = await getCenter(context.user);
       const records = await FlightRecord.getFlightRecords(
         userId,
-        centerId,
+        centerId || center.id,
         simulatorId
       );
-      console.log(records);
       return records;
     }
   },
@@ -168,10 +170,6 @@ module.exports.resolver = {
       }
 
       // Make sure this center has these simulators
-      let simulator;
-      let badge;
-      let user;
-
       const simChecks = simulators.map(sim =>
         Simulator.getSimulator(sim.id).then(sim => {
           if (!sim || sim.centerId !== centerIdValue) {
@@ -221,8 +219,6 @@ module.exports.resolver = {
         simulators
       );
 
-      console.log("Record created");
-      console.log(record);
       return record;
     },
     // End flight record create

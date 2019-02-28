@@ -27,7 +27,14 @@ const {
   resolver: CoppaVerifyResolver
 } = require("./coppaVerify");
 const { schema: RankSchema, resolver: RankResolver } = require("./ranks");
-const { schema: MessageSchema, resolver: MessageResolver } = require("./message");
+const {
+  schema: MessageSchema,
+  resolver: MessageResolver
+} = require("./message");
+const {
+  schema: FlightUserRecordSchema,
+  resolver: FlightUserRecordResolver
+} = require("./flightUserRecord");
 const { schema: directivesSchema, schemaDirectives } = require("./directives");
 
 const { merge } = require("lodash");
@@ -64,7 +71,8 @@ module.exports = makeExecutableSchema({
     StripeSchema,
     CoppaVerifySchema,
     RankSchema,
-    MessageSchema
+    MessageSchema,
+    FlightUserRecordSchema
   ].concat(directivesSchema),
   resolvers: merge(
     MainResolver,
@@ -79,7 +87,8 @@ module.exports = makeExecutableSchema({
     StripeResolver,
     CoppaVerifyResolver,
     RankResolver,
-    MessageResolver
+    MessageResolver,
+    FlightUserRecordResolver
   ),
   schemaDirectives
 });
