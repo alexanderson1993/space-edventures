@@ -11,13 +11,14 @@ const COLLECTION_NAME = "messages";
 
 module.exports = class Message {
   constructor(
-    id,
     {
+      id,
       /*string*/ subject,
       /*string*/ message,
       /*string*/ senderId,
       /*array[string]*/ recipients,
-      /*array[string]*/ hasReadList
+      /*array[string]*/ hasReadList,
+      /*Date*/ date
     }
   ) {
     this.id = id;
@@ -26,25 +27,28 @@ module.exports = class Message {
     this.senderId = senderId;
     this.recipients = recipients;
     this.hasReadList = hasReadList;
+    this.date = date;
   }
 
   // ===========================================================================
   // Staic Methods
   // ===========================================================================
   static async createMessage(subject, message, senderId, recipients) {
-    let newId = await firestore()
+    let newId = (await firestore()
       .collection(COLLECTION_NAME)
       .add({
         subject: subject,
         message: message,
         senderId: senderId,
-        recipients: recipients
-      });
+        recipients: recipients,
+        date: new Date()
+      })).id;
     let newMessage = await firestore()
       .collection(COLLECTION_NAME)
       .doc(newId)
       .get();
-    return new Message({ id: newMessage.Id, ...newMessage.data() });
+
+    return new Message({ id: newMessage.id, ...newMessage.data() });
   }
 
   static async getMessage(messageId) {
@@ -56,22 +60,39 @@ module.exports = class Message {
   }
 
   // Should this remove the recipient list so that an end user can't see the other recipients on a message?
-  static async getMessagesByReciver(recipientId) {
-    let messages = await firestore()
+  static async getMessagesByUserId(userId) {
+    const messagesReceived = (await firestore()
       .collection(COLLECTION_NAME)
-      .where("recipients", "array_contains", recipientId);
-    let hasReadList =
-      Array.isArray(message.hasReadList) &&
-      message.hasReadList.includes(recipientId)
-        ? [recipientId]
-        : [];
+      .where("recipients", "array-contains", userId)
+      .get()
+      .then(ref => ref.docs))
+      .filter(doc => doc.data().senderId !== userId); // Don't include values here if they are the sender (since that would make duplicates)
+    let messagesSent = await firestore()
+      .collection(COLLECTION_NAME)
+      .where("senderId", "==", userId)
+      .get()
+      .then(ref => ref.docs);
+
+    let messages = messagesReceived.concat(messagesSent);
+    
     return messages.map(
-      message =>
-        new Message(message.id, {
+      message => {
+        const recipients = message.data().recipients;
+        let retObj = new Message({
+          id: message.id,
           ...message.data(),
-          recipients: [recipientId],
-          hasReadList: hasReadList
+          recipients: ((Array.isArray(recipients) &&
+          recipients.includes(userId))
+          ? [userId]
+          : recipients),
+          hasReadList: ((Array.isArray(message.hasReadList) &&
+            message.hasReadList.includes(userId))
+            ? [userId]
+            : []
+          )
         })
+        return retObj;
+      }
     );
   }
 
