@@ -10,7 +10,8 @@ const { firestore } = require("../connectors/firebase");
 const COLLECTION_NAME = "messages";
 
 module.exports = class Message {
-  constructor(id, {/*string*/subject, /*string*/message, /*string*/senderId, /*array[string]*/recipients, /*array[string]*/hasReadList}) {
+  constructor({id, /*string*/subject, /*string*/message, /*string*/senderId, /*array[string]*/recipients, /*array[string]*/hasReadList}) {
+    // console.log(id);
     this.id = id;
     this.subject = subject;
     this.message = message;
@@ -23,14 +24,14 @@ module.exports = class Message {
   // Staic Methods
   // ===========================================================================
   static async createMessage (subject, message, senderId, recipients) {
-    let newId = await firestore().collection(COLLECTION_NAME).add({
+    let newId = (await firestore().collection(COLLECTION_NAME).add({
       subject: subject,
       message: message,
       senderId: senderId,
       recipients: recipients
-    });
+    })).id;
     let newMessage = await firestore().collection(COLLECTION_NAME).doc(newId).get();
-    return new Message({id: newMessage.Id, ...newMessage.data()});
+    return new Message({id: newMessage.id, ...newMessage.data()});
   }
 
   static async getMessage (messageId) {
@@ -39,7 +40,7 @@ module.exports = class Message {
   }
 
   // Should this remove the recipient list so that an end user can't see the other recipients on a message?
-  static async getMessagesByReciver(recipientId) {
+  static async getMessagesByReceiver(recipientId) {
     let messages = await firestore().collection(COLLECTION_NAME).where('recipients', 'array_contains', recipientId);
     let hasReadList = (
       Array.isArray(message.hasReadList) && message.hasReadList.includes(recipientId)
