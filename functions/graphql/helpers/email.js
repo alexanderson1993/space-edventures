@@ -14,7 +14,7 @@ let transporter =
 
 transporter.verify(error => {
   if (error) {
-    console.log(error);
+    console.error(error);
   }
 });
 

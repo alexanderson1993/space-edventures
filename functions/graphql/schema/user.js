@@ -36,6 +36,7 @@ module.exports.schema = gql`
     profile: Profile
     registeredDate: Date
     locked: Boolean
+    token: String
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
     # flights
@@ -102,7 +103,6 @@ module.exports.resolver = {
           "Must be logged in to edit your profile."
         );
       const userObj = new User(await User.getUserById(user.id));
-      console.log(userObj);
       if (!userObj)
         throw new UserInputError(
           "Unable to update user profile: profile cannot be found."
