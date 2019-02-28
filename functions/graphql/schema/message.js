@@ -23,7 +23,7 @@ module.exports.schema = gql`
       subject: String!
       message: String!
       recipients: [ID]!
-    ): Rank @auth(requires: [director])
+    ): Message @auth(requires: [director])
 
     messageMarkRead(messageId: ID!): Message @auth(requires: [authenticated])
   }
