@@ -17,7 +17,7 @@ const parentVerify = require("../emails/parentVerify");
 const parentConsent = require("../emails/parentConsent");
 const childConsent = require("../emails/childConsent");
 const parentReverify = require("../emails/parentReverify");
-
+const tokenGenerator = require("../helpers/tokenGenerator");
 module.exports = class User {
   /**
    * Param: params (dictionary)
@@ -37,6 +37,7 @@ module.exports = class User {
     this.locked = params.locked;
     this.registeredDate = params.registeredDate;
     this.birthDate = params.birthDate;
+    this.token = params.token;
   }
 
   /**
@@ -360,6 +361,7 @@ module.exports = class User {
         registeredDate: new Date(),
         classHours: 0,
         flightHours: 0,
+        token: tokenGenerator(),
         badges: [],
         roles: []
       });

@@ -17,7 +17,6 @@ const Profile = () => {
   const { user: authUser, loading, logout } = useContext(AuthContext);
   const { user } = useContext(ProfileContext);
   if (loading || user.loading) return <Loading animate small />;
-  console.log(user);
   if (authUser)
     return (
       <div className="profile-container">

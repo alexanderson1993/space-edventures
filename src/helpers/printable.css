@@ -6,7 +6,17 @@
 }
 
 @media print {
+  html,
+  body {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+  }
+  * {
+    visibility: hidden;
+  }
   .printable * {
     visibility: visible;
+    color: black;
   }
 }
