@@ -1,6 +1,5 @@
 const { firestore } = require("../connectors/firebase");
-const tokenGenerator = require("../helpers/tokenGenerator");
-const { flightRecordLoader, flightRecordUserLoader } = require("../loaders");
+const { flightRecordLoader } = require("../loaders");
 // =============================================================================
 // Class for Querying/Mutating flight records
 // =============================================================================
@@ -14,18 +13,19 @@ module.exports = class FlightRecord {
     spaceCenterId,
     simulators,
     flightTypeId,
-    redeemingToken /* Used when this was retrieved by token, so we know which station to assign user to */
   }) {
     this.id = id;
     this.date = date;
     this.spaceCenterId = spaceCenterId;
     this.simulators = simulators;
     this.flightTypeId = flightTypeId;
-    this.redeemingToken = redeemingToken;
   }
 
   static async getFlightRecord(id) {
     const flightRecord = await flightRecordLoader.load(id);
+    if (!flightRecord) {
+      return false;
+    };
     return new FlightRecord(flightRecord);
   }
 
@@ -36,7 +36,7 @@ module.exports = class FlightRecord {
       .get()
       .then(res => res.size);
   }
-  static getFlightRecords(userId, centerId, simulatorId) {
+  static getFlightRecords(centerId, simulatorId) {
     let matchingRecords = firestore().collection(collectionName);
 
     if (typeof centerId !== "undefined") {
@@ -57,15 +57,8 @@ module.exports = class FlightRecord {
             typeof simulatorId !== "undefined"
               ? result.simulatorId === simulatorId
               : true;
-          let matchesUser =
-            typeof userId !== "undefined"
-              ? result.stations.reduce(
-                  (accumulator, currentValue) =>
-                    accumulator || currentValue.userId === userId,
-                  false
-                )
-              : true;
-          return matchesSim && matchesUser;
+          
+          return matchesSim;
         });
       });
   }
@@ -91,13 +84,6 @@ module.exports = class FlightRecord {
         id: sim.id,
         stations: sim.stations.map(station => {
           let stationData = { name: station.name, badges: station.badges };
-
-          // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
-          if (typeof station.userId !== "undefined") {
-            stationData.userId = station.userId;
-          } else {
-            stationData.token = tokenGenerator();
-          }
 
           return stationData;
         })
@@ -161,83 +147,6 @@ module.exports = class FlightRecord {
           ? new FlightRecord({ ...ref.docs[0].data(), id: ref.docs[0].id })
           : false
       );
-  }
-
-  static async getFlightRecordsByUser(userId) {
-    return flightRecordUserLoader.load(userId);
-  }
-
-  /**
-   * Assign the user to the current flght record and save to firestore
-   * Return the new flight record
-   */
-  async claim(userId) {
-    let newId = await firestore()
-      .collection(collectionName)
-      .doc(this.id)
-      .set(
-        {
-          simulators: this.simulators.map(sim => ({
-            ...sim,
-            stations: sim.stations.map(station => {
-              // If the station's token matches the token that is being redeemed, replace the token with the user id
-              if (
-                typeof station.token !== "undefined" &&
-                station.token === this.redeemingToken
-              ) {
-                delete station.token;
-                station.userId = userId;
-              }
-              return station;
-            })
-          }))
-        },
-        { merge: true }
-      );
-    delete this.redeemingToken;
-    return this;
-  }
-
-  /**
-   * Search the list of flight records for a specific token
-   * Return the flight record
-   * NOTES
-   *  - Could be optimized by finding some way to avoid having to search all flight record and their sub-arrays
-   */
-  static async getFlightRecordByToken(token) {
-    let allFlightRecords = await firestore()
-      .collection(collectionName)
-      .get()
-      .then(ref => ref.docs);
-
-    let matchingDoc = allFlightRecords
-      // Filter down to just records that have the token
-      .filter(doc =>
-        doc
-          .data()
-          .simulators.reduce(
-            (prev, simulator) =>
-              simulator.stations.reduce(
-                (prev, next) =>
-                  (prev =
-                    (typeof next.token !== "undefined" &&
-                      next.token === token) ||
-                    prev),
-                false
-              ),
-            false
-          )
-      )
-      // Map the filtered results to flight record objects
-      .map(
-        doc =>
-          new FlightRecord({
-            id: doc.id,
-            ...doc.data(),
-            redeemingToken: token
-          })
-      );
-    return matchingDoc[0];
   }
 
   async editFlightRecord(newData) {

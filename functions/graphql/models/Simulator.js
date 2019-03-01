@@ -5,14 +5,21 @@ const { firestore } = require("../connectors/firebase");
 // =============================================================================
 
 module.exports = class Simulator {
-  static async createSimulator(name, centerId) {
+  constructor({ id, name, stations, centerId }) {
+    this.id = id;
+    this.name = name;
+    this.centerId = centerId;
+    this.stations = stations;
+  }
+  static async createSimulator(name, stations, centerId) {
     const simulatorData = await firestore()
       .collection("simulators")
       .add({
         name,
+        stations,
         centerId
       });
-    return new Simulator({ id: simulatorData.id, name });
+    return new Simulator({ id: simulatorData.id, name, stations, centerId });
   }
   static async getSimulators(centerId) {
     const simulators = await firestore()
@@ -39,11 +46,6 @@ module.exports = class Simulator {
       .where("centerId", "==", centerId)
       .get();
     return docs.size;
-  }
-  constructor({ id, name, centerId }) {
-    this.id = id;
-    this.name = name;
-    this.centerId = centerId;
   }
   async rename(name) {
     this.name = name;

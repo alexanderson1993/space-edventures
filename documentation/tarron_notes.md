@@ -4,18 +4,23 @@
 
 ## TODO
 
-- [ ] Limit centers' permissions on objects that don't directly have the center's ID on the object
+- [x] Limit centers' permissions on objects that don't directly have the center's ID on the object
   - Existing resolvers might need to have this check added on them
 - [ ] flight type from record
   - center
 - [X] User profile get flight hours and class hours (parse badges)
-- [ ] Messages
+- [x] Messages
 - [ ] Double check permissions on everything (since front-end can't do any secure permission checking)
 
 ## Working on
 
 - [x] Edit flight record
 - [ ] Badge -> flight query (found in flightRecord)
+- [ ] flightRecordUser
+  - [ ] flightUserRecordCreate - stopped in the middle of this, need to build out model
+  - [ ] Test
+- [ ] Test all of Flight Record GraphQL
+
 
 ## Recently Finished
 
@@ -89,12 +94,11 @@ mutation {
     flightTypeId: "B34b963R6IOUdREeglqQ"
     simulators: [
       {
-        id: "4sQ4jMVAXR0ZpjxTGrLN"
+        id: "80t27YsR51aqNHriulJL"
         stations: [
           {
-            name: "Weapons"
+            name: "gunner"
             badges: ["2gFkOq4Suoir03olyLm6"]
-            userId: "he isn't real"
           }
         ]
       }
@@ -118,4 +122,68 @@ mutation {
     # flightTypeId: "B34b963R6IOUdREeglqQ"
   )
 }
+
+<!-- ======================================================================= -->
+<!-- Simulators -->
+<!-- ======================================================================= -->
+mutation {
+  simulatorCreate (name:"DragonShip",stations:["gunner","captain"]) {
+		id
+  }
+}
+
+<!-- ======================================================================= -->
+<!-- Flight user Records -->
+<!-- ======================================================================= -->
+<!-- Participant D: Vt9VfgbVxUOCfURwVBlTGheqp9j2 -->
+<!-- Simulator 80t27YsR51aqNHriulJL -->
+<!-- TMmKm4fMSDjWNNyHbKX0 -->
+
+mutation {
+  flightUserRecordCreate(
+    flightRecordId: "TMmKm4fMSDjWNNyHbKX0"
+    stationName: "gunner"
+    simulatorId: "80t27YsR51aqNHriulJL"
+    userId: "Vt9VfgbVxUOCfURwVBlTGheqp9j2"
+  ) {
+    id
+  }
+}
+
+<!-- ======================================================================= -->
+<!-- Messages -->
+<!-- ======================================================================= -->
+
+# mutation {
+#   messageCreate(
+#     subject:"test message"
+#     message:"I just thought you ought to know"
+#     recipients:["personA", "personB"]
+#   ) {
+#     id
+#   }
+# }
+
+# {
+# 	message (id:"IfLMRzqw2Z9Oo6h0GOG7") {
+# 		id
+#     recipients
+#     date
+#   }
+# }
+
+# {
+#   messages {
+#     id
+#     recipients
+#     date
+#   }
+# }
+
+mutation {
+  messageMarkRead(messageId:"IfLMRzqw2Z9Oo6h0GOG7") {
+    id
+  }
+}
+
 ```

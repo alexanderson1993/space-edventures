@@ -7,8 +7,8 @@ const flightRecordLoader = new DataLoader(async ids => {
     .getAll(documentRefs)
     .then(docs =>
       ids.map(id => {
-        const doc = docs.find(id);
-        if (!doc[0].exists) return null;
+        const doc = docs.find(doc => id === doc.id);
+        if (!doc.exists) return null;
         return { ...doc.data(), id: doc.id };
       })
     );
