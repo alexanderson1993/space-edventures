@@ -28,7 +28,7 @@ const Flights = props => {
               <tbody>
                 {flightRecords.map(r => (
                   <tr>
-                    <Link key={r.id} to={`/directors/flights/${r.id}`}>
+                    <Link key={r.id} to={`/director/flights/${r.id}`}>
                       <td>{new Date(r.date).toDateString()}</td>
                     </Link>
                     <td>{r.flightType.name}</td>
@@ -37,7 +37,7 @@ const Flights = props => {
                       {r.simulators.map(s => s.stations.length).join(",")}
                     </td>
                     <td>
-                      <Link to={`/directors/flights/${r.id}/print`}>
+                      <Link to={`/director/flights/${r.id}/print`}>
                         <Button>Print Ranks</Button>
                       </Link>
                     </td>

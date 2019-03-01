@@ -43,7 +43,9 @@ module.exports.schema = gql`
   }
 
   extend type Query {
-    flightRecord(id: ID!): FlightRecord @auth(requires: [director])
+    # CenterID is required for director auth
+    flightRecord(id: ID!, centerId: ID!): FlightRecord
+      @auth(requires: [director])
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): [FlightRecord]
       @auth(requires: [director])
   }
