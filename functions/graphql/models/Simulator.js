@@ -11,15 +11,14 @@ module.exports = class Simulator {
     this.centerId = centerId;
     this.stations = stations;
   }
-  static async createSimulator(name, stations, centerId) {
+  static async createSimulator(name, centerId) {
     const simulatorData = await firestore()
       .collection("simulators")
       .add({
         name,
-        stations,
         centerId
       });
-    return new Simulator({ id: simulatorData.id, name, stations, centerId });
+    return new Simulator({ id: simulatorData.id, name, centerId });
   }
   static async getSimulators(centerId) {
     const simulators = await firestore()

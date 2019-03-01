@@ -28,7 +28,7 @@ module.exports.schema = gql`
   }
   extend type Mutation {
     # Director role is authenticated in the resolver
-    simulatorCreate(name: String!, stations: [String!]): Simulator
+    simulatorCreate(name: String!): Simulator
     simulatorRename(id: ID!, name: String!): Simulator
     simulatorDelete(id: ID!): Boolean
   }
@@ -62,9 +62,9 @@ module.exports.resolver = {
     }
   },
   Mutation: {
-    simulatorCreate: async (rootQuery, { name, stations }, context) => {
+    simulatorCreate: async (rootQuery, { name }, context) => {
       const center = await getCenter(context.user);
-      return Simulator.createSimulator(name, stations, center.id);
+      return Simulator.createSimulator(name, center.id);
     },
     simulatorRename: async (rootQuery, { id, name }, context) => {
       // Get the center to check for proper permissions
