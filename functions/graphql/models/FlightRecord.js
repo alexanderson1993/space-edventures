@@ -1,5 +1,6 @@
 const { firestore } = require("../connectors/firebase");
-const { flightRecordLoader } = require("../loaders");
+const tokenGenerator = require("../helpers/tokenGenerator");
+const { flightRecordLoader, flightRecordUserLoader } = require("../loaders");
 // =============================================================================
 // Class for Querying/Mutating flight records
 // =============================================================================
