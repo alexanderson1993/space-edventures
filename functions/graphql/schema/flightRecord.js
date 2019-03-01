@@ -31,16 +31,26 @@ module.exports.schema = gql`
   input FlightStationInput {
     name: String! # The name of the station. Required
     badges: [ID]! # The list of badges that the station earned. Includes missions
+    userId: ID # ID of the user who was at this station for this flight
   }
 
   extend type Badge {
     flight: FlightRecord
   }
 
+  extend type User {
+    flights: [FlightRecord] @auth(requires: [authenticated])
+  }
+
   extend type Query {
     flightRecord(id: ID!): FlightRecord @auth(requires: [director])
-    flightRecords(centerId: ID, simulatorId: ID): [FlightRecord]
+    flightRecords(userId: ID, centerId: ID, simulatorId: ID): [FlightRecord]
       @auth(requires: [director])
+  }
+
+  extend type Profile {
+    flightHours: Float
+    classHours: Float
   }
 
   extend type Center {
@@ -56,6 +66,8 @@ module.exports.schema = gql`
       flightTypeId: ID!
       simulators: [FlightSimulatorInput!]!
     ): FlightRecord @auth(requires: [center, director])
+
+    flightClaim(token: String!): FlightRecord @auth(requires: [authenticated])
 
     flightEdit(
       id: ID!
@@ -79,18 +91,49 @@ module.exports.resolver = {
       FlightRecord.getFlightRecord(id),
     flightRecords: async (
       rootQuery,
-      { centerId, simulatorId },
+      { userId, centerId, simulatorId },
       context
     ) => {
       const center = await getCenter(context.user);
       const records = await FlightRecord.getFlightRecords(
+        userId,
         centerId || center.id,
         simulatorId
       );
       return records;
     }
   },
+  Profile: {
+    flightHours: async (profile, args, context) => {
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "flightHours"
+      });
+    },
+    classHours: async (profile, args, context) => {
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "classHours"
+      });
+    }
+  },
   Mutation: {
+    /**
+     * Assign a flight record to a user, based on the token. Assign to currently authentiated graphql user
+     */
+    flightClaim: async (rootQuery, { token }, context) => {
+      // User id of currently logged in user to claim the token
+      let flightRecord = await FlightRecord.getFlightRecordByToken(token);
+
+      if (!flightRecord) {
+        throw new UserInputError(
+          "No flight records were found for this token."
+        );
+      }
+
+      return flightRecord.claim(context.user.id);
+    },
+
     /**
      * Creates a flight record for the logged in center
      */
@@ -149,12 +192,24 @@ module.exports.resolver = {
           })
         )
       );
+      const usersCheck = stations
+        .filter(s => s.userId)
+        .map(station =>
+          User.getUserById(station.userId).then(user => {
+            if (!user) {
+              // TODO: Add a token to the simulator station, and remove the invalid user id
+            }
+            return;
+          })
+        );
+
       // Do all of the checks at once.
       // It will error if there is a problem
       await Promise.all(
         []
           .concat(simChecks)
           .concat(badgesCheck)
+          .concat(usersCheck)
       );
       // Create the flight record object and include the simulator/station information
       const record = await FlightRecord.createFlightRecord(
@@ -205,6 +260,12 @@ module.exports.resolver = {
   },
   Badge: {
     flight: (badge, args, context) => {}
+  },
+
+  User: {
+    flights: (user, args, context) => {
+      return FlightRecord.getFlightRecordsByUser(user.id);
+    }
   },
   Center: {
     flightRecordCount: (center, args, context) => {
