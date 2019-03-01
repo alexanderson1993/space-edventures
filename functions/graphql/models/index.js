@@ -8,5 +8,6 @@ module.exports = {
   FlightType: require("./FlightType"),
   FlightRecord: require("./FlightRecord"),
   Message: require("./Message"),
-  Rank: require("./Rank")
+  Rank: require("./Rank"),
+  FlightUserRecord: require("./FlightUserRecord")
 };

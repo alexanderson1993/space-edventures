@@ -29,6 +29,13 @@ module.exports = class FlightRecord {
     return new FlightRecord(flightRecord);
   }
 
+  static flightRecordCount(centerId) {
+    return firestore()
+      .collection(collectionName)
+      .where("spaceCenterId", "==", centerId)
+      .get()
+      .then(res => res.size);
+  }
   static getFlightRecords(userId, centerId, simulatorId) {
     let matchingRecords = firestore().collection(collectionName);
 

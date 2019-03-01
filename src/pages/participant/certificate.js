@@ -59,7 +59,6 @@ const Container = styled("div")`
 const Certificate = ({ theme, numberToWords, QrCode }) => {
   const { user } = useContext(ProfileContext);
   const [qrCode, setQrCode] = useState(null);
-  console.log(user);
   useEffect(() => {
     if (!qrCode && user.token) {
       const canvas = document.createElement("canvas");

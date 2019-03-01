@@ -18,6 +18,7 @@ module.exports.schema = gql`
   type Station {
     badges: [ID]
     name: String!
+    userId: ID
   }
 
   # We can extend other graphQL types using the "extend" keyword.

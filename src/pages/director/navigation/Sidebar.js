@@ -8,7 +8,8 @@ import {
   FaHome,
   FaFeatherAlt,
   FaCogs,
-  FaDollarSign
+  FaDollarSign,
+  FaTrafficLight
 } from "react-icons/fa";
 import { Link } from "../../../components";
 
@@ -44,6 +45,11 @@ const sidebarLinks = [
     label: "Home",
     icon: FaHome,
     url: "/director"
+  },
+  {
+    label: "Flights",
+    icon: FaTrafficLight,
+    url: "/director/flights"
   },
   {
     label: "Simulators",
