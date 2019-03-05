@@ -4,8 +4,10 @@ const {
   FlightType,
   Simulator,
   Badge,
-  User
+  User,
+  FlightUserRecord // Used to mirror the data in a way that makes it easier to query based on user
 } = require("../models");
+const tokenGenerator = require("../helpers/tokenGenerator");
 const getCenter = require("../helpers/getCenter");
 const { hoursLoader } = require("../loaders");
 
@@ -34,6 +36,7 @@ module.exports.schema = gql`
     userId: ID # ID of the user who was at this station for this flight
   }
 
+  # Get all the flight records that are tied to this particular badge (meaning that they have a station assigned to that badge)
   extend type Badge {
     flight: FlightRecord
   }
@@ -193,15 +196,21 @@ module.exports.resolver = {
         )
       );
       const usersCheck = stations
-        .filter(s => s.userId)
-        .map(station =>
-          User.getUserById(station.userId).then(user => {
-            if (!user) {
-              // TODO: Add a token to the simulator station, and remove the invalid user id
-            }
-            return;
-          })
-        );
+        .map(station => {
+          if (station.userId) {
+            User.getUserById(station.userId).then(user => {
+              if (!user) {
+                throw new UserInputError("Invalid user id provided")
+              }
+              return;
+            })
+          }
+          else {
+            // Generate a token and add it to the station
+            station.token = tokenGenerator();
+          }
+          return station;
+        });
 
       // Do all of the checks at once.
       // It will error if there is a problem
@@ -211,6 +220,10 @@ module.exports.resolver = {
           .concat(badgesCheck)
           .concat(usersCheck)
       );
+
+      // Set the simulator stations to be the version with the tokens
+      simulators.stations = stations;
+
       // Create the flight record object and include the simulator/station information
       const record = await FlightRecord.createFlightRecord(
         centerIdValue,
@@ -218,6 +231,9 @@ module.exports.resolver = {
         flightTypeId,
         simulators
       );
+
+      // Also create the flight user record (to help when querying based on user/token)
+      const flightUserRecord = await FlightUserRecord.createFightUserRecordFromFlightRecord(record);
 
       return record;
     },

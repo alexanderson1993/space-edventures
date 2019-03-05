@@ -12,17 +12,22 @@
 - [x] Messages
 - [ ] Double check permissions on everything (since front-end can't do any secure permission checking)
 
+- [ ] Change token generator to a random space phrase generator
+
 ## Working on
 
 - [x] Edit flight record
-- [ ] Question: what should the stations resolver do on the simulator object? Should it query all flight records with that simulator id and see what stations it's been associated with?
-- [ ] Badge -> flight query (found in flightRecord)
+- [x] Question: what should the stations resolver do on the simulator object? Should it query all flight records with that simulator id and see what stations it's been associated with?
+
+- [ ] Flight record generate token (need to use transactions)
+
 - [ ] flightRecordUser
   - [ ] flightUserRecordCreate - stopped in the middle of this, need to build out model
   - [ ] Test
 - [ ] Test all of Flight Record GraphQL
 - [ ] Any queries that edit flight records have to also edit flight user records
 
+- [ ] Badge -> flight query (found in flightRecord)
 
 ## Recently Finished
 
@@ -90,6 +95,9 @@ mutation {
   flightTypeEdit(id: "", data: {})
 }
 
+<!-- ======================================================================= -->
+<!-- Flight Records -->
+<!-- ======================================================================= -->
 mutation {
   flightRecordCreate(
     thoriumFlightId: "tarrontest"
@@ -101,6 +109,7 @@ mutation {
           {
             name: "gunner"
             badges: ["2gFkOq4Suoir03olyLm6"]
+            userId: "Vt9VfgbVxUOCfURwVBlTGheqp9j2"
           }
         ]
       }

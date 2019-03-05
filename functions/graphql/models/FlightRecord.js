@@ -1,5 +1,4 @@
 const { firestore } = require("../connectors/firebase");
-const tokenGenerator = require("../helpers/tokenGenerator");
 const { flightRecordLoader, flightRecordUserLoader } = require("../loaders");
 // =============================================================================
 // Class for Querying/Mutating flight records
@@ -93,16 +92,7 @@ module.exports = class FlightRecord {
       simulatorInput = simulators.map(sim => ({
         id: sim.id,
         stations: sim.stations.map(station => {
-          let stationData = { name: station.name, badges: station.badges };
-
-          // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
-          if (typeof station.userId !== "undefined") {
-            stationData.userId = station.userId;
-          } else {
-            stationData.token = tokenGenerator();
-          }
-
-          return stationData;
+          return { ...station };
         })
       }));
     }

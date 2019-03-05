@@ -72,7 +72,7 @@ module.exports = makeExecutableSchema({
     CoppaVerifySchema,
     RankSchema,
     MessageSchema,
-    FlightUserRecordSchema
+    // FlightUserRecordSchema
   ].concat(directivesSchema),
   resolvers: merge(
     MainResolver,
@@ -88,7 +88,7 @@ module.exports = makeExecutableSchema({
     CoppaVerifyResolver,
     RankResolver,
     MessageResolver,
-    FlightUserRecordResolver
+    // FlightUserRecordResolver
   ),
   schemaDirectives
 });
