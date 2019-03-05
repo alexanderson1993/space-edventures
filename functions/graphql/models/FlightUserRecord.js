@@ -38,7 +38,7 @@ module.exports = class FlightUserRecord {
   static async createFightUserRecordFromFlightRecord(flightRecord) {
     return flightRecord.simulators.map(
       sim => sim.stations.map(
-        station => createFlightUserRecord({
+        station => this.createFlightUserRecord({
           simulatorId: sim.id,
           token: station.token,
           userId: station.userId,
@@ -49,19 +49,28 @@ module.exports = class FlightUserRecord {
     );
   }
 
-  static async createFightUserRecord({simulatorId, token, userId, stationName, flightRecordId}) {
-    let flightUserRecord = await firestore()
+  static async createFlightUserRecord({simulatorId, token, userId, stationName, flightRecordId}) {
+    let data = {
+      stationName: stationName,
+      flightRecordId: flightRecordId,
+      simulatorId: simulatorId,
+      date: new Date()
+    }
+    if (typeof(userId) !== "undefined") {
+      data.userId = userId;
+    }
+    if (typeof(token) !== "undefined") {
+      data.token = token;
+    }
+    let newFlightUserRecord = await firestore()
       .collection(collectionName)
-      .add({
-        token: token,
-        userId: userId,
-        stationName: stationName,
-        flightRecordId: flightRecordId,
-        simulatorId: simulatorId,
-        date: new Date()
-      });
-
-    return new FlightUserRecord({id: flightUserRecord.id, ...flightUserRecord.data()})
+      .add(data);
+    let newFlightUserRecordData = await firestore()
+      .collection(collectionName)
+      .doc(newFlightUserRecord.id)
+      .get();
+      
+    return new FlightUserRecord({id: newFlightUserRecordData.id, ...newFlightUserRecordData.data()})
   }
 
   static async getFlightUserRecordsByUser(userId) {
