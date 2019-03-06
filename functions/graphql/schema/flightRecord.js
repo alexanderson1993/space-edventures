@@ -136,7 +136,9 @@ module.exports.resolver = {
         );
       }
 
-      let flightRecord = await FlightRecord.getFlightRecord(flightUserRecord.flightRecordId);
+      let flightRecord = await FlightRecord.getFlightRecord(
+        flightUserRecord.flightRecordId
+      );
 
       if (!flightRecord) {
         throw new UserInputError(
@@ -263,7 +265,7 @@ module.exports.resolver = {
     ) => {
       let center = await getCenter(context.user);
 
-      simulators = fillSimsWithTokens(simulators);
+      simulators = await fillSimsWithTokens(simulators);
 
       console.log(simulators);
 
@@ -284,7 +286,7 @@ module.exports.resolver = {
     }
   },
 
-  Badge: {  
+  Badge: {
     users: (badge, args, context) => {}
   },
 
@@ -304,24 +306,27 @@ module.exports.resolver = {
 };
 
 function fillSimsWithTokens(simulators) {
-  return simulators.map(
-    sim => ({...sim, stations: sim.stations.map(
-      station => {
-      if (station.userId) {
-        User.getUserById(station.userId).then(user => {
-          if (!user) {
-            throw new UserInputError("Invalid user id provided")
-          }
-          return;
-        })
-      }
-      else {
-        // Generate a token and add it to the station
-        station.token = tokenGenerator();
-      }
-      return station;
-    })})
-  );
+  return simulators.map(async sim => ({
+    ...sim,
+    stations: await Promise.all(
+      sim.stations.map(async station => {
+        if (station.userId) {
+          const user = await User.getUserById(station.userId).then(user => {
+            if (!user) {
+              station.userId = null;
+              return false;
+            }
+            return true;
+          });
+          if (user) return station;
+        } else {
+          // Generate a token and add it to the station
+          station.token = tokenGenerator();
+        }
+        return station;
+      })
+    )
+  }));
 }
 
 // Assign/claim flight records

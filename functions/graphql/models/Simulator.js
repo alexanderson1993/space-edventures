@@ -5,11 +5,10 @@ const { firestore } = require("../connectors/firebase");
 // =============================================================================
 
 module.exports = class Simulator {
-  constructor({ id, name, stations, centerId }) {
+  constructor({ id, name, centerId }) {
     this.id = id;
     this.name = name;
     this.centerId = centerId;
-    this.stations = stations;
   }
   static async createSimulator(name, centerId) {
     const simulatorData = await firestore()

@@ -28,7 +28,7 @@ module.exports = class FlightRecord {
     const flightRecord = await flightRecordLoader.load(id);
     if (!flightRecord) {
       return false;
-    };
+    }
     return new FlightRecord(flightRecord);
   }
 
@@ -121,7 +121,7 @@ module.exports = class FlightRecord {
         .collection(collectionName)
         .doc(overwriteId)
         .set(data, { merge: true });
-      return new FlightRecord({id: overwriteId, ...data});
+      return new FlightRecord({ id: overwriteId, ...data });
     } else {
       // --- Create a new object --- //
       let newId = (await firestore()

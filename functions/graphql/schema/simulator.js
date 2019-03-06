@@ -98,11 +98,11 @@ module.exports.resolver = {
           ...sim,
           // We have to add the centerId to the stations so we
           // can properly auth them for director one level up.
+          ...simulator,
           stations: sim.stations.map(s => ({
             ...s,
             centerId: flightRecord.spaceCenterId
-          })),
-          ...simulator
+          }))
         };
       });
     }
