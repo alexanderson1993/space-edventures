@@ -3,7 +3,7 @@ import useQrCode from "react-qrcode-hook";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import GET_FLIGHT from "./getFlight.graphql";
-import { DirectorContext } from "../";
+import { DirectorContext } from "../../../helpers/directorContext";
 import Printable from "../../../helpers/printable";
 import css from "@emotion/css";
 import { Button } from "../../../components";

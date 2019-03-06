@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "@emotion/styled";
 import css from "@emotion/css";
-import { DirectorContext } from "../";
+import { DirectorContext } from "../../../helpers/directorContext";
 import { Button, ImageUploader, Input } from "../../../components";
 import UPDATE_NAME from "./updateName.graphql";
 import UPDATE_DESCRIPTION from "./updateDescription.graphql";

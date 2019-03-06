@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Words, Input, Button, Confirm } from "../../components";
 import { css } from "@emotion/core";
-import { DirectorContext } from ".";
+import { DirectorContext } from "../../helpers/directorContext";
 import { Query, Mutation } from "react-apollo";
 import API_KEY_QUERY from "./centerApiKey.graphql";
 import RESET_API_KEY from "./resetApiKey.graphql";

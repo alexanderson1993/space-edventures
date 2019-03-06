@@ -3,7 +3,7 @@ import { Table, Link, Button } from "../../../components";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import GET_FLIGHTS from "./getFlights.graphql";
-import { DirectorContext } from "../";
+import { DirectorContext } from "../../../helpers/directorContext";
 
 const Flights = props => {
   const {

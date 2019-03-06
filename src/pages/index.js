@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, Center, Button, Content } from "../components";
 import styled from "@emotion/styled";
+import ProfileContext from "../helpers/profileContext";
 
 const Header = styled("h1")`
   text-align: center;
 `;
 
 const Splash = () => {
+  const { user } = useContext(ProfileContext);
+  if (user && user.email) {
+    return (
+      <Content>
+        <h1>
+          Welcome,{" "}
+          {user.profile
+            ? user.profile.displayName || user.profile.name
+            : user.email}
+        </h1>
+        <Link to="/redeem">
+          <Button>Redeem A Flight</Button>
+        </Link>
+      </Content>
+    );
+  }
   return (
     <Content>
       <Center>

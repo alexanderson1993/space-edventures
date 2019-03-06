@@ -13,3 +13,5 @@ export { default as Confirm } from "./Confirm";
 export { default as Modal } from "./Modal";
 export { default as ImageUploader } from "./ImageUploader";
 export { default as DatePicker } from "./DatePicker";
+export { default as SEO } from "./Seo";
+export { default as Auth } from "./Auth";

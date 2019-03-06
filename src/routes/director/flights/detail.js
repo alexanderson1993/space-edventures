@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import GET_FLIGHT from "./getFlight.graphql";
-import { DirectorContext } from "../";
+import { DirectorContext } from "../../../helpers/directorContext";
 import css from "@emotion/css";
 
 const Flights = ({ id }) => {

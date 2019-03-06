@@ -5,7 +5,7 @@ import CREATE_FLIGHT_TYPE from "./createFlightType.graphql";
 import UPDATE_FLIGHT_TYPE from "./updateFlightType.graphql";
 import { Loading } from "@arwes/arwes";
 import { Mutation, Query } from "react-apollo";
-import { DirectorContext } from "../index";
+import { DirectorContext } from "../../../helpers/directorContext";
 import Blockquote from "@arwes/arwes/lib/Blockquote";
 const Editor = ({
   create,
