@@ -1,5 +1,4 @@
 const { firestore } = require("../connectors/firebase");
-const tokenGenerator = require("../helpers/tokenGenerator");
 const { flightRecordLoader, flightRecordUserLoader } = require("../loaders");
 const uuid = require("uuid");
 // =============================================================================
@@ -27,6 +26,9 @@ module.exports = class FlightRecord {
 
   static async getFlightRecord(id) {
     const flightRecord = await flightRecordLoader.load(id);
+    if (!flightRecord) {
+      return false;
+    }
     return new FlightRecord(flightRecord);
   }
 
@@ -95,16 +97,7 @@ module.exports = class FlightRecord {
         id: uuid.v4(),
         simulatorId: sim.id,
         stations: sim.stations.map(station => {
-          let stationData = { name: station.name, badges: station.badges };
-
-          // If there is a valid user on this station, assign the user, otherwise generate a token to be redeemed later
-          if (typeof station.userId !== "undefined") {
-            stationData.userId = station.userId;
-          } else {
-            stationData.token = tokenGenerator();
-          }
-
-          return stationData;
+          return { ...station };
         })
       }));
     }
@@ -128,7 +121,7 @@ module.exports = class FlightRecord {
         .collection(collectionName)
         .doc(overwriteId)
         .set(data, { merge: true });
-      return true;
+      return new FlightRecord({ id: overwriteId, ...data });
     } else {
       // --- Create a new object --- //
       let newId = (await firestore()
@@ -176,7 +169,7 @@ module.exports = class FlightRecord {
    * Assign the user to the current flght record and save to firestore
    * Return the new flight record
    */
-  async claim(userId) {
+  async claim(userId, token) {
     let newId = await firestore()
       .collection(collectionName)
       .doc(this.id)
@@ -188,7 +181,7 @@ module.exports = class FlightRecord {
               // If the station's token matches the token that is being redeemed, replace the token with the user id
               if (
                 typeof station.token !== "undefined" &&
-                station.token === this.redeemingToken
+                station.token === token
               ) {
                 delete station.token;
                 station.userId = userId;

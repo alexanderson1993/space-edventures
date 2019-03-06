@@ -23,11 +23,15 @@ const Profile = () => {
         <div className="profile" onClick={() => setOpen(!open)}>
           <div className="profile-info">
             <p className="profile-rank">
-              <Words>{user.profile.rank ? user.profile.rank.name : ""}</Words>
+              <Words>
+                {user.profile && user.profile.rank
+                  ? user.profile.rank.name
+                  : ""}
+              </Words>
             </p>
             <div className="profile-hours">
-              <p>Flight: {user.profile.flightHours}</p>
-              <p>Class: {user.profile.classHours}</p>
+              <p>Flight: {user.profile && user.profile.flightHours}</p>
+              <p>Class: {user.profile && user.profile.classHours}</p>
             </div>
           </div>
           <ProfilePicture
