@@ -1,6 +1,7 @@
 const { firestore } = require("../connectors/firebase");
 const tokenGenerator = require("../helpers/tokenGenerator");
 const { flightRecordLoader, flightRecordUserLoader } = require("../loaders");
+const uuid = require("uuid");
 // =============================================================================
 // Class for Querying/Mutating flight records
 // =============================================================================
@@ -88,7 +89,11 @@ module.exports = class FlightRecord {
 
     if (typeof simulators !== "undefined") {
       simulatorInput = simulators.map(sim => ({
-        id: sim.id,
+        // We have to give our simulator a unique ID so it can be properly cached
+        // by Apollo client. Otherwise, when querying multiple simulators
+        // it trips over itself and shows erratic station counts
+        id: uuid.v4(),
+        simulatorId: sim.id,
         stations: sim.stations.map(station => {
           let stationData = { name: station.name, badges: station.badges };
 

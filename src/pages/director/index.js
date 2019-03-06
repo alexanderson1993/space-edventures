@@ -30,6 +30,8 @@ const FlightTypeEdit = lazy(() => import("./flightTypes/edit"));
 const FlightTypeDetail = lazy(() => import("./flightTypes/detail"));
 
 const Flights = lazy(() => import("./flights"));
+const FlightDetail = lazy(() => import("./flights/detail"));
+const FlightPrint = lazy(() => import("./flights/print"));
 
 const Settings = lazy(() => import("./settings"));
 const Billing = lazy(() => import("./billing"));
@@ -76,7 +78,8 @@ const Routes = ({ director = {} }) => {
             <FlightTypeEdit path="flightTypes/edit/:flightTypeId" />
 
             <Flights path="flights" />
-
+            <FlightDetail path="flights/:id" />
+            <FlightPrint path="flights/:id/print" />
             <Settings path="settings" />
             <Billing path="billing" />
           </Router>
