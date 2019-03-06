@@ -4,6 +4,7 @@ import { onError } from "apollo-link-error";
 import { setContext } from "apollo-link-context";
 import { ApolloLink } from "apollo-link";
 import { createUploadLink } from "apollo-upload-client";
+import fetch from "isomorphic-fetch";
 
 import { auth } from "./firebase";
 
@@ -43,7 +44,8 @@ const DataLink = createUploadLink({
 
 const client = new ApolloClient({
   link: ApolloLink.from([AuthLink, ErrorLink, DataLink]),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  fetch: typeof window !== "undefined" ? window.fetch : fetch
 });
 
 export default client;

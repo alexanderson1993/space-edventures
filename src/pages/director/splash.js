@@ -16,7 +16,7 @@ export default () => {
         </h1>
 
         <div>
-          <Link to="/login">
+          <Link to="/accounts/login">
             <Button>Join Now</Button>
           </Link>
         </div>
@@ -48,10 +48,10 @@ export default () => {
             width: "60vw"
           }}
         >
-          <Link to="/login?signUp">
+          <Link to="/accounts/login?signUp">
             <Button>Sign Up</Button>
           </Link>
-          <Link to="/login">
+          <Link to="/accounts/login">
             <Button>Sign In</Button>
           </Link>
         </div>

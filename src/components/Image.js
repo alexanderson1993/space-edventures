@@ -6,9 +6,9 @@ export default ({ src, children, ...props }) => {
   return (
     <AnimateContext.Consumer>
       {({ show }) => (
-        <Image animate show={show} resources={src} {...props}>
+        <img animate show={show} src={src} {...props}>
           {children}
-        </Image>
+        </img>
       )}
     </AnimateContext.Consumer>
   );

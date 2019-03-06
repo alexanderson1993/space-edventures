@@ -6,10 +6,10 @@ const Menu = () => (
     <h1>Admin Menu</h1>
     <ul>
       <li>
-        <Link to="/admin/verify">COPPA Account Verification</Link>
+        <Link to="/admin/coppaVerify">COPPA Account Verification</Link>
       </li>
       <li>
-        <Link to="/admin/ranks">Ranks</Link>
+        <Link to="/admin/rank">Ranks</Link>
       </li>
     </ul>
   </div>

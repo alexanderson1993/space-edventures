@@ -109,7 +109,7 @@ const Profile = () => {
             <div>Flight Hours: {user.profile.flightHours}</div>
             <div>Class Hours: {user.profile.classHours}</div>
           </FormGroup>
-          <Link to="/profile/certificate">
+          <Link to="/user/certificate">
             <Button>View Rank Certificate</Button>
           </Link>
           <Button onClick={() => setEditMode(!editMode)}>

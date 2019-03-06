@@ -3,3 +3,5 @@ coverage
 build
 .build
 dist
+.cache
+public

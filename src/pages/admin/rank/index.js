@@ -7,7 +7,7 @@ const Rank = () => {
   return (
     <div>
       <h1>Ranks</h1>
-      <Link to="/admin/ranks/create">
+      <Link to="/admin/rank/create">
         <Button>Create Rank</Button>
       </Link>
       <Query query={GET_RANKS}>
@@ -25,7 +25,7 @@ const Rank = () => {
                 })
                 .map(r => (
                   <li key={r.id}>
-                    <Link to={`/admin/ranks/${r.id}`}>{r.name}</Link>
+                    <Link to={`/admin/rank/${r.id}`}>{r.name}</Link>
                   </li>
                 ))}
             </ul>

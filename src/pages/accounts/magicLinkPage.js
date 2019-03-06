@@ -18,7 +18,7 @@ const MagicLink = ({ location, navigate }) => {
     <Blockquote layer="alert">
       <Words>{error.message}</Words>
       <p>
-        Try <Link to="/login">logging in</Link> again.
+        Try <Link to="/accounts/login">logging in</Link> again.
       </p>
     </Blockquote>
   ) : (

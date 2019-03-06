@@ -19,8 +19,8 @@ const Container = styled("div")`
   background-color: white;
   color: black;
   font-family: "Electrolize", "sans-serif";
-  #space-edventures-logo {
-    #logo-text path {
+  svg {
+    g path {
       fill: black !important;
     }
   }
@@ -114,7 +114,7 @@ const Certificate = ({ theme, numberToWords, QrCode }) => {
             <Words>This certifies that</Words>
           </p>
           <h2>
-            <Words>{user.profile.displayName || user.profile.name}</Words>
+            <Words>{user.profile.displayName || user.profile.name || ""}</Words>
           </h2>
           <p>
             <Words>
@@ -147,7 +147,7 @@ const Certificate = ({ theme, numberToWords, QrCode }) => {
               right: 0;
               bottom: 0;
             `}
-            src={qrCode}
+            src={console.log(qrCode) || qrCode}
             alt="qr code"
           />
         </div>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button } from "../components";
 import styled from "@emotion/styled";
+import { ErrorContext } from "./errorContext";
 
 const Container = styled("div")`
   display: flex;
@@ -9,24 +10,17 @@ const Container = styled("div")`
   align-items: center;
 `;
 export default class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { error: null, errorInfo: null };
-  }
-
+  static contextType = ErrorContext;
   componentDidCatch(error, errorInfo) {
     // Catch errors in any components below and re-render with error message
-    this.setState({
-      error: error,
-      errorInfo: errorInfo
-    });
+    this.context.dispatch({ type: "errored", errorData: error, errorInfo });
   }
   refresh() {
     localStorage.clear();
     window.location.reload();
   }
   render() {
-    if (this.state.errorInfo) {
+    if (this.context.state.error) {
       // Error path
       if (this.props.render) return this.props.render;
       return (
@@ -40,9 +34,10 @@ export default class ErrorBoundary extends Component {
               wrong.
             </h3>
             <details style={{ whiteSpace: "pre-wrap" }}>
-              {this.state.error && this.state.error.toString()}
+              {this.context.state.errorData &&
+                this.context.state.errorData.toString()}
               <br />
-              {this.state.errorInfo.componentStack}
+              {this.context.state.errorInfo.componentStack}
             </details>
           </Container>
         </div>

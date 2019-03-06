@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Center, Button, Content } from "../../components";
+import { Link, Center, Button, Content } from "../components";
 import styled from "@emotion/styled";
 
 const Header = styled("h1")`
@@ -14,7 +14,7 @@ const Splash = () => {
           Join the Space Center community and track your rank!
         </Header>
         <div>
-          <Link to="/login">
+          <Link to="/accounts/login">
             <Button>Join Now</Button>
           </Link>
         </div>
@@ -33,10 +33,10 @@ const Splash = () => {
             width: "60vw"
           }}
         >
-          <Link to="/login?signUp">
+          <Link to="/accounts/login?signUp">
             <Button>Sign Up</Button>
           </Link>
-          <Link to="/login">
+          <Link to="/accounts/login">
             <Button>Sign In</Button>
           </Link>
         </div>

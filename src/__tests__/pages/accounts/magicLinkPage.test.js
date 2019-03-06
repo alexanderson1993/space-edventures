@@ -1,8 +1,13 @@
 import React from "react";
 import { render } from "../../../helpers/testRender";
 import MagicLinkPage from "../../../pages/accounts/magicLinkPage";
+import { ErrorProvider } from "../../../helpers/errorContext";
 
 test("magicLinkPage", () => {
-  const { container } = render(<MagicLinkPage location={{ href: "/" }} />);
+  const { container } = render(
+    <ErrorProvider>
+      <MagicLinkPage location={{ href: "/" }} />
+    </ErrorProvider>
+  );
   expect(container).toMatchSnapshot();
 });

@@ -113,8 +113,8 @@ class ArwesContainer extends Component {
               <Footer animate>
                 <FooterContent>
                   <span>
-                    <Link to="/privacyPolicy">Privacy Policy</Link> |{" "}
-                    <Link to="/termsOfService">Terms of Service</Link>
+                    <Link to="/support/privacy">Privacy Policy</Link> |{" "}
+                    <Link to="/support/tos">Terms of Service</Link>
                   </span>
                   <span>Copyright © 2018</span>
                 </FooterContent>
