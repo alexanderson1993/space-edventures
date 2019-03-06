@@ -68,9 +68,9 @@ function configureServer() {
       // If you need to test a specific user's graphQL abilities
       // FOR DEBUGGING, COMMENT OUT IN PRODUCTION
       // USER
-      // const token = await User.getToken('participantd@example.com', 'Test1234');
+      const token = await User.getToken('participantd@example.com', 'Test1234');
       // CENTER
-      const token = "123456789012345678901234567890123456"; // Must be a 36 long string that matches the apiToken object on a center
+      // const token = "123456789012345678901234567890123456"; // Must be a 36 long string that matches the apiToken object on a center
       // DIRECTOR
       // const token = await User.getToken('directora@example.com', 'Test1234'); // user id: ykR3TSwRYAXcvqgYGaNR2G3Px2w2 // His center: iapR2ol0OgMDDBW1IvVf
 

@@ -38,7 +38,7 @@ module.exports.schema = gql`
 
   # Get all the flight records that are tied to this particular badge (meaning that they have a station assigned to that badge)
   extend type Badge {
-    flight: FlightRecord
+    users: User
   }
 
   extend type User {
@@ -128,15 +128,25 @@ module.exports.resolver = {
      */
     flightClaim: async (rootQuery, { token }, context) => {
       // User id of currently logged in user to claim the token
-      let flightRecord = await FlightRecord.getFlightRecordByToken(token);
+      let flightUserRecord = await FlightUserRecord.getByToken(token);
 
-      if (!flightRecord) {
+      if (!flightUserRecord) {
         throw new UserInputError(
-          "No flight records were found for this token."
+          "No flight user records were found for this token."
         );
       }
 
-      return flightRecord.claim(context.user.id);
+      let flightRecord = await FlightRecord.getFlightRecord(flightUserRecord.flightRecordId);
+
+      if (!flightRecord) {
+        throw new UserInputError(
+          "No flight user records were found for this token."
+        );
+      }
+
+      await flightUserRecord.claim(context.user.id);
+
+      return flightRecord.claim(context.user.id, token);
     },
 
     /**
@@ -197,22 +207,7 @@ module.exports.resolver = {
           })
         )
       );
-      const usersCheck = stations
-        .map(station => {
-          if (station.userId) {
-            User.getUserById(station.userId).then(user => {
-              if (!user) {
-                throw new UserInputError("Invalid user id provided")
-              }
-              return;
-            })
-          }
-          else {
-            // Generate a token and add it to the station
-            station.token = tokenGenerator();
-          }
-          return station;
-        });
+      const usersCheck = fillSimsWithTokens(simulators);
 
       // Do all of the checks at once.
       // It will error if there is a problem
@@ -235,7 +230,7 @@ module.exports.resolver = {
       );
 
       // Also create the flight user record (to help when querying based on user/token)
-      const flightUserRecord = await FlightUserRecord.createFightUserRecordFromFlightRecord(record);
+      await FlightUserRecord.createFlightUserRecordsFromFlightRecord(record);
 
       return record;
     },
@@ -249,6 +244,8 @@ module.exports.resolver = {
       if (flightRecord.spaceCenterId !== center.id) {
         throw new UserInputError("Insufficient permissions");
       }
+
+      await FlightUserRecord.deleteFlightUserRecordsByFlightRecordId(id);
 
       return flightRecord.delete();
     },
@@ -266,7 +263,11 @@ module.exports.resolver = {
     ) => {
       let center = await getCenter(context.user);
 
-      return FlightRecord.createFlightRecord(
+      simulators = fillSimsWithTokens(simulators);
+
+      console.log(simulators);
+
+      let flightRecord = await FlightRecord.createFlightRecord(
         center.id,
         thoriumFlightId,
         flightTypeId,
@@ -274,23 +275,53 @@ module.exports.resolver = {
         id,
         date
       );
+
+      // TODO need to generate the token here as well (if changed)
+
+      await FlightUserRecord.editFlightUserRecordsByFlightRecord(flightRecord);
+
+      return flightRecord;
     }
   },
-  Badge: {
-    flight: (badge, args, context) => {}
+
+  Badge: {  
+    users: (badge, args, context) => {}
   },
 
   User: {
     flights: (user, args, context) => {
-      return FlightRecord.getFlightRecordsByUser(user.id);
+      return FlightUserRecord.getFlightUserRecordsByUser(user.id);
     }
   },
+
   Center: {
     flightRecordCount: (center, args, context) => {
       return FlightRecord.flightRecordCount(center.id);
     },
+
     flightRecords: (center, { limit, skip }, context) => {}
   }
 };
+
+function fillSimsWithTokens(simulators) {
+  return simulators.map(
+    sim => ({...sim, stations: sim.stations.map(
+      station => {
+      if (station.userId) {
+        User.getUserById(station.userId).then(user => {
+          if (!user) {
+            throw new UserInputError("Invalid user id provided")
+          }
+          return;
+        })
+      }
+      else {
+        // Generate a token and add it to the station
+        station.token = tokenGenerator();
+      }
+      return station;
+    })})
+  );
+}
 
 // Assign/claim flight records

@@ -35,7 +35,16 @@ module.exports = class FlightUserRecord {
   // ===========================================================================
   // Static methods
   // ===========================================================================
-  static async createFightUserRecordFromFlightRecord(flightRecord) {
+  static async getByToken(token) {
+    return firestore()
+      .collection(collectionName)
+      .where("token", "==", token)
+      .get()
+      .then(ref => ref.docs[0])
+      .then(doc => new FlightUserRecord({id: doc.id, ...doc.data()}));
+  }
+
+  static async createFlightUserRecordsFromFlightRecord(flightRecord) {
     return flightRecord.simulators.map(
       sim => sim.stations.map(
         station => this.createFlightUserRecord({
@@ -74,17 +83,42 @@ module.exports = class FlightUserRecord {
   }
 
   static async getFlightUserRecordsByUser(userId) {
+    return firestore()
+      .collection(collectionName)
+      .where('userId', '==', userId)
+      .get()
+      .then(ref => ref.docs.map(doc => new FlightUserRecord({id: doc.id, ...doc.data()})))
+  }
 
+  static async deleteFlightUserRecordsByFlightRecordId(id) {
+    return firestore().collection(collectionName)
+    .where("flightRecordId", "==", id)
+    .get()
+    .then(ref => ref.docs.map(
+      doc => firestore().collection(collectionName).doc(doc.id).delete()
+    ));
+  } 
+
+  static async editFlightUserRecordsByFlightRecord(flightRecord) {
+    await FlightUserRecord.deleteFlightUserRecordsByFlightRecordId(flightRecord.id);
+    return FlightUserRecord.createFlightUserRecordsFromFlightRecord(flightRecord);
   }
 
   // ===========================================================================
-  // Non-Static Methods
+  // Non-Static methods
   // ===========================================================================
-  async delete() {
-
+  claim (userId) {
+    delete this.token;
+    this.userId = userId;
+    return this.save();
   }
 
-  async save() {
-
+  save() {
+    return firestore()
+      .collection(collectionName)
+      .doc(this.id)
+      .set({
+        ...this
+      });
   }
 };

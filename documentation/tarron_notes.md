@@ -27,7 +27,7 @@
 - [ ] Test all of Flight Record GraphQL
 - [ ] Any queries that edit flight records have to also edit flight user records
 
-- [ ] Badge -> flight query (found in flightRecord)
+- [ ] Badge -> users query (found in flightRecord)
 
 ## Recently Finished
 
@@ -126,13 +126,29 @@ mutation {
 }
 
 mutation {
-  flightEdit(
-    id: "2QOhP8bferYuOpHKWqXl"
+  flightEdit (
+  # flightRecordCreate (
+    id: "SqMwTXSdYO2Drs6NDTYV"
     thoriumFlightId: "tarrontest1"
-    # date: "February 19, 2019 at 9:16:28 PM UTC-7"
-    # flightTypeId: "B34b963R6IOUdREeglqQ"
-  )
+    flightTypeId: "B34b963R6IOUdREeglqQ"
+    simulators: [
+      {
+        id: "80t27YsR51aqNHriulJL"
+        stations: [
+          {
+            name: "gunner"
+            badges: ["2gFkOq4Suoir03olyLm6"]
+            #userId: "Vt9VfgbVxUOCfURwVBlTGheqp9j2"
+          }
+        ]
+      }
+    ]
+  ) {
+    id
+  }
 }
+
+
 
 <!-- ======================================================================= -->
 <!-- Simulators -->

@@ -121,7 +121,7 @@ module.exports = class FlightRecord {
         .collection(collectionName)
         .doc(overwriteId)
         .set(data, { merge: true });
-      return true;
+      return new FlightRecord({id: overwriteId, ...data});
     } else {
       // --- Create a new object --- //
       let newId = (await firestore()
@@ -169,7 +169,7 @@ module.exports = class FlightRecord {
    * Assign the user to the current flght record and save to firestore
    * Return the new flight record
    */
-  async claim(userId) {
+  async claim(userId, token) {
     let newId = await firestore()
       .collection(collectionName)
       .doc(this.id)
@@ -181,7 +181,7 @@ module.exports = class FlightRecord {
               // If the station's token matches the token that is being redeemed, replace the token with the user id
               if (
                 typeof station.token !== "undefined" &&
-                station.token === this.redeemingToken
+                station.token === token
               ) {
                 delete station.token;
                 station.userId = userId;
