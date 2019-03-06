@@ -1,0 +1,26 @@
+query FlightRecord($id: ID!, $centerId: ID!) {
+  flightRecord(id: $id, centerId: $centerId) {
+    id
+    date
+    flightType {
+      id
+      name
+      flightHours
+      classHours
+    }
+    simulators {
+      id
+      name
+      stations {
+        name
+        userId
+        token
+        badges {
+          id
+          name
+          type
+        }
+      }
+    }
+  }
+}

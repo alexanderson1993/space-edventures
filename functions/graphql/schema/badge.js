@@ -5,6 +5,8 @@ const {
 } = require("apollo-server-express");
 const getCenter = require("../helpers/getCenter");
 const { Badge, User, BadgeAssignment } = require("../models");
+const { badgeLoader } = require("../loaders");
+
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
 module.exports.schema = gql`
@@ -72,6 +74,10 @@ module.exports.schema = gql`
     badges(type: BADGE_TYPE): [Badge]
     missionCount: Int
     badgeCount: Int
+  }
+
+  extend type Station {
+    badges: [Badge]
   }
 `;
 
@@ -223,6 +229,11 @@ module.exports.resolver = {
     },
     badgeCount: center => {
       return Badge.badgeCount(center.id, "badge");
+    }
+  },
+  Station: {
+    badges: async station => {
+      return station.badges && badgeLoader.loadMany(station.badges);
     }
   }
 };

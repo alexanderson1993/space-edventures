@@ -128,7 +128,10 @@ class AuthDirective extends SchemaDirectiveVisitor {
           // Permissions for a director using a mutation on a center
           // The mutation must use the centerId arg to work properly
           const userCenter = await Center.getCenterByDirector(user.id);
-          if (userCenter && userCenter.id === queryArgs.centerId) {
+          if (
+            (userCenter && userCenter.id === queryArgs.centerId) ||
+            (userCenter && userCenter.id === data.centerId)
+          ) {
             return resolve.apply(this, args);
           }
         }
