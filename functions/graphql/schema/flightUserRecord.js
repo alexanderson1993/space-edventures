@@ -1,20 +1,33 @@
-const { gql } = require("apollo-server-express");
+const {
+  gql,
+  AuthenticationError,
+  UserInputError
+} = require("apollo-server-express");
+const {
+  FlightUserRecord,
+  FlightRecord,
+  Simulator,
+  User
+} = require("../models");
+const getCenter = require("../helpers/getCenter");
 
-// We define a schema that encompasses all of the types
-// necessary for the functionality in this file.
+/**
+ * This schema doesn't really expose any endpoints to the graphql user. Rather it provides the data structre that allows the flight record data to be mirrored in a way
+ * that makes it easier to query later on (through the same flight record endpoints)
+ */
 module.exports.schema = gql`
   type FlightUserRecord {
     id: ID!
-    token: String
-    user: User
-    simulator: Simulator
-    station: Station
-    badges: [Badge]
-    date: Date
-    flightType: FlightType
-    center: Center
-    flightRecord: FlightRecord
+    stationName: String!
+    date: Date!
+    token: String # This is here so that space directors could manually give out tokens
+    # user: User # extended in user // TODO: add to the other file
+    # simulator: Simulator # extended in simulator // TODO: add to the other file
+    # flightRecord: FlightRecord # extended in flight record // TODO: Add to other file
+    # badges: [Badge] # extended in flightRecord // TODO: Add to other file
   }
+
+  # Return the flight user records assigned to that logged in user
   extend type User {
     flightRecords: [FlightUserRecord]
   }
@@ -25,6 +38,27 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   User: {
-    flightRecords: (user, args, context) => {}
+    flightRecords: (user, args, context) => {
+      // Make sure this user matches the authenticated user
+      if (user.id !== context.user.id) {
+        throw new AuthenticationError("Insufficient permissions");
+      }
+      return FlightUserRecord.getFlightRecordsByUser(user.id);
+    }
+  },
+  // TODO FIX THESE (JUST COPIED FOR NOW)
+  Profile: {
+    flightHours: async (profile, args, context) => {
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "flightHours"
+      });
+    },
+    classHours: async (profile, args, context) => {
+      return hoursLoader.load({
+        userId: profile.userId,
+        hourType: "classHours"
+      });
+    }
   }
 };

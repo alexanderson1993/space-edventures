@@ -16,9 +16,9 @@ module.exports.schema = gql`
   }
 
   type Station {
-    badges: [ID]
     name: String!
-    userId: ID
+    userId: ID @auth(requires: [director])
+    token: String @auth(requires: [director, center])
   }
 
   # We can extend other graphQL types using the "extend" keyword.
@@ -87,10 +87,22 @@ module.exports.resolver = {
     // Add the name and stations to the simulator object
     simulators: (flightRecord, args, context) => {
       return flightRecord.simulators.map(async sim => {
-        let simulator = await Simulator.getSimulator(sim.id);
+        // Provide the simulatorId, which is a reference to the
+        // Space EdVentures simulator.
+        // Pull out the ID so it doesn't affect the id from the flight record.
+        // This is for Apollo Client caching.
+        let { id, ...simulator } = await Simulator.getSimulator(
+          sim.simulatorId
+        );
         return {
           ...sim,
-          ...simulator
+          // We have to add the centerId to the stations so we
+          // can properly auth them for director one level up.
+          ...simulator,
+          stations: sim.stations.map(s => ({
+            ...s,
+            centerId: flightRecord.spaceCenterId
+          }))
         };
       });
     }

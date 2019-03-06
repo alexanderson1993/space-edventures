@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import useQrCode from "react-qrcode-hook";
 import styled from "@emotion/styled";
 import { Words } from "../../components";
 import ProfileContext from "../../helpers/profileContext";
@@ -56,17 +57,9 @@ const Container = styled("div")`
   }
 `;
 
-const Certificate = ({ theme, numberToWords, QrCode }) => {
+const Certificate = ({ theme, numberToWords }) => {
   const { user } = useContext(ProfileContext);
-  const [qrCode, setQrCode] = useState(null);
-  useEffect(() => {
-    if (!qrCode && user.token) {
-      const canvas = document.createElement("canvas");
-      canvas.width = 1024;
-      canvas.height = 1024;
-      QrCode.toDataURL(canvas, user.token).then(res => setQrCode(res));
-    }
-  }, [QrCode, qrCode, user.token]);
+  const qrCode = useQrCode(user.token);
   if (user.loading) return <Loading animate />;
   return (
     <Printable preview>
@@ -158,20 +151,15 @@ const Certificate = ({ theme, numberToWords, QrCode }) => {
 
 // Load these modules async so we don't overload our bundle.
 const numberToWordsPromise = import("number-to-words");
-const QrCodePromise = import("qrcode");
 
 const WrappedCertificate = withStyles(() => {})(Certificate);
 const ModuleLoader = props => {
   const [module, setModule] = useState(false);
-  const [module2, setModule2] = useState(false);
   useEffect(() => {
     numberToWordsPromise.then(res => setModule(res));
-    QrCodePromise.then(res => setModule2(res));
   }, []);
-  if (!module || !module2) return <Loading animate />;
-  return (
-    <WrappedCertificate {...props} numberToWords={module} QrCode={module2} />
-  );
+  if (!module) return <Loading animate />;
+  return <WrappedCertificate {...props} numberToWords={module} />;
 };
 
 export default ModuleLoader;

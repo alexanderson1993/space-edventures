@@ -4,8 +4,10 @@ const {
   FlightType,
   Simulator,
   Badge,
-  User
+  User,
+  FlightUserRecord // Used to mirror the data in a way that makes it easier to query based on user
 } = require("../models");
+const tokenGenerator = require("../helpers/tokenGenerator");
 const getCenter = require("../helpers/getCenter");
 const { hoursLoader } = require("../loaders");
 
@@ -34,8 +36,9 @@ module.exports.schema = gql`
     userId: ID # ID of the user who was at this station for this flight
   }
 
+  # Get all the flight records that are tied to this particular badge (meaning that they have a station assigned to that badge)
   extend type Badge {
-    flight: FlightRecord
+    users: User
   }
 
   extend type User {
@@ -43,7 +46,9 @@ module.exports.schema = gql`
   }
 
   extend type Query {
-    flightRecord(id: ID!): FlightRecord @auth(requires: [director])
+    # CenterID is required for director auth
+    flightRecord(id: ID!, centerId: ID!): FlightRecord
+      @auth(requires: [director])
     flightRecords(userId: ID, centerId: ID, simulatorId: ID): [FlightRecord]
       @auth(requires: [director])
   }
@@ -123,15 +128,27 @@ module.exports.resolver = {
      */
     flightClaim: async (rootQuery, { token }, context) => {
       // User id of currently logged in user to claim the token
-      let flightRecord = await FlightRecord.getFlightRecordByToken(token);
+      let flightUserRecord = await FlightUserRecord.getByToken(token);
 
-      if (!flightRecord) {
+      if (!flightUserRecord) {
         throw new UserInputError(
-          "No flight records were found for this token."
+          "No flight user records were found for this token."
         );
       }
 
-      return flightRecord.claim(context.user.id);
+      let flightRecord = await FlightRecord.getFlightRecord(
+        flightUserRecord.flightRecordId
+      );
+
+      if (!flightRecord) {
+        throw new UserInputError(
+          "No flight user records were found for this token."
+        );
+      }
+
+      await flightUserRecord.claim(context.user.id);
+
+      return flightRecord.claim(context.user.id, token);
     },
 
     /**
@@ -192,16 +209,7 @@ module.exports.resolver = {
           })
         )
       );
-      const usersCheck = stations
-        .filter(s => s.userId)
-        .map(station =>
-          User.getUserById(station.userId).then(user => {
-            if (!user) {
-              // TODO: Add a token to the simulator station, and remove the invalid user id
-            }
-            return;
-          })
-        );
+      const usersCheck = fillSimsWithTokens(simulators);
 
       // Do all of the checks at once.
       // It will error if there is a problem
@@ -211,6 +219,10 @@ module.exports.resolver = {
           .concat(badgesCheck)
           .concat(usersCheck)
       );
+
+      // Set the simulator stations to be the version with the tokens
+      simulators.stations = stations;
+
       // Create the flight record object and include the simulator/station information
       const record = await FlightRecord.createFlightRecord(
         centerIdValue,
@@ -218,6 +230,9 @@ module.exports.resolver = {
         flightTypeId,
         simulators
       );
+
+      // Also create the flight user record (to help when querying based on user/token)
+      await FlightUserRecord.createFlightUserRecordsFromFlightRecord(record);
 
       return record;
     },
@@ -231,6 +246,8 @@ module.exports.resolver = {
       if (flightRecord.spaceCenterId !== center.id) {
         throw new UserInputError("Insufficient permissions");
       }
+
+      await FlightUserRecord.deleteFlightUserRecordsByFlightRecordId(id);
 
       return flightRecord.delete();
     },
@@ -248,7 +265,11 @@ module.exports.resolver = {
     ) => {
       let center = await getCenter(context.user);
 
-      return FlightRecord.createFlightRecord(
+      simulators = await fillSimsWithTokens(simulators);
+
+      console.log(simulators);
+
+      let flightRecord = await FlightRecord.createFlightRecord(
         center.id,
         thoriumFlightId,
         flightTypeId,
@@ -256,23 +277,56 @@ module.exports.resolver = {
         id,
         date
       );
+
+      // TODO need to generate the token here as well (if changed)
+
+      await FlightUserRecord.editFlightUserRecordsByFlightRecord(flightRecord);
+
+      return flightRecord;
     }
   },
+
   Badge: {
-    flight: (badge, args, context) => {}
+    users: (badge, args, context) => {}
   },
 
   User: {
     flights: (user, args, context) => {
-      return FlightRecord.getFlightRecordsByUser(user.id);
+      return FlightUserRecord.getFlightUserRecordsByUser(user.id);
     }
   },
+
   Center: {
     flightRecordCount: (center, args, context) => {
       return FlightRecord.flightRecordCount(center.id);
     },
+
     flightRecords: (center, { limit, skip }, context) => {}
   }
 };
+
+function fillSimsWithTokens(simulators) {
+  return simulators.map(async sim => ({
+    ...sim,
+    stations: await Promise.all(
+      sim.stations.map(async station => {
+        if (station.userId) {
+          const user = await User.getUserById(station.userId).then(user => {
+            if (!user) {
+              station.userId = null;
+              return false;
+            }
+            return true;
+          });
+          if (user) return station;
+        } else {
+          // Generate a token and add it to the station
+          station.token = tokenGenerator();
+        }
+        return station;
+      })
+    )
+  }));
+}
 
 // Assign/claim flight records
