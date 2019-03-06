@@ -10,17 +10,15 @@ const { firestore } = require("../connectors/firebase");
 const COLLECTION_NAME = "messages";
 
 module.exports = class Message {
-  constructor(
-    {
-      id,
-      /*string*/ subject,
-      /*string*/ message,
-      /*string*/ senderId,
-      /*array[string]*/ recipients,
-      /*array[string]*/ hasReadList,
-      /*Date*/ date
-    }
-  ) {
+  constructor({
+    id,
+    /*string*/ subject,
+    /*string*/ message,
+    /*string*/ senderId,
+    /*array[string]*/ recipients,
+    /*array[string]*/ hasReadList,
+    /*Date*/ date
+  }) {
     this.id = id;
     this.subject = subject;
     this.message = message;
@@ -65,8 +63,7 @@ module.exports = class Message {
       .collection(COLLECTION_NAME)
       .where("recipients", "array-contains", userId)
       .get()
-      .then(ref => ref.docs))
-      .filter(doc => doc.data().senderId !== userId); // Don't include values here if they are the sender (since that would make duplicates)
+      .then(ref => ref.docs)).filter(doc => doc.data().senderId !== userId); // Don't include values here if they are the sender (since that would make duplicates)
     let messagesSent = await firestore()
       .collection(COLLECTION_NAME)
       .where("senderId", "==", userId)
@@ -74,26 +71,24 @@ module.exports = class Message {
       .then(ref => ref.docs);
 
     let messages = messagesReceived.concat(messagesSent);
-    
-    return messages.map(
-      message => {
-        const recipients = message.data().recipients;
-        let retObj = new Message({
-          id: message.id,
-          ...message.data(),
-          recipients: ((Array.isArray(recipients) &&
-          recipients.includes(userId))
-          ? [userId]
-          : recipients),
-          hasReadList: ((Array.isArray(message.hasReadList) &&
-            message.hasReadList.includes(userId))
+
+    return messages.map(message => {
+      const recipients = message.data().recipients;
+      let retObj = new Message({
+        id: message.id,
+        ...message.data(),
+        recipients:
+          Array.isArray(recipients) && recipients.includes(userId)
+            ? [userId]
+            : recipients,
+        hasReadList:
+          Array.isArray(message.hasReadList) &&
+          message.hasReadList.includes(userId)
             ? [userId]
             : []
-          )
-        })
-        return retObj;
-      }
-    );
+      });
+      return retObj;
+    });
   }
 
   static async getMessagesBySender(senderId) {

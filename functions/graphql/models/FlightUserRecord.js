@@ -41,13 +41,13 @@ module.exports = class FlightUserRecord {
       .where("token", "==", token)
       .get()
       .then(ref => ref.docs[0])
-      .then(doc => new FlightUserRecord({id: doc.id, ...doc.data()}));
+      .then(doc => new FlightUserRecord({ id: doc.id, ...doc.data() }));
   }
 
   static async createFlightUserRecordsFromFlightRecord(flightRecord) {
-    return flightRecord.simulators.map(
-      sim => sim.stations.map(
-        station => this.createFlightUserRecord({
+    return flightRecord.simulators.map(sim =>
+      sim.stations.map(station =>
+        this.createFlightUserRecord({
           simulatorId: sim.id,
           token: station.token,
           userId: station.userId,
@@ -58,17 +58,23 @@ module.exports = class FlightUserRecord {
     );
   }
 
-  static async createFlightUserRecord({simulatorId, token, userId, stationName, flightRecordId}) {
+  static async createFlightUserRecord({
+    simulatorId,
+    token,
+    userId,
+    stationName,
+    flightRecordId
+  }) {
     let data = {
       stationName: stationName,
       flightRecordId: flightRecordId,
       simulatorId: simulatorId,
       date: new Date()
-    }
-    if (typeof(userId) !== "undefined") {
+    };
+    if (typeof userId !== "undefined") {
       data.userId = userId;
     }
-    if (typeof(token) !== "undefined") {
+    if (typeof token !== "undefined") {
       data.token = token;
     }
     let newFlightUserRecord = await firestore()
@@ -78,36 +84,51 @@ module.exports = class FlightUserRecord {
       .collection(collectionName)
       .doc(newFlightUserRecord.id)
       .get();
-      
-    return new FlightUserRecord({id: newFlightUserRecordData.id, ...newFlightUserRecordData.data()})
+
+    return new FlightUserRecord({
+      id: newFlightUserRecordData.id,
+      ...newFlightUserRecordData.data()
+    });
   }
 
   static async getFlightUserRecordsByUser(userId) {
     return firestore()
       .collection(collectionName)
-      .where('userId', '==', userId)
+      .where("userId", "==", userId)
       .get()
-      .then(ref => ref.docs.map(doc => new FlightUserRecord({id: doc.id, ...doc.data()})))
+      .then(ref =>
+        ref.docs.map(doc => new FlightUserRecord({ id: doc.id, ...doc.data() }))
+      );
   }
 
   static async deleteFlightUserRecordsByFlightRecordId(id) {
-    return firestore().collection(collectionName)
-    .where("flightRecordId", "==", id)
-    .get()
-    .then(ref => ref.docs.map(
-      doc => firestore().collection(collectionName).doc(doc.id).delete()
-    ));
-  } 
+    return firestore()
+      .collection(collectionName)
+      .where("flightRecordId", "==", id)
+      .get()
+      .then(ref =>
+        ref.docs.map(doc =>
+          firestore()
+            .collection(collectionName)
+            .doc(doc.id)
+            .delete()
+        )
+      );
+  }
 
   static async editFlightUserRecordsByFlightRecord(flightRecord) {
-    await FlightUserRecord.deleteFlightUserRecordsByFlightRecordId(flightRecord.id);
-    return FlightUserRecord.createFlightUserRecordsFromFlightRecord(flightRecord);
+    await FlightUserRecord.deleteFlightUserRecordsByFlightRecordId(
+      flightRecord.id
+    );
+    return FlightUserRecord.createFlightUserRecordsFromFlightRecord(
+      flightRecord
+    );
   }
 
   // ===========================================================================
   // Non-Static methods
   // ===========================================================================
-  claim (userId) {
+  claim(userId) {
     delete this.token;
     this.userId = userId;
     return this.save();

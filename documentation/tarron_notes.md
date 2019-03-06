@@ -8,7 +8,7 @@
   - Existing resolvers might need to have this check added on them
 - [ ] flight type from record
   - center
-- [X] User profile get flight hours and class hours (parse badges)
+- [x] User profile get flight hours and class hours (parse badges)
 - [x] Messages
 - [ ] Double check permissions on everything (since front-end can't do any secure permission checking)
 

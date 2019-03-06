@@ -1,5 +1,14 @@
-const { gql, AuthenticationError, UserInputError } = require("apollo-server-express");
-const {FlightUserRecord, FlightRecord, Simulator, User} = require("../models");
+const {
+  gql,
+  AuthenticationError,
+  UserInputError
+} = require("apollo-server-express");
+const {
+  FlightUserRecord,
+  FlightRecord,
+  Simulator,
+  User
+} = require("../models");
 const getCenter = require("../helpers/getCenter");
 
 /**
@@ -22,7 +31,6 @@ module.exports.schema = gql`
   extend type User {
     flightRecords: [FlightUserRecord]
   }
-
 `;
 
 // We define all of the resolvers necessary for
@@ -33,7 +41,7 @@ module.exports.resolver = {
     flightRecords: (user, args, context) => {
       // Make sure this user matches the authenticated user
       if (user.id !== context.user.id) {
-        throw new AuthenticationError('Insufficient permissions');
+        throw new AuthenticationError("Insufficient permissions");
       }
       return FlightUserRecord.getFlightRecordsByUser(user.id);
     }
