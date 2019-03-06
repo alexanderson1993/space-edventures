@@ -43,6 +43,7 @@
     "emotion": "^10.0.7",
     "firebase": "^5.8.3",
     "gatsby": "^2.1.22",
+    "gatsby-awesome-pagination": "^0.3.3",
     "gatsby-plugin-create-client-paths": "^2.0.4",
     "gatsby-plugin-manifest": "^2.0.22",
     "gatsby-plugin-purgecss": "^3.1.0",
