@@ -1,0 +1,29 @@
+mutation ClaimFlight($token: String!) {
+  flightClaim(token: $token) {
+    id
+    date
+    simulator {
+      id
+      name
+    }
+    stationName
+    badges {
+      id
+      name
+      type
+    }
+    flightRecord {
+      id
+      center {
+        id
+        name
+      }
+      flightType {
+        id
+        name
+        flightHours
+        classHours
+      }
+    }
+  }
+}

@@ -39,6 +39,9 @@ module.exports.schema = gql`
   extend type FlightRecord {
     simulators: [Simulator]
   }
+  extend type FlightUserRecord {
+    simulator: Simulator
+  }
 `;
 
 // We define all of the resolvers necessary for
@@ -105,6 +108,12 @@ module.exports.resolver = {
           }))
         };
       });
+    }
+  },
+  FlightUserRecord: {
+    async simulator(rec) {
+      const sim = await Simulator.getSimulator(rec.simulatorId);
+      return sim;
     }
   },
   Center: {

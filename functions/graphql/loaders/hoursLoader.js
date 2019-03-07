@@ -1,5 +1,8 @@
 const { firestore } = require("../connectors/firebase");
-const { flightRecordUserLoader } = require("./flightRecord");
+const {
+  flightRecordUserLoader,
+  flightRecordLoader
+} = require("./flightRecord");
 const flightTypeLoader = require("./flightType");
 const DataLoader = require("dataloader");
 
@@ -7,7 +10,10 @@ const DataLoader = require("dataloader");
 const hoursLoader = new DataLoader(async docs => {
   return Promise.all(
     docs.map(async ({ userId, hourType }) => {
-      const flightRecords = await flightRecordUserLoader.load(userId);
+      const flightUserRecords = await flightRecordUserLoader.load(userId);
+      const flightRecords = await flightRecordLoader.loadMany(
+        flightUserRecords.map(f => f.flightRecordId)
+      );
       const flightTypes = await Promise.all(
         flightRecords.map(record => flightTypeLoader.load(record.flightTypeId))
       );

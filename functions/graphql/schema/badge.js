@@ -79,6 +79,10 @@ module.exports.schema = gql`
   extend type Station {
     badges: [Badge]
   }
+
+  extend type FlightUserRecord {
+    badges: [Badge]
+  }
 `;
 
 // We define all of the resolvers necessary for
@@ -234,6 +238,12 @@ module.exports.resolver = {
   Station: {
     badges: async station => {
       return station.badges && badgeLoader.loadMany(station.badges);
+    }
+  },
+  FlightUserRecord: {
+    badges: async rec => {
+      console.log(rec);
+      return rec.badges && badgeLoader.loadMany(rec.badges);
     }
   }
 };

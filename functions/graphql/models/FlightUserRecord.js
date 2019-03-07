@@ -1,6 +1,6 @@
 const { firestore } = require("../connectors/firebase");
 const tokenGenerator = require("../helpers/tokenGenerator"); // USed to generate a temporary token when the user doesn't exist yet
-
+const { flightRecordUserLoader } = require("../loaders/flightRecord");
 // =============================================================================
 // Class for Querying/Mutating flight user records
 /**
@@ -21,7 +21,8 @@ module.exports = class FlightUserRecord {
     simulatorId,
     stationName,
     date,
-    flightRecordId
+    flightRecordId,
+    badges
   }) {
     this.id = id;
     this.token = token;
@@ -30,6 +31,7 @@ module.exports = class FlightUserRecord {
     this.stationName = stationName;
     this.date = date;
     this.flightRecordId = flightRecordId;
+    this.badges = badges;
   }
 
   // ===========================================================================
@@ -38,21 +40,22 @@ module.exports = class FlightUserRecord {
   static async getByToken(token) {
     return firestore()
       .collection(collectionName)
-      .where("token", "==", token)
+      .where("token", "==", token.toLowerCase())
       .get()
       .then(ref => ref.docs[0])
-      .then(doc => new FlightUserRecord({ id: doc.id, ...doc.data() }));
+      .then(doc => doc && new FlightUserRecord({ id: doc.id, ...doc.data() }));
   }
 
   static async createFlightUserRecordsFromFlightRecord(flightRecord) {
     return flightRecord.simulators.map(sim =>
       sim.stations.map(station =>
         this.createFlightUserRecord({
-          simulatorId: sim.id,
+          simulatorId: sim.simulatorId,
           token: station.token,
           userId: station.userId,
           stationName: station.name,
-          flightRecordId: flightRecord.id
+          flightRecordId: flightRecord.id,
+          badges: station.badges
         })
       )
     );
@@ -63,12 +66,14 @@ module.exports = class FlightUserRecord {
     token,
     userId,
     stationName,
-    flightRecordId
+    flightRecordId,
+    badges
   }) {
     let data = {
-      stationName: stationName,
-      flightRecordId: flightRecordId,
-      simulatorId: simulatorId,
+      stationName,
+      flightRecordId,
+      simulatorId,
+      badges,
       date: new Date()
     };
     if (typeof userId !== "undefined") {
@@ -92,13 +97,7 @@ module.exports = class FlightUserRecord {
   }
 
   static async getFlightUserRecordsByUser(userId) {
-    return firestore()
-      .collection(collectionName)
-      .where("userId", "==", userId)
-      .get()
-      .then(ref =>
-        ref.docs.map(doc => new FlightUserRecord({ id: doc.id, ...doc.data() }))
-      );
+    return flightRecordUserLoader.load(userId);
   }
 
   static async deleteFlightUserRecordsByFlightRecordId(id) {
@@ -135,11 +134,15 @@ module.exports = class FlightUserRecord {
   }
 
   save() {
+    // Filter out any undefined values
+    const values = Object.entries(this)
+      .filter(([key, value]) => key !== "id" && value)
+      .reduce((prev, [key, value]) => ({ ...prev, [key]: value }), {});
     return firestore()
       .collection(collectionName)
       .doc(this.id)
       .set({
-        ...this
+        ...values
       });
   }
 };

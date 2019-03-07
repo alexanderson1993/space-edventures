@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import useQrCode from "react-qrcode-hook";
 import styled from "@emotion/styled";
-import { Words } from "../../components";
+import { Words, Content } from "../../components";
 import ProfileContext from "../../helpers/profileContext";
 import { withStyles, Loading } from "@arwes/arwes";
 import Printable from "../../helpers/printable";
@@ -62,18 +62,19 @@ const Certificate = ({ theme, numberToWords }) => {
   const qrCode = useQrCode(user.token);
   if (user.loading) return <Loading animate />;
   return (
-    <Printable preview>
-      <Container theme={theme}>
-        <div
-          css={css`
-            width: 100%;
-            height: 50%;
-            position: absolute;
-            left: 0;
-            top: 0;
-          `}
-          dangerouslySetInnerHTML={{
-            __html: `<svg viewBox="0 0 500 185">
+    <Content>
+      <Printable preview>
+        <Container theme={theme}>
+          <div
+            css={css`
+              width: 100%;
+              height: 50%;
+              position: absolute;
+              left: 0;
+              top: 0;
+            `}
+            dangerouslySetInnerHTML={{
+              __html: `<svg viewBox="0 0 500 185">
           <path
             id="curve"
             d="M73.2,100C77.2,93.9 138.7,51.8 251.8,53C363.1,54.2 422.6,93.3 426.9,100"
@@ -83,69 +84,72 @@ const Certificate = ({ theme, numberToWords }) => {
             <textPath xlink:href="#curve">Certificate of Rank Advancement</textPath>
           </text>
         </svg>`
-          }}
-        />
-        <div
-          css={css`
-            position: absolute;
-            width: 30%;
-            top: 20%;
-          `}
-        >
-          <Logo />
-        </div>
-        <div
-          css={css`
-            margin-top: 30%;
-            @media print {
-              margin-top: 15%;
-            }
-            max-width: 60%;
-          `}
-        >
-          <p>
-            <Words>This certifies that</Words>
-          </p>
-          <h2>
-            <Words>{user.profile.displayName || user.profile.name || ""}</Words>
-          </h2>
-          <p>
-            <Words>
-              Has been found worthy in Character, Experience, and Citizenship
-              and has completed the necessary requirements to earn the rank of
-            </Words>
-          </p>
-          <h3>
-            <Words>{user.profile.rank && user.profile.rank.name}</Words>
-          </h3>
-          <p>
-            <Words>
-              and is entitled to all the rights and privileges pertaining
-              thereto.
-            </Words>
-          </p>
-          <p>
-            Dated this {numberToWords.toWordsOrdinal(new Date().getDate())} day
-            of {new Date().toLocaleString("en-us", { month: "long" })},{" "}
-            {sentenceCase(
-              numberToWords.toWords(new Date().getFullYear()).replace(",", "")
-            )}
-          </p>
-          <p>
-            <small>Confirmation Code: {user.token}</small>
-          </p>
-          <img
+            }}
+          />
+          <div
             css={css`
               position: absolute;
-              right: 0;
-              bottom: 0;
+              width: 30%;
+              top: 20%;
             `}
-            src={console.log(qrCode) || qrCode}
-            alt="qr code"
-          />
-        </div>
-      </Container>
-    </Printable>
+          >
+            <Logo />
+          </div>
+          <div
+            css={css`
+              margin-top: 30%;
+              @media print {
+                margin-top: 15%;
+              }
+              max-width: 60%;
+            `}
+          >
+            <p>
+              <Words>This certifies that</Words>
+            </p>
+            <h2>
+              <Words>
+                {user.profile.displayName || user.profile.name || ""}
+              </Words>
+            </h2>
+            <p>
+              <Words>
+                Has been found worthy in Character, Experience, and Citizenship
+                and has completed the necessary requirements to earn the rank of
+              </Words>
+            </p>
+            <h3>
+              <Words>{user.profile.rank && user.profile.rank.name}</Words>
+            </h3>
+            <p>
+              <Words>
+                and is entitled to all the rights and privileges pertaining
+                thereto.
+              </Words>
+            </p>
+            <p>
+              Dated this {numberToWords.toWordsOrdinal(new Date().getDate())}{" "}
+              day of {new Date().toLocaleString("en-us", { month: "long" })},{" "}
+              {sentenceCase(
+                numberToWords.toWords(new Date().getFullYear()).replace(",", "")
+              )}
+            </p>
+            <p>
+              <small>Confirmation Code: {user.token}</small>
+            </p>
+            <img
+              css={css`
+                position: absolute;
+                right: 0;
+                bottom: 0;
+              `}
+              src={qrCode}
+              alt="qr code"
+            />
+          </div>
+        </Container>
+      </Printable>
+    </Content>
   );
 };
 

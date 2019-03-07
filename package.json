@@ -58,6 +58,7 @@
     "graphql": "^14.1.1",
     "graphql-tag": "^2.10.1",
     "isomorphic-fetch": "^2.2.1",
+    "jsqr": "^1.2.0",
     "node-sass": "^4.11.0",
     "number-to-words": "^1.2.4",
     "react": "^16.8.2",
@@ -68,7 +69,8 @@
     "react-icons": "^3.4.0",
     "react-image-crop": "^6.0.13",
     "react-qrcode-hook": "^1.0.0",
-    "react-stripe-elements": "^2.0.3"
+    "react-stripe-elements": "^2.0.3",
+    "react-webcam": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "7.1.6",

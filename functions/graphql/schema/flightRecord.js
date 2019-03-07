@@ -42,7 +42,7 @@ module.exports.schema = gql`
   }
 
   extend type User {
-    flights: [FlightRecord] @auth(requires: [authenticated])
+    flights: [FlightUserRecord] @auth(requires: [authenticated])
   }
 
   extend type Query {
@@ -63,6 +63,10 @@ module.exports.schema = gql`
     flightRecords(limit: Int, skip: Int): [FlightRecord]
   }
 
+  extend type FlightUserRecord {
+    flightRecord: FlightRecord
+  }
+
   extend type Mutation {
     # Creates the record of the flight
     # Uses the ID of the flight from Thorium so a flight cannot be recorded twice
@@ -72,7 +76,8 @@ module.exports.schema = gql`
       simulators: [FlightSimulatorInput!]!
     ): FlightRecord @auth(requires: [center, director])
 
-    flightClaim(token: String!): FlightRecord @auth(requires: [authenticated])
+    flightClaim(token: String!): FlightUserRecord
+      @auth(requires: [authenticated])
 
     flightEdit(
       id: ID!
@@ -146,9 +151,9 @@ module.exports.resolver = {
         );
       }
 
+      await flightRecord.claim(context.user.id, token);
       await flightUserRecord.claim(context.user.id);
-
-      return flightRecord.claim(context.user.id, token);
+      return flightUserRecord;
     },
 
     /**
@@ -267,8 +272,6 @@ module.exports.resolver = {
 
       simulators = await fillSimsWithTokens(simulators);
 
-      console.log(simulators);
-
       let flightRecord = await FlightRecord.createFlightRecord(
         center.id,
         thoriumFlightId,
@@ -302,6 +305,11 @@ module.exports.resolver = {
     },
 
     flightRecords: (center, { limit, skip }, context) => {}
+  },
+  FlightUserRecord: {
+    flightRecord(rec) {
+      return FlightRecord.getFlightRecord(rec.flightRecordId);
+    }
   }
 };
 
