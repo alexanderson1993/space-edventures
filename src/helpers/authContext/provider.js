@@ -43,7 +43,7 @@ const AuthProvider = ({ children }) => {
     magicLink: ({ email }) => {
       var actionCodeSettings = {
         // URL must be whitelisted in the Firebase Console.
-        url: `${window.location.origin}/magicLink`,
+        url: `${window.location.origin}/accounts/magicLink`,
         // This must be true.
         handleCodeInApp: true
       };

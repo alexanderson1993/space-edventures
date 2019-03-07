@@ -17,7 +17,7 @@ const Profile = () => {
   const { user: authUser, loading, logout } = useContext(AuthContext);
   const { user } = useContext(ProfileContext);
   if (loading || user.loading) return <Loading animate small />;
-  if (user && authUser)
+  if (authUser && user)
     return (
       <div className="profile-container">
         <div className="profile" onClick={() => setOpen(!open)}>
@@ -36,8 +36,8 @@ const Profile = () => {
           </div>
           <ProfilePicture
             css={css`
-              max-width: 60px;
-              max-height: 60px;
+              width: 60px;
+              height: 60px;
               object-fit: contain;
               margin: 0;
             `}
@@ -49,7 +49,7 @@ const Profile = () => {
         >
           <Appear animate show={open} style={{ width: "100%" }}>
             <div className="profile-extra">
-              <Link to="/profile">
+              <Link to="/user/profile">
                 <ArwesButton animate show={open} style={{ width: "100%" }}>
                   Profile
                 </ArwesButton>
@@ -69,11 +69,11 @@ const Profile = () => {
     );
   return (
     <div style={{ display: "flex" }}>
-      <Link to="/login">
+      <Link to="/accounts/login">
         <Button size="sm">Login</Button>
       </Link>{" "}
       <span style={{ margin: "0 10px" }}>or</span>{" "}
-      <Link to="/login?signUp">
+      <Link to="/accounts/login?signUp">
         <Button size="sm">Sign Up</Button>
       </Link>
     </div>

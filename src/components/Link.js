@@ -5,12 +5,17 @@ import { withSounds } from "@arwes/sounds";
 import AnimateContext from "../helpers/animateContext";
 import { publish } from "../helpers/pubsub";
 import { AdminContext } from "../layout/arwesProvider";
+import { ErrorContext } from "../helpers/errorContext";
 
 const isExtern = /^https?:\/\//;
 
 export const Navigator = withStyles(() => {})(
   withSounds()(({ theme, sounds, children, ...etc }) => {
     const { isAdmin, setIsAdmin } = useContext(AdminContext);
+    const {
+      state: { error },
+      dispatch
+    } = useContext(ErrorContext);
     const linkTrigger = (href, target, hide, reveal) => {
       sounds.click && sounds.click.play();
 
@@ -31,6 +36,7 @@ export const Navigator = withStyles(() => {})(
       } else if (isExtern.test(href)) {
         window.location.href = href;
       } else {
+        if (error) dispatch({ type: "cleared" });
         navigate(href).then(reveal);
       }
     };

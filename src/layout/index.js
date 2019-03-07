@@ -14,7 +14,7 @@ import {
 import AnimateContext from "../helpers/animateContext";
 import styled from "@emotion/styled";
 import { css } from "@emotion/core";
-import { Link } from "../components";
+import { Link, SEO } from "../components";
 
 const FooterContent = styled("div")`
   width: 960px;
@@ -93,6 +93,7 @@ class ArwesContainer extends Component {
             }
             pattern={isAdmin ? adminResources.pattern : resources.pattern}
           >
+            <SEO />
             <Content
               css={css`
                 display: flex;
@@ -104,8 +105,12 @@ class ArwesContainer extends Component {
               <div
                 css={css`
                   flex: 1;
-                  display: flex;
-                  flex-direction: column;
+                  & > div {
+                    min-height: calc(100vh - 111px);
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                  }
                 `}
               >
                 {children}
@@ -113,8 +118,8 @@ class ArwesContainer extends Component {
               <Footer animate>
                 <FooterContent>
                   <span>
-                    <Link to="/privacyPolicy">Privacy Policy</Link> |{" "}
-                    <Link to="/termsOfService">Terms of Service</Link>
+                    <Link to="/support/privacy">Privacy Policy</Link> |{" "}
+                    <Link to="/support/tos">Terms of Service</Link>
                   </span>
                   <span>Copyright © 2018</span>
                 </FooterContent>

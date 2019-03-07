@@ -114,7 +114,7 @@ const Login = ({ signingUp = false, to = "/", location }) => {
       setLoading(true);
       localStorage.setItem("postLoginPath", to);
       magicLink({ email })
-        .then(() => navigate(`/sentMagicLink?email=${email}`))
+        .then(() => navigate(`/accounts/sentMagicLink?email=${email}`))
         .catch(error => {
           setError({
             field: "none",

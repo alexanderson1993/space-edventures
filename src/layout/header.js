@@ -25,7 +25,7 @@ const TopHeader = () => (
               textDecoration: "none"
             }}
           >
-            <Logo style={{ maxWidth: "200px" }} />
+            <Logo css={{ maxWidth: "200px", width: "100%" }} />
           </Link>
           <Profile />
         </div>

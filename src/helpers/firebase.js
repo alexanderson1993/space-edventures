@@ -18,8 +18,12 @@ var config = {
   messagingSenderId: "939242994821",
   projectId: "space-edventures"
 };
-
-firebase.initializeApp(process.env.REACT_APP_IS_LIVE ? config : betaConfig);
-
-export const auth = firebase.auth();
-export const baseAuth = firebase.auth;
+let authItem;
+let baseAuthItem;
+if (typeof window !== "undefined") {
+  firebase.initializeApp(process.env.REACT_APP_IS_LIVE ? config : betaConfig);
+  authItem = firebase.auth();
+  baseAuthItem = firebase.auth;
+}
+export const auth = authItem;
+export const baseAuth = baseAuthItem;
