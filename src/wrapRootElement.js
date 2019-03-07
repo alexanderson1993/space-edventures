@@ -7,7 +7,6 @@ import graphqlClient from "./helpers/graphqlClient";
 import AuthProvider from "./helpers/authContext/provider";
 import ProfileProvider from "./helpers/profileContext/provider";
 import StripeAPIProvider from "./helpers/stripe";
-import "./styles.css";
 import { ErrorProvider } from "./helpers/errorContext";
 
 // eslint-disable-next-line react/display-name,react/prop-types

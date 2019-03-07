@@ -13,7 +13,7 @@ import {
 
 import AnimateContext from "../helpers/animateContext";
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
+import { css, Global } from "@emotion/core";
 import { Link, SEO } from "../components";
 
 const FooterContent = styled("div")`
@@ -93,6 +93,27 @@ class ArwesContainer extends Component {
             }
             pattern={isAdmin ? adminResources.pattern : resources.pattern}
           >
+            <Global
+              styles={css`
+                html,
+                body {
+                  font-family: sans-serif;
+                  background-color: black;
+                  color: white;
+                  padding: 0;
+                }
+                button + button,
+                a + a {
+                  margin-right: 10px;
+                }
+                .splashPoints {
+                  margin: 30px 0;
+                }
+                img {
+                  max-width: 100%;
+                }
+              `}
+            />
             <SEO />
             <Content
               css={css`
