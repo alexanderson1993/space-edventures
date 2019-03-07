@@ -5,7 +5,6 @@ import { Link, graphql } from "gatsby";
 export default class IndexPage extends React.Component {
   render() {
     const { posts, title } = this.props;
-    console.log(title);
     return (
       <section className="section">
         <div className="container">

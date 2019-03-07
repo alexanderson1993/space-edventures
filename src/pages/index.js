@@ -21,6 +21,7 @@ const Splash = () => {
         <Link to="/redeem">
           <Button>Redeem A Flight</Button>
         </Link>
+        <Link to="/director">Go to the Director's page</Link>
       </Content>
     );
   }

@@ -54,6 +54,9 @@ module.exports.schema = gql`
   extend type FlightRecord {
     user: User
   }
+  extend type FlightUserRecord {
+    user: User
+  }
 `;
 module.exports.resolver = {
   Query: {
@@ -145,5 +148,10 @@ module.exports.resolver = {
   },
   FlightRecord: {
     user: (flightRecord, args, context) => {}
+  },
+  FlightUserRecord: {
+    user(rec) {
+      return User.getUserById(rec.userId);
+    }
   }
 };

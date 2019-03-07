@@ -31,34 +31,33 @@ module.exports.schema = gql`
   extend type User {
     flightRecords: [FlightUserRecord]
   }
+  extend type Query {
+    flightUserRecord(token: String): FlightUserRecord
+  }
 `;
 
 // We define all of the resolvers necessary for
 // the functionality in this file. These will be
 // deep merged with the other resolvers.
 module.exports.resolver = {
-  User: {
-    flightRecords: (user, args, context) => {
-      // Make sure this user matches the authenticated user
-      if (user.id !== context.user.id) {
-        throw new AuthenticationError("Insufficient permissions");
-      }
-      return FlightUserRecord.getFlightRecordsByUser(user.id);
-    }
-  },
-  // TODO FIX THESE (JUST COPIED FOR NOW)
-  Profile: {
-    flightHours: async (profile, args, context) => {
-      return hoursLoader.load({
-        userId: profile.userId,
-        hourType: "flightHours"
-      });
-    },
-    classHours: async (profile, args, context) => {
-      return hoursLoader.load({
-        userId: profile.userId,
-        hourType: "classHours"
-      });
+  Query: {
+    flightUserRecord(rootQuery, { token }) {
+      return FlightUserRecord.getByToken(token);
     }
   }
+  // TODO FIX THESE (JUST COPIED FOR NOW)
+  // Profile: {
+  //   flightHours: async (profile, args, context) => {
+  //     return hoursLoader.load({
+  //       userId: profile.userId,
+  //       hourType: "flightHours"
+  //     });
+  //   },
+  //   classHours: async (profile, args, context) => {
+  //     return hoursLoader.load({
+  //       userId: profile.userId,
+  //       hourType: "classHours"
+  //     });
+  //   }
+  // }
 };

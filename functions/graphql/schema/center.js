@@ -100,7 +100,9 @@ module.exports.resolver = {
     center: (flightType, args, context) => {}
   },
   FlightRecord: {
-    center: (flightRecord, args, context) => {}
+    center: (flightRecord, args, context) => {
+      return Center.getCenter(flightRecord.spaceCenterId);
+    }
   },
   User: {
     center: (user, args, context) => {

@@ -55,7 +55,6 @@ const RouteData = () => {
 const Routes = ({ director = {} }) => {
   const { user } = useContext(AuthContext);
   let { center } = director;
-  console.log(director, center, user);
   return user ? (
     center ? (
       <Navigation>

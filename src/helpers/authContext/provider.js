@@ -27,14 +27,16 @@ const AuthProvider = ({ children }) => {
     },
     signUp: ({ email, password, birthDate, parentEmail }) => {
       // Create the user record in GraphQL
-      return auth.createUserWithEmailAndPassword(email, password).then(() => {
-        // Ignore error if there is a user
-        return client
-          .mutate({
-            mutation: CREATE_USER,
-            variables: { birthDate, parentEmail }
-          })
-          .catch(() => {});
+      return auth.createUserWithEmailAndPassword(email, password).then(res => {
+        if (res.additionalUserInfo.isNewUser) {
+          // Ignore error if there is a user
+          return client
+            .mutate({
+              mutation: CREATE_USER,
+              variables: { birthDate, parentEmail }
+            })
+            .catch(() => {});
+        }
       });
     },
     logout: () => {
