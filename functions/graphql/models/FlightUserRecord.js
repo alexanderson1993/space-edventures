@@ -1,6 +1,6 @@
 const { firestore } = require("../connectors/firebase");
 const tokenGenerator = require("../helpers/tokenGenerator"); // USed to generate a temporary token when the user doesn't exist yet
-const { flightRecordUserLoader } = require("../loaders/flightRecord");
+const { flightRecordUserLoader, flightRecordUserLoaderByBadge } = require("../loaders/flightRecord");
 // =============================================================================
 // Class for Querying/Mutating flight user records
 /**
@@ -31,7 +31,7 @@ module.exports = class FlightUserRecord {
     this.stationName = stationName;
     this.date = date;
     this.flightRecordId = flightRecordId;
-    this.badges = badges;
+    this.badges = badges; // Allows quick queries of all users who have a badge
   }
 
   // ===========================================================================
@@ -98,6 +98,11 @@ module.exports = class FlightUserRecord {
 
   static async getFlightUserRecordsByUser(userId) {
     return flightRecordUserLoader.load(userId);
+  }
+
+  static async getFlightUserRecordsByBadge(badgeId) {
+    let flightUserRecords = await flightRecordUserLoaderByBadge.load(badgeId);
+    return flightUserRecords.map(record => new FlightUserRecord(record));
   }
 
   static async deleteFlightUserRecordsByFlightRecordId(id) {
