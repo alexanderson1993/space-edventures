@@ -1,7 +1,7 @@
 query CenterDirector {
   me {
     id
-    center {
+    centers {
       id
       name
       description

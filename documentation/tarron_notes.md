@@ -22,6 +22,7 @@
 - [x] Flight record generate token (need to use transactions)
 
 - [ ] Badge -> users query (found in flightRecord)
+
   - [ ] Data Loaders to query by badge
 
 - [ ] Double check graphql permissions

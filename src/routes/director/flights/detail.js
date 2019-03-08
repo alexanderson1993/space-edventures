@@ -2,13 +2,11 @@ import React, { useContext } from "react";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import GET_FLIGHT from "./getFlight.graphql";
-import { DirectorContext } from "../../../helpers/directorContext";
 import css from "@emotion/css";
+import { CenterContext } from "../../../pages/director";
 
 const Flights = ({ id }) => {
-  const {
-    director: { center = {} }
-  } = useContext(DirectorContext);
+  const center = useContext(CenterContext);
   return (
     <div>
       <h1>Flight</h1>

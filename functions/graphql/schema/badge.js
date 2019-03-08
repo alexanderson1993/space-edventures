@@ -3,7 +3,6 @@ const {
   ForbiddenError,
   UserInputError
 } = require("apollo-server-express");
-const getCenter = require("../helpers/getCenter");
 const { Badge, User, BadgeAssignment } = require("../models");
 const { badgeLoader } = require("../loaders");
 
@@ -35,18 +34,25 @@ module.exports.schema = gql`
 
   # We can extend other graphQL types using the "extend" keyword.
   extend type Query {
-    badges(type: BADGE_TYPE, centerId: ID): [Badge]
+    badges(type: BADGE_TYPE, centerId: ID!): [Badge]
     badge(id: ID!): Badge
   }
   extend type Mutation {
     # Used to create assignable badges and assign badges to users
-    badgeCreate(badge: BadgeInput): Badge
-    badgeRemove(badgeId: ID!): Badge
-    badgeRename(badgeId: ID!, name: String!): Badge
-    badgeChangeDescription(badgeId: ID!, description: String!): Badge
-    badgeChangeImage(badgeId: ID!, image: Upload!): Badge
+    badgeCreate(badge: BadgeInput, centerId: ID!): Badge
+      @auth(requires: [director])
+    badgeRemove(badgeId: ID!, centerId: ID!): Badge @auth(requires: [director])
+    badgeRename(badgeId: ID!, name: String!, centerId: ID!): Badge
+      @auth(requires: [director])
+    badgeChangeDescription(
+      badgeId: ID!
+      description: String!
+      centerId: ID!
+    ): Badge @auth(requires: [director])
+    badgeChangeImage(badgeId: ID!, image: Upload!, centerId: ID!): Badge
+      @auth(requires: [director])
     badgeAssign(badges: [BadgeAssignInput!]!): [Badge]
-      @auth(requires: [center, director])
+      @auth(requires: [center, director, staff])
     badgeClaim(token: String!): ClaimResult @auth(requires: [authenticated])
   }
 
@@ -91,65 +97,52 @@ module.exports.schema = gql`
 module.exports.resolver = {
   Query: {
     badges: async (rootQuery, { type, centerId }, context) => {
-      let centerIdValue = centerId;
-      if (!centerIdValue) {
-        try {
-          const center = await getCenter(context.user);
-          if (!center) {
-            throw new UserInputError('"centerId" is a required parameter.');
-          }
-          centerIdValue = center.id;
-        } catch (err) {
-          throw new UserInputError(err);
-        }
-      }
-      return Badge.getBadges(type, centerIdValue);
+      return Badge.getBadges(type, centerId);
     },
     badge: (rootQuery, { id }, context) => {
       return Badge.getBadge(id);
     }
   },
   Mutation: {
-    badgeCreate: async (rootQuery, { badge }, context) => {
-      const center = await getCenter(context.user);
-      return Badge.createBadge(badge, center.id);
+    badgeCreate: async (rootQuery, { badge, centerId }, context) => {
+      return Badge.createBadge(badge, centerId);
     },
-    badgeRemove: async (rootQuery, { badgeId }, context) => {
-      const center = await getCenter(context.user);
+    badgeRemove: async (rootQuery, { badgeId, centerId }, context) => {
       const badge = await Badge.getBadge(badgeId);
-      if (badge.centerId !== center.id)
+      if (badge.centerId !== centerId)
         throw new ForbiddenError("Cannot delete a badge you do not own.");
       return badge.delete();
     },
-    badgeRename: async (rootQuery, { badgeId, name }, context) => {
-      const center = await getCenter(context.user);
+    badgeRename: async (rootQuery, { badgeId, name, centerId }, context) => {
       const badge = await Badge.getBadge(badgeId);
-      if (badge.centerId !== center.id)
+      if (badge.centerId !== centerId)
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.rename(name);
     },
     badgeChangeDescription: async (
       rootQuery,
-      { badgeId, description },
+      { badgeId, description, centerId },
       context
     ) => {
-      const center = await getCenter(context.user);
       const badge = await Badge.getBadge(badgeId);
-      if (badge.centerId !== center.id)
+      if (badge.centerId !== centerId)
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.changeDescription(description);
     },
-    badgeChangeImage: async (rootQuery, { badgeId, image }, context) => {
-      const center = await getCenter(context.user);
+    badgeChangeImage: async (
+      rootQuery,
+      { badgeId, image, centerId },
+      context
+    ) => {
       const badge = await Badge.getBadge(badgeId);
-      if (badge.centerId !== center.id)
+      if (badge.centerId !== centerId)
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.changeImage(image);
     },
     /**
      * Supports batch assignment of badges to users
      */
-    badgeAssign: async (rootQuery, { badges }, context) => {
+    badgeAssign: async (rootQuery, { badges, centerId }, context) => {
       // Either assign the badge directly, or create an assignment object
 
       return badges.map(async ({ badgeId, flightId, userId }) => {

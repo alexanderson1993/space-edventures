@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Input, Button, ImageUploader } from "../../../components";
 import css from "@emotion/css";
 import { Query, Mutation } from "react-apollo";
@@ -9,8 +9,10 @@ import CHANGE_DESCRIPTION from "./changeDescription.graphql";
 import CHANGE_NAME from "./changeName.graphql";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import { Frame, Loading } from "@arwes/arwes";
+import { CenterContext } from "../../../pages/director";
 
 const BadgeComp = ({ badges, badgeId }) => {
+  const center = useContext(CenterContext);
   const badge = badges.find(s => s.id === badgeId);
   const [editingDescription, setEditingDescription] = useState(false);
   const [description, setDescription] = useState(
@@ -23,7 +25,10 @@ const BadgeComp = ({ badges, badgeId }) => {
     <div>
       <h1>Badge: {badge.name}</h1>
       {renaming ? (
-        <Mutation mutation={CHANGE_NAME} variables={{ id: badge.id, name }}>
+        <Mutation
+          mutation={CHANGE_NAME}
+          variables={{ id: badge.id, name, centerId: center.id }}
+        >
           {(action, { loading }) =>
             loading ? (
               <Loading animate />
@@ -51,7 +56,7 @@ const BadgeComp = ({ badges, badgeId }) => {
       {editingDescription ? (
         <Mutation
           mutation={CHANGE_DESCRIPTION}
-          variables={{ id: badge.id, description }}
+          variables={{ id: badge.id, description, centerId: center.id }}
         >
           {(action, { loading }) =>
             loading ? (
@@ -109,7 +114,8 @@ const BadgeComp = ({ badges, badgeId }) => {
                   action({
                     variables: {
                       id: badge.id,
-                      image: dataURItoBlob(image)
+                      image: dataURItoBlob(image),
+                      centerId: center.id
                     }
                   })
                 }
@@ -122,8 +128,9 @@ const BadgeComp = ({ badges, badgeId }) => {
   );
 };
 const BadgeDetail = ({ badgeId }) => {
+  const center = useContext(CenterContext);
   return (
-    <Query query={BADGES_QUERY}>
+    <Query query={BADGES_QUERY} variables={{ centerId: center.id }}>
       {graphQLHelper(({ badges }) => (
         <BadgeComp badges={badges} badgeId={badgeId} />
       ))}

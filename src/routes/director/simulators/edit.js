@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Mutation, Query } from "react-apollo";
 import { Input, Button, Navigator } from "../../../components";
 import CREATE_SIMULATOR from "./createSimulator.graphql";
@@ -6,8 +6,10 @@ import RENAME_SIMULATOR from "./renameSimulator.graphql";
 import { Loading } from "@arwes/arwes";
 import SIMULATORS_QUERY from "./simulators.graphql";
 import graphQLHelper from "../../../helpers/graphQLHelper";
+import { CenterContext } from "../../../pages/director";
 
 const EditSimulator = ({ simulator, create, simulatorId }) => {
+  const center = useContext(CenterContext);
   const [name, setName] = useState(() => (simulator ? simulator.name : ""));
   const buttonText = `${create ? "Create" : "Update"} Simulator`;
   return (
@@ -24,10 +26,12 @@ const EditSimulator = ({ simulator, create, simulatorId }) => {
                 mutation={CREATE_SIMULATOR}
                 update={(cache, { data: { simulatorCreate } }) => {
                   const { simulators } = cache.readQuery({
-                    query: SIMULATORS_QUERY
+                    query: SIMULATORS_QUERY,
+                    variables: { centerId: center.id }
                   });
                   cache.writeQuery({
                     query: SIMULATORS_QUERY,
+                    variables: { centerId: center.id },
                     data: { simulators: simulators.concat([simulatorCreate]) }
                   });
                 }}
@@ -40,14 +44,20 @@ const EditSimulator = ({ simulator, create, simulatorId }) => {
                       onSubmit={e => {
                         e.preventDefault();
                         (create
-                          ? createSim({ variables: { name } })
+                          ? createSim({
+                              variables: { name, centerId: center.id }
+                            })
                           : renameSim({
-                              variables: { id: simulatorId, name }
+                              variables: {
+                                id: simulatorId,
+                                name,
+                                centerId: center.id
+                              }
                             })
                         ).then(
                           ({ data: { simulatorCreate, simulatorRename } }) => {
                             const { id } = simulatorCreate || simulatorRename;
-                            navigate(`/director/simulators/${id}`);
+                            navigate(`/director/${center.id}/simulators/${id}`);
                           }
                         );
                       }}
@@ -73,8 +83,13 @@ const EditSimulator = ({ simulator, create, simulatorId }) => {
   );
 };
 const EditSimulatorData = ({ create, simulatorId }) => {
+  const center = useContext(CenterContext);
   return (
-    <Query query={SIMULATORS_QUERY} skip={!simulatorId}>
+    <Query
+      query={SIMULATORS_QUERY}
+      skip={!simulatorId}
+      variables={{ centerId: center.id }}
+    >
       {graphQLHelper(({ simulators }) => {
         const simulator =
           simulators && simulators.find(s => s.id === simulatorId);

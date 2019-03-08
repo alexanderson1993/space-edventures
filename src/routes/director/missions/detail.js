@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Input, Button, ImageUploader } from "../../../components";
 import css from "@emotion/css";
 import { Query, Mutation } from "react-apollo";
@@ -9,8 +9,10 @@ import CHANGE_DESCRIPTION from "./changeDescription.graphql";
 import CHANGE_NAME from "./changeName.graphql";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import { Frame, Loading } from "@arwes/arwes";
+import { CenterContext } from "../../../pages/director";
 
 const MissionsComp = ({ missionId, missions }) => {
+  const center = useContext(CenterContext);
   const mission = missions.find(s => s.id === missionId);
   const [editingDescription, setEditingDescription] = useState(false);
   const [description, setDescription] = useState(
@@ -23,7 +25,10 @@ const MissionsComp = ({ missionId, missions }) => {
     <div>
       <h1>Mission: {mission.name}</h1>
       {renaming ? (
-        <Mutation mutation={CHANGE_NAME} variables={{ id: mission.id, name }}>
+        <Mutation
+          mutation={CHANGE_NAME}
+          variables={{ id: mission.id, name, centerId: center.id }}
+        >
           {(action, { loading }) =>
             loading ? (
               <Loading animate />
@@ -51,7 +56,7 @@ const MissionsComp = ({ missionId, missions }) => {
       {editingDescription ? (
         <Mutation
           mutation={CHANGE_DESCRIPTION}
-          variables={{ id: mission.id, description }}
+          variables={{ id: mission.id, description, centerId: center.id }}
         >
           {(action, { loading }) =>
             loading ? (
@@ -109,7 +114,8 @@ const MissionsComp = ({ missionId, missions }) => {
                   action({
                     variables: {
                       id: mission.id,
-                      image: dataURItoBlob(image)
+                      image: dataURItoBlob(image),
+                      centerId: center.id
                     }
                   })
                 }
@@ -122,8 +128,10 @@ const MissionsComp = ({ missionId, missions }) => {
   );
 };
 const MissionDetail = ({ missionId }) => {
+  const center = useContext(CenterContext);
+
   return (
-    <Query query={MISSIONS_QUERY}>
+    <Query query={MISSIONS_QUERY} variables={{ centerId: center.id }}>
       {graphQLHelper(({ missions }) => (
         <MissionsComp missionId={missionId} missions={missions} />
       ))}

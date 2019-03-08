@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 
 export default () => {
-  const { director } = { useContext };
   return (
     <div>
       <h1>Billing</h1>

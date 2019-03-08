@@ -1,5 +1,5 @@
-mutation BadgeChangeName($id: ID!, $name: String!) {
-  badgeRename(badgeId: $id, name: $name) {
+mutation BadgeChangeName($id: ID!, $name: String!, $centerId: ID!) {
+  badgeRename(badgeId: $id, name: $name, centerId: $centerId) {
     id
     name
   }

@@ -3,10 +3,10 @@ import useQrCode from "react-qrcode-hook";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import GET_FLIGHT from "./getFlight.graphql";
-import { DirectorContext } from "../../../helpers/directorContext";
 import Printable from "../../../helpers/printable";
 import css from "@emotion/css";
 import { Button } from "../../../components";
+import { CenterContext } from "../../../pages/director";
 
 const Flyer = ({
   date,
@@ -84,9 +84,7 @@ const Flyer = ({
 };
 
 const Print = ({ id }) => {
-  const {
-    director: { center = {} }
-  } = useContext(DirectorContext);
+  const center = useContext(CenterContext);
   return (
     <div>
       <Button

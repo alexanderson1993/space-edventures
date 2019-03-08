@@ -10,6 +10,7 @@ module.exports.schema = gql`
   extend type Query {
     me: User
     user(id: ID!): User @auth(requires: [self, admin, director])
+    users: [User]
   }
 
   extend type Mutation {
@@ -40,7 +41,7 @@ module.exports.schema = gql`
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
     # flights
-    roles: [String]
+    roles(centerId: ID): [String]
   }
 
   extend type Badge {
@@ -59,10 +60,20 @@ module.exports.schema = gql`
   }
 `;
 module.exports.resolver = {
+  User: {
+    roles: (user, { centerId }) => {
+      const roles = user.roles[centerId] || [];
+      if (user.isAdmin) roles.push("admin");
+      return roles;
+    }
+  },
   Query: {
     me: (_, __, context) => context.user,
     user: (_, { id }, context) => {
       return User.getUserById(id);
+    },
+    users: () => {
+      return User.getAllUsers();
     }
   },
   // Needs to pass in parent of profile so that value can be checked
