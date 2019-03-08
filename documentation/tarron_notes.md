@@ -18,12 +18,13 @@
 
 - [x] Edit flight record
 - [x] Question: what should the stations resolver do on the simulator object? Should it query all flight records with that simulator id and see what stations it's been associated with?
-
+- [x] Check messages GRAPHQL
 - [x] Flight record generate token (need to use transactions)
 
 - [ ] Badge -> users query (found in flightRecord)
+  - [ ] Data Loaders to query by badge
+
 - [ ] Double check graphql permissions
-- [ ] Check messages GRAPHQL
 - [ ] Test front-end
 
 ## Recently Finished

@@ -31,7 +31,7 @@ module.exports = class FlightUserRecord {
     this.stationName = stationName;
     this.date = date;
     this.flightRecordId = flightRecordId;
-    this.badges = badges;
+    this.badges = badges; // Allows quick queries of all users who have a badge
   }
 
   // ===========================================================================
@@ -98,6 +98,16 @@ module.exports = class FlightUserRecord {
 
   static async getFlightUserRecordsByUser(userId) {
     return flightRecordUserLoader.load(userId);
+  }
+
+  static async getFlightUserRecordsByBadge(badgeId) {
+    return firestore()
+      .collection(collectionName)
+      .where("badges", "array-contains", badgeId)
+      .get()
+      .then(ref => ref.docs.map(
+        doc => new FlightUserRecord({id: doc.id, ...doc.data()})
+      ));
   }
 
   static async deleteFlightUserRecordsByFlightRecordId(id) {

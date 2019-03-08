@@ -289,8 +289,18 @@ module.exports.resolver = {
     }
   },
 
+  /**
+   * Return all of the users that have achieved this badge
+   */
   Badge: {
-    users: (badge, args, context) => {}
+    users: async (badge, args, context) => {
+      // Use a set so that we only keep unique results
+      let userIds = [...new Set((await FlightUserRecord.getFlightUserRecordsByBadge(badge.id))
+        .filter(record => typeof(record.userId) !== "undefined")
+        .map(record => record.userId))];
+
+      return User.getUsersByIds(userIds);
+    }
   },
 
   User: {

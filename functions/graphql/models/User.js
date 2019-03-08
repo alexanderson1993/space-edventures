@@ -18,6 +18,8 @@ const parentConsent = require("../emails/parentConsent");
 const childConsent = require("../emails/childConsent");
 const parentReverify = require("../emails/parentReverify");
 const tokenGenerator = require("../helpers/tokenGenerator");
+
+const collectionName = "users";
 module.exports = class User {
   /**
    * Param: params (dictionary)
@@ -282,6 +284,13 @@ module.exports = class User {
         throw new SyntaxError(err.message);
       });
     return dbUser;
+  }
+
+  static async getUsersByIds(userIds) {
+    return firestore().getAll(userIds.map(id => firestore().collection(collectionName).doc(id)))
+      .then(ref => ref.docs.map(
+        doc => new User({id: doc.id, ...doc.data()})
+      ));
   }
 
   /**
