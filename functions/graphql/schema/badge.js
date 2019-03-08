@@ -242,7 +242,6 @@ module.exports.resolver = {
   },
   FlightUserRecord: {
     badges: async rec => {
-      console.log(rec);
       return rec.badges && badgeLoader.loadMany(rec.badges);
     }
   }

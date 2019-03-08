@@ -288,7 +288,7 @@ module.exports = class User {
 
   static async getUsersByIds(userIds) {
     return firestore().getAll(userIds.map(id => firestore().collection(collectionName).doc(id)))
-      .then(ref => ref.docs.map(
+      .then(docs => docs.map(
         doc => new User({id: doc.id, ...doc.data()})
       ));
   }
