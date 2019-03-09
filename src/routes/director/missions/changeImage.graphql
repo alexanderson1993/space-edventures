@@ -1,5 +1,5 @@
-mutation BadgeChangeImage($id: ID!, $image: Upload!) {
-  badgeChangeImage(badgeId: $id, image: $image) {
+mutation BadgeChangeImage($id: ID!, $image: Upload!, $centerId: ID!) {
+  badgeChangeImage(badgeId: $id, image: $image, centerId: $centerId) {
     id
     image
   }

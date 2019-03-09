@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "@emotion/styled";
-import { transparentize } from "polished";
+import { transparentize, darken } from "polished";
 import {
   FaSpaceShuttle,
   FaUserSecret,
@@ -9,9 +9,11 @@ import {
   FaFeatherAlt,
   FaCogs,
   FaDollarSign,
-  FaTrafficLight
+  FaTrafficLight,
+  FaSignOutAlt
 } from "react-icons/fa";
 import { Link } from "../../../components";
+import { CenterContext } from "../../../pages/director";
 
 const Sidebar = styled("div")`
   border-right: solid 2px rgba(0, 0, 0, 0);
@@ -25,11 +27,17 @@ const SidebarLink = styled(Link)`
   padding: 10px 20px;
   align-items: center;
   border-bottom: solid 1px ${({ color }) => transparentize(0.7, color)};
-  cursor: pointer;
+  color: ${({ color, disabled }) =>
+    disabled ? darken(0.3, color) : color} !important;
+
+  cursor: ${({ disabled }) =>
+    disabled ? "not-allowed" : "pointer"} !important;
   transition: all 0.25s ease !important;
   background-color: rgba(255, 255, 255, 0);
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "all")};
   &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: ${({ disabled }) =>
+      disabled ? "transparent" : "rgba(255, 255, 255, 0.2)"};
   }
   &:active {
     background-color: rgba(0, 0, 0, 0.1);
@@ -44,54 +52,62 @@ const sidebarLinks = [
   {
     label: "Home",
     icon: FaHome,
-    url: "/director"
+    url: ""
   },
   {
     label: "Flights",
     icon: FaTrafficLight,
-    url: "/director/flights"
+    url: "/flights"
   },
   {
     label: "Simulators",
     icon: FaSpaceShuttle,
-    url: "/director/simulators"
+    url: "/simulators"
   },
   {
     label: "Flight Types",
     icon: FaFeatherAlt,
-    url: "/director/flightTypes"
+    url: "/flightTypes"
   },
   {
     label: "Missions",
     icon: FaUserSecret,
-    url: "/director/missions"
+    url: "/missions"
   },
   {
     label: "Badges",
     icon: FaIdBadge,
-    url: "/director/badges"
+    url: "/badges"
   },
   {
     label: "Billing",
     icon: FaDollarSign,
-    url: "/director/billing"
+    url: "/billing"
   },
   {
     label: "Settings",
     icon: FaCogs,
-    url: "/director/settings"
+    url: "/settings"
   }
 ];
 
 const SidebarComp = props => {
+  const center = useContext(CenterContext);
   return (
     <Sidebar {...props}>
       <Sticky>
         {sidebarLinks.map(l => (
-          <SidebarLink {...props} key={l.label} to={l.url}>
+          <SidebarLink
+            {...props}
+            key={l.label}
+            to={`/director/${center.id}${l.url}`}
+          >
             <l.icon /> {l.label}
           </SidebarLink>
         ))}
+        <SidebarLink {...props} to={`/director`}>
+          <FaSignOutAlt /> Change Center
+        </SidebarLink>
       </Sticky>
     </Sidebar>
   );

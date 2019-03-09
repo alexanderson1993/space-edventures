@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Query } from "react-apollo";
 import styled from "@emotion/styled";
 import SIMULATORS_QUERY from "./simulators.graphql";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Link, Button } from "../../../components";
+import { CenterContext } from "../../../pages/director";
 const ButtonAlign = styled("div")`
   display: flex;
   align-items: center;
@@ -14,21 +15,24 @@ const ButtonAlign = styled("div")`
   }
 `;
 const SimulatorIndex = props => {
+  const center = useContext(CenterContext);
   return (
     <div>
       <ButtonAlign>
         <h1>Simulators</h1>
-        <Link to="/director/simulators/create">
+        <Link to={`/director/${center.id}/simulators/create`}>
           <Button>Create Simulator</Button>
         </Link>
       </ButtonAlign>
       <ul>
-        <Query query={SIMULATORS_QUERY}>
+        <Query query={SIMULATORS_QUERY} variables={{ centerId: center.id }}>
           {graphQLHelper(({ simulators }) =>
             simulators && simulators.length ? (
               simulators.map(s => (
                 <li key={s.id}>
-                  <Link to={`/director/simulators/${s.id}`}>{s.name}</Link>
+                  <Link to={`/director/${center.id}/simulators/${s.id}`}>
+                    {s.name}
+                  </Link>
                 </li>
               ))
             ) : (

@@ -3,12 +3,10 @@ import { Table, Link, Button } from "../../../components";
 import graphQLHelper from "../../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import GET_FLIGHTS from "./getFlights.graphql";
-import { DirectorContext } from "../../../helpers/directorContext";
+import { CenterContext } from "../../../pages/director";
 
-const Flights = props => {
-  const {
-    director: { center = {} }
-  } = useContext(DirectorContext);
+const Flights = () => {
+  const center = useContext(CenterContext);
   return (
     <div>
       <h1>Flights</h1>
@@ -28,7 +26,10 @@ const Flights = props => {
               <tbody>
                 {flightRecords.map(r => (
                   <tr>
-                    <Link key={r.id} to={`/director/flights/${r.id}`}>
+                    <Link
+                      key={r.id}
+                      to={`/director/${center.id}/flights/${r.id}`}
+                    >
                       <td>{new Date(r.date).toDateString()}</td>
                     </Link>
                     <td>{r.flightType.name}</td>
@@ -37,7 +38,7 @@ const Flights = props => {
                       {r.simulators.map(s => s.stations.length).join(",")}
                     </td>
                     <td>
-                      <Link to={`/director/flights/${r.id}/print`}>
+                      <Link to={`/director/${center.id}/flights/${r.id}/print`}>
                         <Button>Print Ranks</Button>
                       </Link>
                     </td>

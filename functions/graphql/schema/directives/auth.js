@@ -79,7 +79,8 @@ class AuthDirective extends SchemaDirectiveVisitor {
           field._requiredAuthRoles || objectType._requiredAuthRoles;
 
         // If there are no required roles, just return back the same resolver
-        if (!requiredRoles) {
+        // Also, admins are allowed to access all data
+        if (!requiredRoles || (user && user.isAdmin)) {
           return resolve.apply(this, args);
         }
         if (!user && !center) {
@@ -111,6 +112,8 @@ class AuthDirective extends SchemaDirectiveVisitor {
         ) {
           return resolve.apply(this, args);
         }
+
+        // Allow users to access their own data
         if (
           requiredRoles.indexOf("self") > -1 &&
           (user.id === data.userId || user.id === data.id)
@@ -119,42 +122,34 @@ class AuthDirective extends SchemaDirectiveVisitor {
           // return the normal resolver
           return resolve.apply(this, args);
         }
+        const userHasAccess =
+          (user && user.hasOneOfRoles(requiredRoles, queryArgs.centerId)) ||
+          user.hasOneOfRoles(requiredRoles, data.centerId);
 
         // =============================================================
         // Director Permissions
         // =============================================================
-        if (requiredRoles.indexOf("director") > -1 && user) {
-          if (user.id === data.directorId) return resolve.apply(this, args);
-          // Permissions for a director using a mutation on a center
-          // The mutation must use the centerId arg to work properly
-          const userCenter = await Center.getCenterByDirector(user.id);
-          if (
-            (userCenter && userCenter.id === queryArgs.centerId) ||
-            (userCenter && userCenter.id === data.centerId)
-          ) {
-            return resolve.apply(this, args);
-          }
-        }
+        // if (requiredRoles.indexOf("director") > -1 && user) {
+        //   if (user.id === data.directorId) return resolve.apply(this, args);
+        //   // Permissions for a director using a mutation on a center
+        //   // The mutation must use the centerId arg to work properly
+        //   const userCenter = await Center.getCenterByDirector(user.id);
+        //   if (
+        //     (userCenter && userCenter.id === queryArgs.centerId) ||
+        //     (userCenter && userCenter.id === data.centerId)
+        //   ) {
+        //     return resolve.apply(this, args);
+        //   }
+        // }
 
-        if (
-          // the field has required roles and the user does not have one of those roles
-          field._requiredAuthRoles &&
-          (!user || !user.hasOneOfRoles(field._requiredAuthRoles))
-        ) {
+        // the field has required roles and the user does not have one of those roles
+        // Since roles only apply in the context of centers, it is based on the center ID
+        if (requiredRoles && !userHasAccess) {
           // Provide different error messages based on whether it is a field
           // or object that is being denied.
           throw new ForbiddenError(
-            `Insufficient permissions to access field "${fieldName}"`
-          );
-        }
-
-        if (
-          // The object has required roles and the user does not have one of those roles
-          objectType._requiredAuthRoles &&
-          (!user || !user.hasOneOfRoles(objectType._requiredAuthRoles))
-        ) {
-          throw new ForbiddenError(
-            `Insufficient permissions to access object "${objectType.name}"`
+            `Insufficient permissions to access field "${fieldName ||
+              objectType.name}"`
           );
         }
 

@@ -5,10 +5,10 @@ const {
   Simulator,
   Badge,
   User,
+  Center,
   FlightUserRecord // Used to mirror the data in a way that makes it easier to query based on user
 } = require("../models");
 const tokenGenerator = require("../helpers/tokenGenerator");
-const getCenter = require("../helpers/getCenter");
 const { hoursLoader } = require("../loaders");
 
 // We define a schema that encompasses all of the types
@@ -73,6 +73,7 @@ module.exports.schema = gql`
     flightRecordCreate(
       thoriumFlightId: ID!
       flightTypeId: ID!
+      centerId: ID!
       simulators: [FlightSimulatorInput!]!
     ): FlightRecord @auth(requires: [center, director])
 
@@ -85,9 +86,10 @@ module.exports.schema = gql`
       date: Date
       flightTypeId: ID
       simulators: [FlightSimulatorInput]
+      centerId: ID!
     ): FlightRecord @auth(requires: [director])
 
-    flightDelete(id: ID!): Boolean @auth(requires: [director])
+    flightDelete(id: ID!, centerId: ID!): Boolean @auth(requires: [director])
   }
   # We can extend other graphQL types using the "extend" keyword.
 `;
@@ -104,10 +106,9 @@ module.exports.resolver = {
       { userId, centerId, simulatorId },
       context
     ) => {
-      const center = await getCenter(context.user);
       const records = await FlightRecord.getFlightRecords(
         userId,
-        centerId || center.id,
+        centerId,
         simulatorId
       );
       return records;
@@ -161,7 +162,7 @@ module.exports.resolver = {
      */
     flightRecordCreate: async (
       rootQuery,
-      { thoriumFlightId, flightTypeId, simulators },
+      { thoriumFlightId, flightTypeId, simulators, centerId },
       context
     ) => {
       // Make sure this center has this flight type ID
@@ -180,21 +181,12 @@ module.exports.resolver = {
         );
       }
 
-      // Get the center id (if this is a director and not a center)
-      let centerIdValue =
-        typeof context.center !== "undefined" ? context.center.id : null;
-      if (!centerIdValue) {
-        const center = await getCenter(context.user);
-        if (!center) {
-          throw new UserInputError("No Valid center found for user or token.");
-        }
-        centerIdValue = center.id;
-      }
+      const center = await Center.getCenter(centerId);
 
       // Make sure this center has these simulators
       const simChecks = simulators.map(sim =>
         Simulator.getSimulator(sim.id).then(sim => {
-          if (!sim || sim.centerId !== centerIdValue) {
+          if (!sim || sim.centerId !== center.id) {
             throw new UserInputError("Invalid simulator id provided");
           }
           return;
@@ -230,7 +222,7 @@ module.exports.resolver = {
 
       // Create the flight record object and include the simulator/station information
       const record = await FlightRecord.createFlightRecord(
-        centerIdValue,
+        center.id,
         thoriumFlightId,
         flightTypeId,
         simulators
@@ -242,13 +234,10 @@ module.exports.resolver = {
       return record;
     },
     // End flight record create
-    flightDelete: async (rootObj, { id }, context) => {
+    flightDelete: async (rootObj, { id, centerId }, context) => {
       let flightRecord = await FlightRecord.getFlightRecord(id);
 
-      // Make sure they have permissions for this flight record
-      let center = await getCenter(context.user);
-
-      if (flightRecord.spaceCenterId !== center.id) {
+      if (flightRecord.spaceCenterId !== centerId) {
         throw new UserInputError("Insufficient permissions");
       }
 
@@ -265,10 +254,10 @@ module.exports.resolver = {
      */
     flightEdit: async (
       rootObj,
-      { id, thoriumFlightId, date, flightTypeId, simulators },
+      { id, thoriumFlightId, date, flightTypeId, simulators, centerId },
       context
     ) => {
-      let center = await getCenter(context.user);
+      let center = await Center.getCenter(centerId);
 
       simulators = await fillSimsWithTokens(simulators);
 
@@ -295,9 +284,13 @@ module.exports.resolver = {
   Badge: {
     users: async (badge, args, context) => {
       // Use a set so that we only keep unique results
-      let userIds = [...new Set((await FlightUserRecord.getFlightUserRecordsByBadge(badge.id))
-        .filter(record => typeof(record.userId) !== "undefined")
-        .map(record => record.userId))];
+      let userIds = [
+        ...new Set(
+          (await FlightUserRecord.getFlightUserRecordsByBadge(badge.id))
+            .filter(record => typeof record.userId !== "undefined")
+            .map(record => record.userId)
+        )
+      ];
 
       return User.getUsersByIds(userIds);
     }

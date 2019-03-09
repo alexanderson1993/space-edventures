@@ -18,10 +18,12 @@ describe("User model", () => {
     const user = new User({
       name: "Alex",
       displayName: "Starblaze",
-      roles: ["admin", "director"]
+      roles: { spaceCenter: ["admin", "director"] }
     });
-    expect(user.hasOneOfRoles(["something", "admin"])).toBeTruthy();
-    expect(user.hasOneOfRoles(["whatever"])).toBeFalsy();
+    expect(
+      user.hasOneOfRoles(["something", "admin"], "spaceCenter")
+    ).toBeTruthy();
+    expect(user.hasOneOfRoles(["whatever"], "spaceCenter")).toBeFalsy();
   });
   test("getUser", () => {
     // I wasn't able to figure out why Jest didn't

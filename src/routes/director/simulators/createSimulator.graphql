@@ -1,5 +1,5 @@
-mutation CreateSimulator($name: String!) {
-  simulatorCreate(name: $name) {
+mutation CreateSimulator($name: String!, $centerId: ID!) {
+  simulatorCreate(name: $name, centerId: $centerId) {
     id
     name
   }

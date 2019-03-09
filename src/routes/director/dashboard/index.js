@@ -1,16 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "@emotion/styled";
 import css from "@emotion/css";
-import { DirectorContext } from "../../../helpers/directorContext";
 import { Button, ImageUploader, Input } from "../../../components";
 import UPDATE_NAME from "./updateName.graphql";
 import UPDATE_DESCRIPTION from "./updateDescription.graphql";
 import UPDATE_WEBSITE from "./updateWebsite.graphql";
 import UPDATE_IMAGE from "./updateImage.graphql";
-import CENTER_DIRECTOR from "../centerDirector.graphql";
+import CENTER_DIRECTOR from "../../../helpers/directorContext/centerDirector.graphql";
 import { Loading } from "@arwes/arwes";
 import { Mutation } from "react-apollo";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
+import { CenterContext } from "../../../pages/director";
 
 // const Badge = styled("div")`
 //   width: 100%;
@@ -207,9 +207,7 @@ const Image = ({ id, name, imageUrl, editMode }) => {
 };
 
 const Dashboard = () => {
-  const {
-    director: { center = {} }
-  } = useContext(DirectorContext);
+  const center = useContext(CenterContext);
   const [editMode, setEditMode] = useState(false);
 
   return (

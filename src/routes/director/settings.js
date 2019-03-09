@@ -1,14 +1,13 @@
 import React, { useContext, useState } from "react";
 import { Words, Input, Button, Confirm } from "../../components";
 import { css } from "@emotion/core";
-import { DirectorContext } from "../../helpers/directorContext";
 import { Query, Mutation } from "react-apollo";
 import API_KEY_QUERY from "./centerApiKey.graphql";
 import RESET_API_KEY from "./resetApiKey.graphql";
 import graphQLHelper from "../../helpers/graphQLHelper";
-
+import { CenterContext } from "../../pages/director";
 export default () => {
-  const { director } = useContext(DirectorContext);
+  const center = useContext(CenterContext);
   const [doQuery, setDoQuery] = useState(null);
   const [resetModal, setResetModal] = useState(false);
   return (
@@ -37,19 +36,19 @@ export default () => {
       >
         <Query
           query={API_KEY_QUERY}
-          variables={{ id: director.center.id }}
+          variables={{ id: center.id }}
           skip={!doQuery}
         >
-          {graphQLHelper(({ center }) => (
+          {graphQLHelper(({ center: apiTokenCenter }) => (
             <Input
               css={css`
                 width: 36ch;
               `}
               readOnly
-              type={center ? "text" : "password"}
+              type={apiTokenCenter ? "text" : "password"}
               value={
-                center
-                  ? center.apiToken
+                apiTokenCenter
+                  ? apiTokenCenter.apiToken
                   : "This isn't the API token. Click that button to get it."
               }
             />
@@ -59,7 +58,7 @@ export default () => {
         <Button layer="alert" onClick={() => setResetModal(true)}>
           Reset API Token
         </Button>
-        <Mutation mutation={RESET_API_KEY}>
+        <Mutation mutation={RESET_API_KEY} variables={{ centerId: center.id }}>
           {action => (
             <Confirm
               label="Are you sure you want to reset the API token?"

@@ -1,6 +1,5 @@
 const { gql, UserInputError } = require("apollo-server-express");
-const { FlightType, Center } = require("../models");
-const getCenter = require("../helpers/getCenter");
+const { FlightType } = require("../models");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -15,7 +14,7 @@ module.exports.schema = gql`
   # We can extend other graphQL types using the "extend" keyword.
   extend type Query {
     flightType(id: ID!): FlightType
-    flightTypes(centerId: ID): [FlightType]
+    flightTypes(centerId: ID!): [FlightType]
   }
 
   extend type FlightRecord {
@@ -49,19 +48,7 @@ module.exports.resolver = {
   Query: {
     flightType: (rootObj, { id }, context) => FlightType.getFlightType(id),
     flightTypes: async (rootObj, { centerId }, context) => {
-      let centerIdValue = centerId;
-      if (!centerIdValue) {
-        try {
-          const center = await getCenter(context.user);
-          if (!center) {
-            throw new UserInputError('"centerId" is a required parameter.');
-          }
-          centerIdValue = center.id;
-        } catch (err) {
-          throw new UserInputError(err);
-        }
-      }
-      return FlightType.getFlightTypes(centerIdValue);
+      return FlightType.getFlightTypes(centerId);
     }
   },
   FlightRecord: {
