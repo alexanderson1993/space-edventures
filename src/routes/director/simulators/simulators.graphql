@@ -1,5 +1,5 @@
-query Simulators {
-  simulators {
+query Simulators($centerId: ID!) {
+  simulators(centerId: $centerId) {
     id
     name
   }

@@ -32,7 +32,7 @@ module.exports.schema = gql`
       token: String!
       planId: String!
     ): Center @auth(requires: [authenticated])
-    centerSetApiToken: Center
+    centerSetApiToken(centerId: ID!): Center
     centerUpdateName(centerId: ID!, name: String!): Center
       @auth(requires: [director])
     centerUpdateDescription(centerId: ID!, description: String!): Center
@@ -51,7 +51,7 @@ module.exports.schema = gql`
     center: Center
   }
   extend type User {
-    center: Center
+    centers: [Center]
   }
 `;
 
@@ -68,8 +68,8 @@ module.exports.resolver = {
     centerCreate: (rootQuery, args, context) => {
       return Center.createCenter(context.user.id, args);
     },
-    centerSetApiToken: (rootQuery, args, context) => {
-      return Center.setApiToken(context.user.id);
+    centerSetApiToken: (rootQuery, { centerId }, context) => {
+      return Center.setApiToken(centerId);
     },
     centerUpdateName: async (rootQuery, { centerId, name }, context) => {
       const center = new Center(await Center.getCenter(centerId));
@@ -105,9 +105,9 @@ module.exports.resolver = {
     }
   },
   User: {
-    center: (user, args, context) => {
+    centers: (user, args, context) => {
       // Returns a center for which the user is a director
-      return Center.getCenterForUserId(user.id);
+      return Center.getCentersForUserId(user.id);
     }
   }
 };

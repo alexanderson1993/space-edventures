@@ -1,15 +1,5 @@
-const {
-  gql,
-  AuthenticationError,
-  UserInputError
-} = require("apollo-server-express");
-const {
-  FlightUserRecord,
-  FlightRecord,
-  Simulator,
-  User
-} = require("../models");
-const getCenter = require("../helpers/getCenter");
+const { gql } = require("apollo-server-express");
+const { FlightUserRecord } = require("../models");
 
 /**
  * This schema doesn't really expose any endpoints to the graphql user. Rather it provides the data structre that allows the flight record data to be mirrored in a way

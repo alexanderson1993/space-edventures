@@ -1,6 +1,9 @@
 const { firestore } = require("../connectors/firebase");
 const tokenGenerator = require("../helpers/tokenGenerator"); // USed to generate a temporary token when the user doesn't exist yet
-const { flightRecordUserLoader, flightRecordUserLoaderByBadge } = require("../loaders/flightRecord");
+const {
+  flightRecordUserLoader,
+  flightRecordUserLoaderByBadge
+} = require("../loaders/flightRecord");
 // =============================================================================
 // Class for Querying/Mutating flight user records
 /**

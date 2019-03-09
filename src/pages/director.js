@@ -1,16 +1,14 @@
 import React, { lazy, useContext } from "react";
 import { Router } from "@reach/router";
-import { Query } from "react-apollo";
-import CENTER_DIRECTOR from "../routes/director/centerDirector.graphql";
 import AuthContext from "../helpers/authContext";
-import graphqlHelper from "../helpers/graphQLHelper";
-import { DirectorContext } from "../helpers/directorContext";
+import { DirectorProvider, DirectorContext } from "../helpers/directorContext";
 
 const Dashboard = lazy(() => import("../routes/director/dashboard"));
 const Splash = lazy(() => import("../routes/director/splash"));
 const Register = lazy(() => import("../routes/director/register"));
 const Navigation = lazy(() => import("../routes/director/navigation"));
 
+const ChooseCenter = lazy(() => import("../routes/director/chooseCenter"));
 // Management Pages
 const SimulatorIndex = lazy(() => import("../routes/director/simulators"));
 const SimulatorEdit = lazy(() => import("../routes/director/simulators/edit"));
@@ -41,61 +39,62 @@ const FlightPrint = lazy(() => import("../routes/director/flights/print"));
 const Settings = lazy(() => import("../routes/director/settings"));
 const Billing = lazy(() => import("../routes/director/billing"));
 
-const RouteData = () => {
-  const { user } = useContext(AuthContext);
+export const CenterContext = React.createContext();
+
+const Routes = ({ centerId }) => {
+  const director = useContext(DirectorContext);
+  const center = director.centers.find(c => c.id === centerId);
+  if (!center) return <ChooseCenter />;
   return (
-    <Query query={CENTER_DIRECTOR} skip={!user}>
-      {graphqlHelper(({ me }) => (
-        <Routes director={me} />
-      ))}
-    </Query>
+    <CenterContext.Provider value={center}>
+      <Navigation>
+        <Router>
+          <Dashboard path="*" />
+
+          <SimulatorIndex path="simulators" />
+          <SimulatorDetail path="simulators/:simulatorId" />
+          <SimulatorEdit path="simulators/create" create />
+          <SimulatorEdit path="simulators/edit/:simulatorId" />
+
+          <BadgeIndex path="badges" />
+          <BadgeDetail path="badges/:badgeId" />
+          <BadgeEdit path="badges/create" create />
+          <BadgeEdit path="badges/edit/:badgeId" />
+
+          <MissionIndex path="missions" />
+          <MissionDetail path="missions/:missionId" />
+          <MissionEdit path="missions/create" create />
+          <MissionEdit path="missions/edit/:missionId" />
+
+          <FlightTypeIndex path="flightTypes" />
+          <FlightTypeDetail path="flightTypes/:flightTypeId" />
+          <FlightTypeEdit path="flightTypes/create" create />
+          <FlightTypeEdit path="flightTypes/edit/:flightTypeId" />
+
+          <Flights path="flights" />
+          <FlightDetail path="flights/:id" />
+          <FlightPrint path="flights/:id/print" />
+          <Settings path="settings" />
+          <Billing path="billing" />
+        </Router>
+      </Navigation>
+    </CenterContext.Provider>
   );
 };
 
-const Routes = ({ director = {} }) => {
+const DirectorPage = () => {
   const { user } = useContext(AuthContext);
-  let { center } = director;
   return user ? (
-    center ? (
-      <Navigation>
-        <DirectorContext.Provider value={{ director }}>
-          <Router>
-            <Dashboard path="/director" />
-
-            <SimulatorIndex path="/director/simulators" />
-            <SimulatorDetail path="/director/simulators/:simulatorId" />
-            <SimulatorEdit path="/director/simulators/create" create />
-            <SimulatorEdit path="/director/simulators/edit/:simulatorId" />
-
-            <BadgeIndex path="/director/badges" />
-            <BadgeDetail path="/director/badges/:badgeId" />
-            <BadgeEdit path="/director/badges/create" create />
-            <BadgeEdit path="/director/badges/edit/:badgeId" />
-
-            <MissionIndex path="/director/missions" />
-            <MissionDetail path="/director/missions/:missionId" />
-            <MissionEdit path="/director/missions/create" create />
-            <MissionEdit path="/director/missions/edit/:missionId" />
-
-            <FlightTypeIndex path="/director/flightTypes" />
-            <FlightTypeDetail path="/director/flightTypes/:flightTypeId" />
-            <FlightTypeEdit path="/director/flightTypes/create" create />
-            <FlightTypeEdit path="/director/flightTypes/edit/:flightTypeId" />
-
-            <Flights path="/director/flights" />
-            <FlightDetail path="/director/flights/:id" />
-            <FlightPrint path="/director/flights/:id/print" />
-            <Settings path="/director/settings" />
-            <Billing path="/director/billing" />
-          </Router>
-        </DirectorContext.Provider>
-      </Navigation>
-    ) : (
-      <Register />
-    )
+    <DirectorProvider>
+      <Router>
+        <ChooseCenter path="/director" />
+        <Register path="/director/register" />
+        <Routes path="/director/:centerId/*" />
+      </Router>
+    </DirectorProvider>
   ) : (
     <Splash />
   );
 };
 
-export default RouteData;
+export default DirectorPage;

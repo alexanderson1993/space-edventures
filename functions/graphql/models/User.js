@@ -40,6 +40,7 @@ module.exports = class User {
     this.registeredDate = params.registeredDate;
     this.birthDate = params.birthDate;
     this.token = params.token;
+    this.isAdmin = params.isAdmin || false;
   }
 
   /**
@@ -78,14 +79,13 @@ module.exports = class User {
    * Param: roles (array)
    * Returns true if user has any of the roles
    */
-  hasOneOfRoles(roles) {
+  hasOneOfRoles(roles, centerId = "") {
+    const userRoles = (this.roles[centerId] || []).concat("authenticated");
     // Automatically has the authenticated role if it exists.
-    return roles
-      .concat("authenticated")
-      .reduce(
-        (prev, next) => prev || (this.roles && this.roles.indexOf(next) > -1),
-        false
-      );
+    return roles.reduce(
+      (prev, next) => prev || userRoles.indexOf(next) > -1,
+      false
+    );
   }
 
   async update({ name, displayName }) {
@@ -103,6 +103,29 @@ module.exports = class User {
     return this;
   }
 
+  async setRole({ centerId, role }) {
+    // Authorization for this action should already have happened
+    const newRoles = this.roles[centerId]
+      ? this.roles[centerId]
+          .push(role)
+          .filter((a, i, arr) => arr.indexOf(a) === i)
+      : [role];
+    this.roles = { ...this.roles, [centerId]: newRoles };
+    await firestore()
+      .collection("users")
+      .doc(this.id)
+      .update({ roles: this.roles });
+  }
+  async removeRole({ centerId, role }) {
+    const newRoles = this.roles[centerId]
+      ? this.roles[centerId].filter(a => a !== role)
+      : [];
+    this.roles = { ...this.roles, [centerId]: newRoles };
+    await firestore()
+      .collection("users")
+      .doc(this.id)
+      .update({ roles: this.roles });
+  }
   async changeProfilePicture(picture) {
     const path = `${this.id}/profilePicture`;
     const fileRef = uploadFile(picture, path);
@@ -263,6 +286,13 @@ module.exports = class User {
 
     return this;
   }
+
+  static getAllUsers() {
+    return firestore()
+      .collection("users")
+      .get()
+      .then(res => res.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+  }
   /**
    * Should only be used in private circumstances.
    * Param: uid (string)
@@ -287,10 +317,15 @@ module.exports = class User {
   }
 
   static async getUsersByIds(userIds) {
-    return firestore().getAll(userIds.map(id => firestore().collection(collectionName).doc(id)))
-      .then(docs => docs.map(
-        doc => new User({id: doc.id, ...doc.data()})
-      ));
+    return firestore()
+      .getAll(
+        userIds.map(id =>
+          firestore()
+            .collection(collectionName)
+            .doc(id)
+        )
+      )
+      .then(docs => docs.map(doc => new User({ id: doc.id, ...doc.data() })));
   }
 
   /**

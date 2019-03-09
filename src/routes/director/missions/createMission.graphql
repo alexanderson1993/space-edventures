@@ -1,4 +1,9 @@
-mutation BadgeCreate($name: String!, $image: Upload, $description: String) {
+mutation BadgeCreate(
+  $name: String!
+  $image: Upload
+  $description: String
+  $centerId: ID!
+) {
   missionCreate: badgeCreate(
     badge: {
       name: $name
@@ -6,6 +11,7 @@ mutation BadgeCreate($name: String!, $image: Upload, $description: String) {
       description: $description
       type: mission
     }
+    centerId: $centerId
   ) {
     id
     name

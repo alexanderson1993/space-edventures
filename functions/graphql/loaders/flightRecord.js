@@ -32,15 +32,13 @@ const flightRecordUserLoaderByBadge = new DataLoader(async badgeIds => {
   return Promise.all(
     badgeIds.map(badgeId => {
       return firestore()
-      .collection("flightUserRecord")
-      .where("badges", "array-contains", badgeId)
-      .get()
-      .then(ref => ref.docs.map(
-        doc => ({id: doc.id, ...doc.data()})
-      ));
+        .collection("flightUserRecord")
+        .where("badges", "array-contains", badgeId)
+        .get()
+        .then(ref => ref.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     })
   );
-})
+});
 
 module.exports.flightRecordLoader = flightRecordLoader;
 module.exports.flightRecordUserLoader = flightRecordUserLoader;

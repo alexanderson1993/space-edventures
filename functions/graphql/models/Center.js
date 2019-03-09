@@ -1,6 +1,7 @@
 const Stripe = require("./Stripe");
 const { firestore } = require("../connectors/firebase");
 const { UserInputError } = require("apollo-server-express");
+const User = require("./User");
 const uuid = require("uuid");
 const uploadFile = require("../helpers/uploadFile");
 
@@ -13,7 +14,9 @@ module.exports = class Center {
     return firestore()
       .collection("spaceCenters")
       .get()
-      .then(res => res.docs.map(d => ({ ...d.data(), id: d.id })));
+      .then(res =>
+        res.docs.map(d => ({ ...d.data(), id: d.id, centerId: d.id }))
+      );
   }
 
   static getCenter(id) {
@@ -21,7 +24,7 @@ module.exports = class Center {
       .collection("spaceCenters")
       .doc(id)
       .get()
-      .then(res => ({ ...res.data(), id: res.id }));
+      .then(res => ({ ...res.data(), id: res.id, centerId: res.id }));
   }
 
   static async getCenterByDirector(directorId) {
@@ -36,8 +39,8 @@ module.exports = class Center {
           directorId
       );
     }
-
-    return centers.docs[0];
+    const centerRef = centers.docs[0];
+    return { ...centerRef.data(), id: centerRef.id, centerId: centerRef.id };
   }
 
   static getByApiToken(token) {
@@ -47,19 +50,29 @@ module.exports = class Center {
       .get()
       .then(res =>
         res.docs.length > 0
-          ? { ...res.docs[0].data(), id: res.docs[0].id }
+          ? {
+              ...res.docs[0].data(),
+              id: res.docs[0].id,
+              centerId: res.docs[0].id
+            }
           : null
       );
   }
-  static getCenterForUserId(userId) {
+  static async getCentersForUserId(userId) {
+    const user = await User.getUserById(userId);
+    const centerIds = Object.entries(user.roles)
+      .filter(
+        ([key, value]) => value.includes("director") || value.includes("staff")
+      )
+      .map(([key]) => key);
+    const documentRefs = centerIds.map(id =>
+      firestore().doc(`spaceCenters/${id}`)
+    );
+
     return firestore()
-      .collection("spaceCenters")
-      .where("directorId", "==", userId)
-      .get()
+      .getAll(documentRefs)
       .then(res =>
-        res.docs.length > 0
-          ? { ...res.docs[0].data(), id: res.docs[0].id }
-          : null
+        res.map(doc => ({ ...doc.data(), id: doc.id, centerId: doc.id }))
       );
   }
   static async createCenter(
@@ -68,6 +81,11 @@ module.exports = class Center {
   ) {
     // Create the center object in the database, create a stripe customer, and subscribe them
     // to the subscription plan specified by planId
+    const director = await User.getUserById(directorId);
+    if (!director)
+      throw new UserInputError(
+        `Unable to create center: Invalid Director ID. Are you logged in?`
+      );
 
     try {
       const customer = await Stripe.createCustomer({ name, email, token });
@@ -78,25 +96,28 @@ module.exports = class Center {
         website,
         registeredDate: new Date(),
         stripeCustomer: customer.id,
-        directorId,
         apiToken: uuid.v4()
       };
-      return firestore()
+
+      const center = await firestore()
         .collection("spaceCenters")
         .add(newData);
+
+      // Add the director role to the user
+      director.setRole({ centerId: center.id, role: "director" });
     } catch (err) {
       throw new UserInputError(`Unable to create center: ${err.message}`);
     }
   }
-  static async setApiToken(directorId) {
-    const center = await getCenterByDirector(directorId);
-    if (!center || !center.exists)
-      throw new UserInputError(
-        "The current user is not a director of a space center."
-      );
+  static async setApiToken(centerId) {
+    const center = await Center.getCenter(centerId);
+    if (!center) throw new UserInputError("Center does not exist.");
     const apiToken = uuid.v4();
-    center.ref.update({ apiToken });
-    return { ...center.data(), apiToken, id: center.id };
+    await firestore()
+      .collection("spaceCenters")
+      .doc(center.id)
+      .update({ apiToken });
+    return { ...center, apiToken };
   }
   constructor(params) {
     this.id = params.id;

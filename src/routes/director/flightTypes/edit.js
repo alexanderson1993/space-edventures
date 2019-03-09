@@ -5,8 +5,8 @@ import CREATE_FLIGHT_TYPE from "./createFlightType.graphql";
 import UPDATE_FLIGHT_TYPE from "./updateFlightType.graphql";
 import { Loading } from "@arwes/arwes";
 import { Mutation, Query } from "react-apollo";
-import { DirectorContext } from "../../../helpers/directorContext";
 import Blockquote from "@arwes/arwes/lib/Blockquote";
+import { CenterContext } from "../../../pages/director";
 const Editor = ({
   create,
   action,
@@ -38,7 +38,7 @@ const Editor = ({
                 }
               }).then(({ data: { flightTypeCreate, flightTypeEdit } }) =>
                 navigate(
-                  `/director/flightTypes/${
+                  `/director/${center.id}/flightTypes/${
                     flightTypeEdit ? flightTypeEdit.id : flightTypeCreate.id
                   }`
                 )
@@ -79,11 +79,13 @@ const Editor = ({
   );
 };
 const EditFlightType = ({ create, flightTypeId }) => {
-  const { director } = useContext(DirectorContext);
-  let { center } = director;
-
+  const center = useContext(CenterContext);
   return (
-    <Query query={FLIGHT_TYPES} skip={create}>
+    <Query
+      query={FLIGHT_TYPES}
+      skip={create}
+      variables={{ centerId: center.id }}
+    >
       {({ loading, data = {} }) => {
         if (loading) return <Loading animate />;
         const { flightTypes = [] } = data;
@@ -95,10 +97,12 @@ const EditFlightType = ({ create, flightTypeId }) => {
                 mutation={CREATE_FLIGHT_TYPE}
                 update={(cache, { data: { flightTypeCreate } }) => {
                   const { flightTypes } = cache.readQuery({
-                    query: FLIGHT_TYPES
+                    query: FLIGHT_TYPES,
+                    variables: { centerId: center.id }
                   });
                   cache.writeQuery({
                     query: FLIGHT_TYPES,
+                    variables: { centerId: center.id },
                     data: {
                       flightTypes: flightTypes.concat([flightTypeCreate])
                     }

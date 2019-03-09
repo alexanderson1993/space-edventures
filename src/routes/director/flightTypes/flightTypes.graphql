@@ -1,5 +1,5 @@
-query FlightTypes {
-  flightTypes {
+query FlightTypes($centerId: ID!) {
+  flightTypes(centerId: $centerId) {
     id
     name
     flightHours
