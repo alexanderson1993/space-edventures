@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import styled from "@emotion/styled";
 import css from "@emotion/css";
-import { Button, ImageUploader, Input } from "../../../components";
+import { Button, ImageUploader, Input, Auth } from "../../../components";
 import UPDATE_NAME from "./updateName.graphql";
 import UPDATE_DESCRIPTION from "./updateDescription.graphql";
 import UPDATE_WEBSITE from "./updateWebsite.graphql";
@@ -218,9 +218,11 @@ const Dashboard = () => {
         `}
       />
       <Name {...center} editMode={editMode} />
-      <Button onClick={() => setEditMode(!editMode)}>
-        {editMode ? "Done Editing" : "Edit"}
-      </Button>
+      <Auth roles={["director"]}>
+        <Button onClick={() => setEditMode(!editMode)}>
+          {editMode ? "Done Editing" : "Edit"}
+        </Button>
+      </Auth>
       <Description {...center} editMode={editMode} />
       <Image {...center} editMode={editMode} />
       <Website {...center} editMode={editMode} />

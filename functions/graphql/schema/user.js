@@ -9,13 +9,20 @@ let User = require("../models/User");
 module.exports.schema = gql`
   extend type Query {
     me: User
-    user(id: ID!): User @auth(requires: [self, admin, director])
+    user(id: ID, email: String): User @auth(requires: [self, admin, director])
     users: [User]
   }
 
   extend type Mutation {
     userCreate(birthDate: Date!, parentEmail: String): User
     userDelete: Boolean
+    """
+    Makes a user into a staff member at a center
+    """
+    userSetStaff(email: String!, centerId: ID!): User
+      @auth(requires: [director])
+    userRevokeStaff(userId: ID!, centerId: ID!): User
+      @auth(requires: [director])
     profileEdit(name: String, displayName: String): User
     userChangeProfilePicture(id: ID, picture: Upload!): User
   }
@@ -41,7 +48,7 @@ module.exports.schema = gql`
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
     # flights
-    roles(centerId: ID): [String]
+    roles(centerId: ID): String
   }
 
   extend type Badge {
@@ -49,7 +56,8 @@ module.exports.schema = gql`
   }
 
   extend type Center {
-    director: User
+    director: User @auth(requires: [director])
+    users: [User] @auth(requires: [director])
   }
 
   extend type FlightRecord {
@@ -62,8 +70,8 @@ module.exports.schema = gql`
 module.exports.resolver = {
   User: {
     roles: (user, { centerId }) => {
-      const roles = user.roles[centerId] || [];
-      if (user.isAdmin) roles.push("admin");
+      let roles = user.roles[centerId] || "";
+      if (user.isAdmin) roles = "admin";
       return roles;
     }
   },
@@ -149,13 +157,22 @@ module.exports.resolver = {
         );
       }
       return user.changeProfilePicture(args.picture);
+    },
+    async userSetStaff(rootQuery, { email, centerId }) {
+      const user = new User(await User.getUserByEmail(email));
+      user && (await user.setRole({ centerId, role: "staff" }));
+    },
+    async userRevokeStaff(rootQuery, { userId, centerId }) {
+      const user = new User(await User.getUserById(userId));
+      user && (await user.removeRole({ centerId, role: "staff" }));
     }
   },
   Badge: {
     user: (badge, args, context) => {}
   },
   Center: {
-    director: (center, args, context) => User.getUserById(center.directorId)
+    director: (center, args, context) => User.getUserById(center.directorId),
+    users: (center, args, context) => User.getUsersForCenterId(center.id)
   },
   FlightRecord: {
     user: (flightRecord, args, context) => {}

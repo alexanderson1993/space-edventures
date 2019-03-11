@@ -38,6 +38,7 @@ const FlightPrint = lazy(() => import("../routes/director/flights/print"));
 
 const Settings = lazy(() => import("../routes/director/settings"));
 const Billing = lazy(() => import("../routes/director/billing"));
+const Staff = lazy(() => import("../routes/director/staff"));
 
 export const CenterContext = React.createContext();
 
@@ -76,6 +77,7 @@ const Routes = ({ centerId }) => {
           <FlightPrint path="flights/:id/print" />
           <Settings path="settings" />
           <Billing path="billing" />
+          <Staff path="staff" />
         </Router>
       </Navigation>
     </CenterContext.Provider>

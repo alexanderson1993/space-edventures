@@ -1,0 +1,6 @@
+mutation AddStaffRole($centerId: ID!, $email: String!) {
+  userSetStaff(email: $email, centerId: $centerId) {
+    id
+    roles
+  }
+}

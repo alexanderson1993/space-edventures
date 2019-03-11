@@ -8,7 +8,8 @@ const {
   SyntaxError,
   AuthenticationError,
   ValidationError,
-  ApolloError
+  ApolloError,
+  UserInputError
 } = require("apollo-server-express");
 const Stripe = require("./Stripe");
 const uploadFile = require("../helpers/uploadFile");
@@ -74,6 +75,29 @@ module.exports = class User {
         return data.user.getIdToken().then(token => token);
       });
   }
+  static getUsersForCenterId(centerId) {
+    return Promise.all([
+      firestore()
+        .collection("users")
+        .where(`roles.${centerId}`, "==", "staff")
+        .get(),
+      firestore()
+        .collection("users")
+        .where(`roles.${centerId}`, "==", "director")
+        .get()
+    ])
+      .then(([staff, director]) => staff.docs.concat(director.docs))
+      .then(docs => docs.map(d => ({ ...d.data(), id: d.id })));
+  }
+  static async getUserByEmail(email) {
+    const data = await firestore()
+      .collection("users")
+      .where("email", "==", email)
+      .get();
+    if (data.size === 0)
+      throw new UserInputError(`No user exists with email ${email}.`);
+    return { ...data.docs[0].data(), id: data.docs[0].id };
+  }
 
   /**
    * Param: roles (array)
@@ -105,22 +129,14 @@ module.exports = class User {
 
   async setRole({ centerId, role }) {
     // Authorization for this action should already have happened
-    const newRoles = this.roles[centerId]
-      ? this.roles[centerId]
-          .push(role)
-          .filter((a, i, arr) => arr.indexOf(a) === i)
-      : [role];
-    this.roles = { ...this.roles, [centerId]: newRoles };
+    this.roles = { ...this.roles, [centerId]: role };
     await firestore()
       .collection("users")
       .doc(this.id)
       .update({ roles: this.roles });
   }
   async removeRole({ centerId, role }) {
-    const newRoles = this.roles[centerId]
-      ? this.roles[centerId].filter(a => a !== role)
-      : [];
-    this.roles = { ...this.roles, [centerId]: newRoles };
+    this.roles = { ...this.roles, [centerId]: "" };
     await firestore()
       .collection("users")
       .doc(this.id)

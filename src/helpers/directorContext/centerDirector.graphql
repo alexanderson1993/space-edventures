@@ -1,6 +1,7 @@
-query CenterDirector {
+query CenterDirector($centerId: ID) {
   me {
     id
+    roles(centerId: $centerId)
     centers {
       id
       name
@@ -11,31 +12,31 @@ query CenterDirector {
       badgeCount
       missionCount
       flightRecordCount
-      stripeCustomer {
-        email
-        subscriptions {
-          status
-          created
-          current_period_end
-          current_period_start
-          id
-          plan {
-            id
-            amount
-            interval
-            nickname
-            interval_count
-            trial_period_days
-          }
-        }
-        sources {
-          id
-          brand
-          last4
-          exp_year
-          exp_month
-        }
-      }
+      # stripeCustomer {
+      #   email
+      #   subscriptions {
+      #     status
+      #     created
+      #     current_period_end
+      #     current_period_start
+      #     id
+      #     plan {
+      #       id
+      #       amount
+      #       interval
+      #       nickname
+      #       interval_count
+      #       trial_period_days
+      #     }
+      #   }
+      #   sources {
+      #     id
+      #     brand
+      #     last4
+      #     exp_year
+      #     exp_month
+      #   }
+      # }
     }
   }
 }
