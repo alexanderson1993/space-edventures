@@ -60,7 +60,7 @@ module.exports = class Center {
   }
   static async getCentersForUserId(userId) {
     const user = await User.getUserById(userId);
-    const centerIds = Object.entries(user.roles)
+    const centerIds = Object.entries(user.roles || [])
       .filter(
         ([key, value]) => value.includes("director") || value.includes("staff")
       )
@@ -81,7 +81,7 @@ module.exports = class Center {
   ) {
     // Create the center object in the database, create a stripe customer, and subscribe them
     // to the subscription plan specified by planId
-    const director = await User.getUserById(directorId);
+    const director = new User(await User.getUserById(directorId));
     if (!director)
       throw new UserInputError(
         `Unable to create center: Invalid Director ID. Are you logged in?`

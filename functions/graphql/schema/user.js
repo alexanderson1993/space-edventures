@@ -70,9 +70,10 @@ module.exports.schema = gql`
 module.exports.resolver = {
   User: {
     roles: (user, { centerId }) => {
-      let roles = user.roles[centerId] || "";
-      if (user.isAdmin) roles = "admin";
-      return roles;
+      const { roles = [] } = user;
+      let role = roles[centerId] || "";
+      if (user.isAdmin) role = "admin";
+      return role;
     }
   },
   Query: {
