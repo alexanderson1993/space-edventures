@@ -3,7 +3,7 @@ const {
   ForbiddenError,
   UserInputError
 } = require("apollo-server-express");
-const { Badge, User, BadgeAssignment } = require("../models");
+const { Badge, User, BadgeAssignment, Center } = require("../models");
 const { badgeLoader } = require("../loaders");
 
 // We define a schema that encompasses all of the types
@@ -37,22 +37,29 @@ module.exports.schema = gql`
     badges(type: BADGE_TYPE, centerId: ID!): [Badge]
     badge(id: ID!): Badge
   }
+
   extend type Mutation {
     # Used to create assignable badges and assign badges to users
     badgeCreate(badge: BadgeInput, centerId: ID!): Badge
       @auth(requires: [director])
+
     badgeRemove(badgeId: ID!, centerId: ID!): Badge @auth(requires: [director])
+
     badgeRename(badgeId: ID!, name: String!, centerId: ID!): Badge
       @auth(requires: [director])
+
     badgeChangeDescription(
       badgeId: ID!
       description: String!
       centerId: ID!
     ): Badge @auth(requires: [director])
+
     badgeChangeImage(badgeId: ID!, image: Upload!, centerId: ID!): Badge
       @auth(requires: [director])
+
     badgeAssign(badges: [BadgeAssignInput!]!): [Badge]
       @auth(requires: [center, director, staff])
+
     badgeClaim(token: String!): ClaimResult @auth(requires: [authenticated])
   }
 
@@ -96,15 +103,20 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   Query: {
+    // Anyone should be able to see any badge
     badges: async (rootQuery, { type, centerId }, context) => {
       return Badge.getBadges(type, centerId);
     },
+    // Anyone should be able to see any badge
     badge: (rootQuery, { id }, context) => {
       return Badge.getBadge(id);
     }
   },
   Mutation: {
+    // You should only be able to create a badge for a center that you own
     badgeCreate: async (rootQuery, { badge, centerId }, context) => {
+      console.log(context.user);
+      return false;
       return Badge.createBadge(badge, centerId);
     },
     badgeRemove: async (rootQuery, { badgeId, centerId }, context) => {
