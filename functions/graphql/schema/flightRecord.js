@@ -73,7 +73,7 @@ module.exports.schema = gql`
     flightRecordCreate(
       thoriumFlightId: ID!
       flightTypeId: ID!
-      centerId: ID!
+      centerId: ID
       simulators: [FlightSimulatorInput!]!
     ): FlightRecord @auth(requires: [center, director])
 
@@ -181,7 +181,7 @@ module.exports.resolver = {
         );
       }
 
-      const center = await Center.getCenter(centerId);
+      const center = await Center.getCenter(centerId || context.center.id);
 
       // Make sure this center has these simulators
       const simChecks = simulators.map(sim =>

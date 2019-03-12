@@ -98,6 +98,15 @@ module.exports = class User {
       throw new UserInputError(`No user exists with email ${email}.`);
     return { ...data.docs[0].data(), id: data.docs[0].id };
   }
+  static async getUserByToken(token) {
+    const data = await firestore()
+      .collection("users")
+      .where("token", "==", token)
+      .get();
+    if (data.size === 0)
+      throw new UserInputError(`No user exists with token ${token}.`);
+    return { ...data.docs[0].data(), id: data.docs[0].id };
+  }
 
   /**
    * Param: roles (array)
