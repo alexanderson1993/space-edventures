@@ -1,0 +1,6 @@
+mutation RemoveStaff($centerId: ID!, $userId: ID!) {
+  userRevokeStaff(userId: $userId, centerId: $centerId) {
+    id
+    roles
+  }
+}
