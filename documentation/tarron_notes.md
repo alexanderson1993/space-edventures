@@ -16,8 +16,8 @@
 
 ## Working on
 
-
 - [x] Badge -> users query (found in flightRecord)
+
   - [x] Data Loaders to query by badge
 
 - [ ] Double check graphql permissions
@@ -44,6 +44,40 @@
 ## GraphQL Queries
 
 ```graphql
+
+<!-- ----------------------------------------------------------------------- -->
+<!-- Centers -->
+<!-- ----------------------------------------------------------------------- -->
+mutation {
+  centerCreate(
+    name: "Tarron's Test Space Center"
+    website: "https://www.Example.com"
+    email: "tarronlane@gmail.com"
+    token: "123456789012345678901234567890123456"
+    planId: "plan_EOHo5AwhQNNvGE"
+  ) {
+    id
+  }
+}
+
+<!-- ======================================================================= -->
+<!-- Badges -->
+<!-- ======================================================================= -->
+
+mutation {
+  badgeCreate(
+    badgeInput:{
+        # id: ""
+        name: "TarronTest"
+        type: "badge"
+        description: "Test badge created by Tarron"
+        image: ""
+        flightTypeId: ""
+    }
+    centerId: ""
+  )
+}
+
 mutation {
   badgeClaim(token: "lgg8plx96z") {
     isSuccess
@@ -71,6 +105,10 @@ mutation {
     }
   }
 }
+
+<!-- ----------------------------------------------------------------------- -->
+<!-- Flight Types -->
+<!-- ----------------------------------------------------------------------- -->
 
 mutation {
   flightTypeCreate(

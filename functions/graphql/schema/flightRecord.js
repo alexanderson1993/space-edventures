@@ -38,7 +38,7 @@ module.exports.schema = gql`
 
   # Get all the flight records that are tied to this particular badge (meaning that they have a station assigned to that badge)
   extend type Badge {
-    users: [User] @auth(requires: [directory])
+    users: [User] @auth(requires: [director])
   }
 
   extend type User {
