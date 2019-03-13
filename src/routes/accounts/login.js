@@ -112,7 +112,8 @@ const Login = ({ signingUp = false, to = "/", location }) => {
     e.preventDefault();
     if (checkError("magic")) {
       setLoading(true);
-      localStorage.setItem("postLoginPath", to);
+      typeof window !== "undefined" &&
+        localStorage.setItem("postLoginPath", to);
       magicLink({ email })
         .then(() => navigate(`/accounts/sentMagicLink?email=${email}`))
         .catch(error => {

@@ -1,10 +1,10 @@
 import React from "react";
-import DatePicker from "react-date-picker";
 import "./datepicker.css";
 import { Frame, withStyles } from "@arwes/arwes";
 import AnimateContext from "../helpers/animateContext";
 import styled from "@emotion/styled";
 import { transparentize, darken } from "polished";
+const DatePicker = React.lazy(() => import("react-date-picker"));
 
 const DatePickerComp = ({ theme, ...props }) => {
   const { show } = React.useContext(AnimateContext);

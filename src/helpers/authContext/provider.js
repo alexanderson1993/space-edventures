@@ -53,7 +53,8 @@ const AuthProvider = ({ children }) => {
         // The link was successfully sent. Inform the user.
         // Save the email locally so you don't need to ask the user for it again
         // if they open the link on the same device.
-        window.localStorage.setItem("emailForSignIn", email);
+        typeof window !== "undefined" &&
+          window.localStorage.setItem("emailForSignIn", email);
       });
     },
     completeMagicLinkSignin: href => {
@@ -64,7 +65,9 @@ const AuthProvider = ({ children }) => {
         // the sign-in operation.
         // Get the email if available. This should be available if the user completes
         // the flow on the same device where they started it.
-        let email = window.localStorage.getItem("emailForSignIn");
+        let email =
+          typeof window !== "undefined" &&
+          window.localStorage.getItem("emailForSignIn");
         if (!email) {
           // User opened the link on a different device. To prevent session fixation
           // attacks, ask the user to provide the associated email again. For example:
@@ -75,7 +78,8 @@ const AuthProvider = ({ children }) => {
           .signInWithEmailLink(email, href)
           .then(function(result) {
             // Clear email from storage.
-            window.localStorage.removeItem("emailForSignIn");
+            typeof window !== "undefined" &&
+              window.localStorage.removeItem("emailForSignIn");
             return result;
           })
           .then(() => {

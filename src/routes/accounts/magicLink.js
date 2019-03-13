@@ -22,7 +22,10 @@ const NavComp = ({ navigate, location, ...props }) => {
   const context = useContext(AuthContext);
   const { completeMagicLinkSignin } = context;
   const [error, setError] = useState(null);
-  const to = localStorage.getItem("postLoginPath") || "/";
+  const to =
+    (typeof window !== "undefined" &&
+      window.localStorage.getItem("postLoginPath")) ||
+    "/";
   const completeSignin = useRef(href => {
     completeMagicLinkSignin(href)
       .then(() => navigate(to))
