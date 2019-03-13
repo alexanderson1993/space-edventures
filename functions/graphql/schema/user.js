@@ -12,6 +12,7 @@ module.exports.schema = gql`
     user(id: ID, email: String): User @auth(requires: [self, admin, director])
     userGetRank(id: String!, centerId: ID!): User
       @auth(requires: [staff, director])
+
     users: [User]
   }
 
