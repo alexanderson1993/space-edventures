@@ -99,6 +99,17 @@ module.exports = class User {
     return { ...data.docs[0].data(), id: data.docs[0].id };
   }
 
+  static async getUserByToken(token) {
+    const data = await firestore()
+      .collection("users")
+      .where("token", "==", token)
+      .get();
+    if (data.size === 0)
+      throw new UserInputError(`No user exists with token ${token}.`);
+    return { ...data.docs[0].data(), id: data.docs[0].id };
+  }
+
+
   /**
    * Param: roles (array)
    * Returns true if user has any of the roles

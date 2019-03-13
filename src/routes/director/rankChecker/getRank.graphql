@@ -1,0 +1,21 @@
+query GetRank($id: String!, $centerId: ID!) {
+  userGetRank(id: $id, centerId: $centerId) {
+    id
+    email
+    profile {
+      age
+      rank {
+        id
+        name
+      }
+      classHours
+      flightHours
+      displayName
+      name
+    }
+    missions: badges(type: mission) {
+      id
+      name
+    }
+  }
+}

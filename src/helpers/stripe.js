@@ -5,19 +5,25 @@ import React, { Component } from "react";
 const PUB_KEY = process.env.REACT_APP_IS_LIVE
   ? "pk_test_oGcUy9t6hiRpmVPS6c6L9MJe"
   : "pk_test_oGcUy9t6hiRpmVPS6c6L9MJe";
-
 export default class StripeAPIProvider extends Component {
   state = { stripe: null };
   componentDidMount() {
     if (window.Stripe) {
       this.setState({ stripe: window.Stripe(PUB_KEY) });
     } else {
-      const script = document.querySelector("#stripe-js");
-      script &&
-        script.addEventListener("load", () => {
-          // Create Stripe instance once Stripe.js loads
-          this.setState({ stripe: window.Stripe(PUB_KEY) });
-        });
+      new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = "https://js.stripe.com/v3/";
+        script.addEventListener("load", resolve);
+        script.addEventListener("error", () => reject("Error loading script."));
+        script.addEventListener("abort", () =>
+          reject("Script loading aborted.")
+        );
+        document.head.appendChild(script);
+      }).then(() => {
+        this.setState({ stripe: window.Stripe(PUB_KEY) });
+      });
     }
   }
   render() {

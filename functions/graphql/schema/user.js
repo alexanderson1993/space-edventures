@@ -10,6 +10,9 @@ module.exports.schema = gql`
   extend type Query {
     me: User
     user(id: ID, email: String): User @auth(requires: [self, admin, director])
+    userGetRank(id: String!, centerId: ID!): User
+      @auth(requires: [staff, director])
+
     users: [User]
   }
 
@@ -67,13 +70,23 @@ module.exports.schema = gql`
     user: User
   }
 `;
+
+function validateEmail(email) {
+  // eslint-disable-next-line no-useless-escape
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+
 module.exports.resolver = {
   User: {
     roles: (user, { centerId }) => {
-      const roles = user.roles || {};
+      const { roles = [] } = user;
       let role = roles[centerId] || "";
       if (user.isAdmin) role = "admin";
       return role;
+    },
+    profile: user => {
+      return { ...user.profile, birthDate: user.birthDate };
     }
   },
   Query: {
@@ -83,6 +96,16 @@ module.exports.resolver = {
     },
     users: () => {
       return User.getAllUsers();
+    },
+    userGetRank: async (_, { id }, context) => {
+      // We should filter the result we get from the user
+      // so it is only relevant information. id could be an
+      // email address
+      const user = validateEmail(id)
+        ? new User(await User.getUserByEmail(id))
+        : new User(await User.getUserByToken(id));
+      const { id: userId, profile, email, birthDate, registeredDate } = user;
+      return { id: userId, profile, email, birthDate, registeredDate };
     }
   },
   // Needs to pass in parent of profile so that value can be checked
@@ -91,10 +114,10 @@ module.exports.resolver = {
       let theDate = profile.birthDate
         ? new Date(profile.birthDate._seconds * 1000)
         : new Date();
+      console.log(profile);
+      console.log(theDate);
       return new Date().getFullYear() - theDate.getFullYear();
-    },
-    flightHours: (profile, args, context) => {},
-    classHours: (profile, args, context) => {}
+    }
   },
   Mutation: {
     /**

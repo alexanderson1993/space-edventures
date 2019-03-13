@@ -31,6 +31,7 @@ const ProfileProvider = ({ children }) => {
           value={{
             user: {
               ...(data ? data.me : {}),
+              profile: data && data.me ? data.me.profile : {},
               loading: loading || queryLoading
             }
           }}

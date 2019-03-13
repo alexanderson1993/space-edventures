@@ -126,22 +126,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
           (user && user.hasOneOfRoles(requiredRoles, queryArgs.centerId)) ||
           user.hasOneOfRoles(requiredRoles, data.centerId);
 
-        // =============================================================
-        // Director Permissions
-        // =============================================================
-        // if (requiredRoles.indexOf("director") > -1 && user) {
-        //   if (user.id === data.directorId) return resolve.apply(this, args);
-        //   // Permissions for a director using a mutation on a center
-        //   // The mutation must use the centerId arg to work properly
-        //   const userCenter = await Center.getCenterByDirector(user.id);
-        //   if (
-        //     (userCenter && userCenter.id === queryArgs.centerId) ||
-        //     (userCenter && userCenter.id === data.centerId)
-        //   ) {
-        //     return resolve.apply(this, args);
-        //   }
-        // }
-
         // the field has required roles and the user does not have one of those roles
         // Since roles only apply in the context of centers, it is based on the center ID
         if (requiredRoles && !userHasAccess) {

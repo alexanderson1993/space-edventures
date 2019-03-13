@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Input, Button, ImageUploader, Navigator } from "../../../components";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import css from "@emotion/css";
@@ -6,8 +6,10 @@ import { Mutation } from "react-apollo";
 import CREATE_BADGE from "./createBadge.graphql";
 import BADGES_QUERY from "./badges.graphql";
 import { Loading } from "@arwes/arwes";
+import { CenterContext } from "../../../pages/director";
 
 const EditBadge = ({ create }) => {
+  const center = useContext(CenterContext);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
@@ -16,7 +18,13 @@ const EditBadge = ({ create }) => {
       {navigate => (
         <Mutation
           mutation={CREATE_BADGE}
-          variables={{ name, description, image, type: "badge" }}
+          variables={{
+            name,
+            description,
+            image,
+            type: "badge",
+            centerId: center.id
+          }}
           update={(cache, { data: { badgeCreate } }) => {
             const { badges } = cache.readQuery({ query: BADGES_QUERY });
             cache.writeQuery({

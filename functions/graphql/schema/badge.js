@@ -3,7 +3,7 @@ const {
   ForbiddenError,
   UserInputError
 } = require("apollo-server-express");
-const { Badge, User, BadgeAssignment } = require("../models");
+const { Badge, User, BadgeAssignment, FlightUserRecord } = require("../models");
 const { badgeLoader } = require("../loaders");
 
 // We define a schema that encompasses all of the types
@@ -203,15 +203,26 @@ module.exports.resolver = {
     }
   },
   User: {
-    badges: (user, { type }, context) => {
-      return Promise.all(
-        user.badges.map(badgeMeta => Badge.getBadge(badgeMeta.badgeId))
-      ).then(badges => {
-        return badges.filter(
-          badge =>
-            badge.type === (typeof type !== "undefined" ? type : badge.type)
-        ); // If type was submitted, only return badges matching the type
-      });
+    badges: async (user, { type }, context) => {
+      // Get all of the flight records.
+      const records = await FlightUserRecord.getFlightUserRecordsByUser(
+        user.id
+      );
+      const badgeIds = records.reduce(
+        (prev, next) => prev.concat(next.badges || []),
+        []
+      );
+
+      // Get and filter badges to not count badges multiple times.
+      const badges = (await badgeLoader.loadMany(badgeIds)).filter(
+        (a, i, arr) => arr.findIndex(b => b.id === a.id) === i
+      );
+
+      // Filter
+      if (type) {
+        return badges.filter(b => b.type === type);
+      }
+      return badges;
     }
   },
   /**
