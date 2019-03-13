@@ -41,7 +41,7 @@ module.exports.schema = gql`
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
     # flights
-    roles(centerId: ID): [String]
+    roles(centerId: ID): String
   }
 
   extend type Badge {
@@ -62,9 +62,10 @@ module.exports.schema = gql`
 module.exports.resolver = {
   User: {
     roles: (user, { centerId }) => {
-      const roles = user.roles[centerId] || [];
-      if (user.isAdmin) roles.push("admin");
-      return roles;
+      const roles = user.roles || {};
+      let role = roles[centerId] || "";
+      if (user.isAdmin) role = "admin";
+      return role;
     }
   },
   Query: {

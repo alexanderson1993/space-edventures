@@ -5,14 +5,16 @@ import { SEO, Content } from "../components";
 
 const Author = props => {
   const { data } = props;
-  const { authored_wordpress__POST, name } = data.wordpressWpUsers;
+  const { authored_wordpress__POST = [], name } = data.wordpressWpUsers;
   const totalCount =
     (authored_wordpress__POST && authored_wordpress__POST.length) || 0;
   const title = `${totalCount} post${totalCount === 1 ? "" : "s"} by ${name}`;
 
   // The `authored_wordpress__POST` returns a simple array instead of an array
   // of edges / nodes. We therefore need to convert the array here.
-  const posts = authored_wordpress__POST.map(post => ({
+  console.log(authored_wordpress__POST);
+  const authoredPosts = authored_wordpress__POST || [];
+  const posts = authoredPosts.map(post => ({
     node: post
   }));
 
