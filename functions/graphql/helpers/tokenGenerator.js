@@ -1,11 +1,15 @@
 module.exports = () => {
-  // var length = 10,
-  //   charset = "abcdefghjkmnpqrstuvwxyz123456789",
-  //   retVal = "";
-  // for (var i = 0, n = charset.length; i < length; ++i) {
-  //   retVal += charset.charAt(Math.floor(Math.random() * n));
-  // }
+  var length = 10,
+    charset = "abcdefghjkmnpqrstuvwxyz123456789",
+    retVal = "";
+  for (var i = 0, n = charset.length; i < length; ++i) {
+    retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
+};
 
+module.exports.spacePhrase = () => {
+ 
   let phraseLength = 4;
   let phraseArray = [];
 
@@ -22,8 +26,8 @@ module.exports = () => {
 
   phraseArray.splice(spliceIndex,0,spliceWord);
 
-  return phraseArray.join(' ');
-};
+  return phraseArray.join(' '); 
+}
 
 function pickARandomWord() {
   return spaceWords[Math.floor(Math.random()*spaceWords.length)];
