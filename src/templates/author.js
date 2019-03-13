@@ -12,7 +12,6 @@ const Author = props => {
 
   // The `authored_wordpress__POST` returns a simple array instead of an array
   // of edges / nodes. We therefore need to convert the array here.
-  console.log(authored_wordpress__POST);
   const authoredPosts = authored_wordpress__POST || [];
   const posts = authoredPosts.map(post => ({
     node: post
