@@ -1,7 +1,8 @@
-import React, { lazy, useContext } from "react";
+import React, { useContext } from "react";
 import { Router } from "@reach/router";
 import AuthContext from "../helpers/authContext";
 import { DirectorProvider, DirectorContext } from "../helpers/directorContext";
+import lazy from "../helpers/lazy";
 
 const Dashboard = lazy(() => import("../routes/director/dashboard"));
 const Splash = lazy(() => import("../routes/director/splash"));

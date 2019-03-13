@@ -2,7 +2,9 @@ import React from "react";
 import { Content } from "../../components";
 
 const SentMagicLink = ({ location }) => {
-  var urlParams = new URLSearchParams(window.location.search);
+  var urlParams = new URLSearchParams(
+    typeof window !== "undefined" && window.location.search
+  );
   return (
     <Content>
       <h1>Magic Link Sent</h1>
