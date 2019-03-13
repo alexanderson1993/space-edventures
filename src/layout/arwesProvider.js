@@ -41,7 +41,8 @@ const normalTheme = createTheme(
 
 const ArwesProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(
-    window.location.pathname.indexOf("/director") === 0
+    typeof window !== "undefined" &&
+      window.location.pathname.indexOf("/director") === 0
   );
   return (
     <>
