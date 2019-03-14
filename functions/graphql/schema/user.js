@@ -13,6 +13,7 @@ module.exports.schema = gql`
     userGetRank(id: String!, centerId: ID!): User
       @auth(requires: [staff, director])
 
+    userByToken(token: String): User @auth(requires: [center])
     users: [User]
   }
 
@@ -32,9 +33,9 @@ module.exports.schema = gql`
 
   type Profile @auth(requires: [self, admin]) {
     age: Int
-    name: String
+    name: String @auth(requires: [self, director, authenticated, center])
     # rank: String
-    displayName: String
+    displayName: String @auth(requires: [authenticated, center])
     profilePicture: String
     # flightHours: Float # added in flight record schema
     # classHours: Float # added in flight record schema
@@ -106,6 +107,9 @@ module.exports.resolver = {
         : new User(await User.getUserByToken(id));
       const { id: userId, profile, email, birthDate, registeredDate } = user;
       return { id: userId, profile, email, birthDate, registeredDate };
+    },
+    userByToken(_, { token }, context) {
+      return User.getUserByToken(token);
     }
   },
   // Needs to pass in parent of profile so that value can be checked

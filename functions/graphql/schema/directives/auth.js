@@ -89,10 +89,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
           );
         }
 
-        if (requiredRoles.indexOf("authenticated") > -1 && user) {
-          return resolve.apply(this, args);
-        }
-
         // Limit centers to only performing actions that require the center role
         if (requiredRoles.indexOf("center") === -1 && center) {
           throw new AuthenticationError(
@@ -100,6 +96,11 @@ class AuthDirective extends SchemaDirectiveVisitor {
               objectType.name}" using the API.`
           );
         }
+
+        if (requiredRoles.indexOf("authenticated") > -1 && (user || center)) {
+          return resolve.apply(this, args);
+        }
+
         // Allow centers to see their own information
         if (
           requiredRoles.indexOf("center") > -1 &&
@@ -112,19 +113,19 @@ class AuthDirective extends SchemaDirectiveVisitor {
         ) {
           return resolve.apply(this, args);
         }
-
         // Allow users to access their own data
         if (
           requiredRoles.indexOf("self") > -1 &&
-          (user.id === data.userId || user.id === data.id)
+          (user && (user.id === data.userId || user.id === data.id))
         ) {
           // If the GraphQL data's user id matches the user id of the GraphQL context, don't check permissions and just
           // return the normal resolver
           return resolve.apply(this, args);
         }
         const userHasAccess =
-          (user && user.hasOneOfRoles(requiredRoles, queryArgs.centerId)) ||
-          user.hasOneOfRoles(requiredRoles, data.centerId);
+          user &&
+          (user.hasOneOfRoles(requiredRoles, queryArgs.centerId) ||
+            user.hasOneOfRoles(requiredRoles, data.centerId));
 
         // the field has required roles and the user does not have one of those roles
         // Since roles only apply in the context of centers, it is based on the center ID
