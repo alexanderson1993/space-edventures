@@ -9,6 +9,8 @@
 - [ ] Figure out how to hide errors on GraphQL (for production)
 - [ ] Delete locked users after 30 days line 439 Model/User.Js
 
+- [ ] Officer log
+
 ## Working on
 
 - [ ] Double check graphql permissions
