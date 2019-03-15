@@ -16,8 +16,10 @@ export default class ErrorBoundary extends Component {
     this.context.dispatch({ type: "errored", errorData: error, errorInfo });
   }
   refresh() {
-    localStorage.clear();
-    window.location.reload();
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+      window.location.reload();
+    }
   }
   render() {
     if (this.context.state.error) {

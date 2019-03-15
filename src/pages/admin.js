@@ -1,6 +1,8 @@
-import React, { lazy } from "react";
+import React from "react";
 import { Router } from "@reach/router";
 import { Auth, Content } from "../components";
+import lazy from "../helpers/lazy";
+
 const Menu = lazy(() => import("../routes/admin/menu"));
 const CoppaVerify = lazy(() => import("../routes/admin/coppaVerify"));
 const Ranks = lazy(() => import("../routes/admin/rank"));
@@ -11,7 +13,6 @@ export default () => {
   return (
     <Auth roles={["admin"]}>
       <Content>
-        <div>HELLO</div>
         <Router>
           <Menu path="/admin" />
           <Ranks path="/admin/rank" />

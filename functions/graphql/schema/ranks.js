@@ -36,7 +36,7 @@ module.exports.schema = gql`
   }
 
   extend type Profile {
-    rank: Rank
+    rank: Rank @auth(requires: [authenticated, center])
   }
 `;
 

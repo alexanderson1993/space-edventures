@@ -10,7 +10,9 @@ import StripeAPIProvider from "./helpers/stripe";
 import { ErrorProvider } from "./helpers/errorContext";
 
 // eslint-disable-next-line react/display-name,react/prop-types
-export default ({ element }) => {
+export default (input = {}) => data => {
+  const { ssr } = input;
+  const { element } = data;
   // Instantiating store in `wrapRootElement` handler ensures:
   //  - there is fresh store for each SSR page
   //  - it will be called only once in browser, when React mounts
@@ -22,7 +24,13 @@ export default ({ element }) => {
             <ProfileProvider>
               <ArwesProvider>
                 <ErrorBoundary>
-                  <Suspense fallback={<Loading animate />}>{element}</Suspense>
+                  {ssr ? (
+                    element
+                  ) : (
+                    <Suspense fallback={<Loading animate />}>
+                      {element}
+                    </Suspense>
+                  )}
                 </ErrorBoundary>
               </ArwesProvider>
             </ProfileProvider>

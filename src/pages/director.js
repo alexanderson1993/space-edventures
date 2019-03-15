@@ -1,7 +1,8 @@
-import React, { lazy, useContext } from "react";
+import React, { useContext } from "react";
 import { Router } from "@reach/router";
 import AuthContext from "../helpers/authContext";
 import { DirectorProvider, DirectorContext } from "../helpers/directorContext";
+import lazy from "../helpers/lazy";
 
 const Dashboard = lazy(() => import("../routes/director/dashboard"));
 const Splash = lazy(() => import("../routes/director/splash"));
@@ -38,6 +39,9 @@ const FlightPrint = lazy(() => import("../routes/director/flights/print"));
 
 const Settings = lazy(() => import("../routes/director/settings"));
 const Billing = lazy(() => import("../routes/director/billing"));
+const Staff = lazy(() => import("../routes/director/staff"));
+
+const RankChecker = lazy(() => import("../routes/director/rankChecker"));
 
 export const CenterContext = React.createContext();
 
@@ -76,6 +80,8 @@ const Routes = ({ centerId }) => {
           <FlightPrint path="flights/:id/print" />
           <Settings path="settings" />
           <Billing path="billing" />
+          <Staff path="staff" />
+          <RankChecker path="rankCheck" />
         </Router>
       </Navigation>
     </CenterContext.Provider>

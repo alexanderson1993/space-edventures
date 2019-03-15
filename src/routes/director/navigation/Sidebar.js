@@ -10,12 +10,16 @@ import {
   FaCogs,
   FaDollarSign,
   FaTrafficLight,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaUsers,
+  FaSearch
 } from "react-icons/fa";
-import { Link } from "../../../components";
+import { Link, Auth } from "../../../components";
 import { CenterContext } from "../../../pages/director";
+import { DirectorContext } from "../../../helpers/directorContext";
 
 const Sidebar = styled("div")`
+  min-width: 180px;
   border-right: solid 2px rgba(0, 0, 0, 0);
   box-shadow: 5px 0px 5px ${({ color }) => transparentize(0.8, color)};
   background-color: ${({ color }) => transparentize(0.7, color)};
@@ -52,62 +56,84 @@ const sidebarLinks = [
   {
     label: "Home",
     icon: FaHome,
-    url: ""
+    url: "",
+    roles: ["staff", "director"]
   },
   {
     label: "Flights",
     icon: FaTrafficLight,
-    url: "/flights"
+    url: "/flights",
+    roles: ["director"]
+  },
+  {
+    label: "Rank Check",
+    icon: FaSearch,
+    url: "/rankCheck",
+    roles: ["staff", "director"]
   },
   {
     label: "Simulators",
     icon: FaSpaceShuttle,
-    url: "/simulators"
+    url: "/simulators",
+    roles: ["director"]
   },
   {
     label: "Flight Types",
     icon: FaFeatherAlt,
-    url: "/flightTypes"
+    url: "/flightTypes",
+    roles: ["director"]
   },
   {
     label: "Missions",
     icon: FaUserSecret,
-    url: "/missions"
+    url: "/missions",
+    roles: ["director"]
   },
   {
     label: "Badges",
     icon: FaIdBadge,
-    url: "/badges"
+    url: "/badges",
+    roles: ["director"]
   },
   {
     label: "Billing",
     icon: FaDollarSign,
-    url: "/billing"
+    url: "/billing",
+    roles: ["director"]
+  },
+  {
+    label: "Staff",
+    icon: FaUsers,
+    url: "/staff",
+    roles: ["director"]
   },
   {
     label: "Settings",
     icon: FaCogs,
-    url: "/settings"
+    url: "/settings",
+    roles: ["director"]
   }
 ];
 
 const SidebarComp = props => {
   const center = useContext(CenterContext);
+  const director = useContext(DirectorContext);
+
   return (
     <Sidebar {...props}>
       <Sticky>
         {sidebarLinks.map(l => (
-          <SidebarLink
-            {...props}
-            key={l.label}
-            to={`/director/${center.id}${l.url}`}
-          >
-            <l.icon /> {l.label}
-          </SidebarLink>
+          <Auth key={l.label} roles={l.roles}>
+            <SidebarLink {...props} to={`/director/${center.id}${l.url}`}>
+              <l.icon /> {l.label}
+            </SidebarLink>
+          </Auth>
         ))}
-        <SidebarLink {...props} to={`/director`}>
-          <FaSignOutAlt /> Change Center
-        </SidebarLink>
+        {director.centers.length > 1 && (
+          <SidebarLink {...props} to={`/director`}>
+            <FaSignOutAlt /> Change Center
+          </SidebarLink>
+        )}
       </Sticky>
     </Sidebar>
   );

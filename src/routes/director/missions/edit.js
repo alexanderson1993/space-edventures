@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Input, Button, ImageUploader, Navigator } from "../../../components";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import css from "@emotion/css";
@@ -7,8 +7,10 @@ import CREATE_MISSION from "./createMission.graphql";
 import MISSIONS_QUERY from "./missions.graphql";
 
 import { Loading } from "@arwes/arwes";
+import { CenterContext } from "../../../pages/director";
 
 const EditMission = ({ create }) => {
+  const center = useContext(CenterContext);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
@@ -17,7 +19,13 @@ const EditMission = ({ create }) => {
       {navigate => (
         <Mutation
           mutation={CREATE_MISSION}
-          variables={{ name, description, image, type: "mission" }}
+          variables={{
+            name,
+            description,
+            image,
+            type: "mission",
+            centerId: center.id
+          }}
           update={(cache, { data: { missionCreate } }) => {
             const { missions } = cache.readQuery({ query: MISSIONS_QUERY });
             cache.writeQuery({

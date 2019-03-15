@@ -6,6 +6,7 @@ module.exports = {
     description:
       "Track your space center rank and points, earn rewards, and see new missions and simulators all in one place.",
     url: "https://spaceedventures.org", // No trailing slash allowed!
+    siteUrl: "https://spaceedventures.org", // No trailing slash allowed!
     image: "/images/seo-image.jpg", // Path to your image you placed in the 'static' folder
     twitterUsername: "@thoriumsim"
   },
@@ -45,8 +46,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `space-edventures`,
+        short_name: `space-edventures`,
         start_url: `/`,
         background_color: `#48DBDB`,
         theme_color: `#48DBDB`,
@@ -77,7 +78,9 @@ module.exports = {
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-plugin-create-client-paths`,
-      options: { prefixes: [`/director/*`, `/admin/*`, `/staff/*`] }
+      options: {
+        prefixes: [`/director/*`, `/admin/*`, `/staff/*`, "/accounts/*"]
+      }
     }
   ]
 };

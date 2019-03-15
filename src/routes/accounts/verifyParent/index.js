@@ -4,7 +4,9 @@ import GetUser from "./getUser";
 import VerificationOptions from "./verificationOptions";
 
 const VerifyParent = props => {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(
+    typeof window !== "undefined" && window.location.search
+  );
   const id = urlParams.get("id");
   return (
     <Content>

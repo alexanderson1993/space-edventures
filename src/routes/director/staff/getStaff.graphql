@@ -1,0 +1,10 @@
+query CenterStaff($centerId: ID!) {
+  center(id: $centerId) {
+    id
+    users {
+      id
+      email
+      roles(centerId: $centerId)
+    }
+  }
+}

@@ -23,7 +23,7 @@ function useAnimationFrame(callback) {
   }, []);
 }
 
-const QrScanner = ({ onCode }) => {
+const QrScanner = ({ onCode, width = 480 }) => {
   const [error, setError] = useState(null);
   const canvasEl = useRef(document.createElement("canvas"));
   const dim = 480;
@@ -62,8 +62,8 @@ const QrScanner = ({ onCode }) => {
           <Webcam
             ref={cam}
             style={{ width: "100%", maxWidth: "480px", borderRadius: "40px" }}
-            width={dim}
-            height={dim}
+            width={width}
+            height={width}
             audio={false}
             screenshotWidth={dim}
             onUserMediaError={err => setError(err)}
