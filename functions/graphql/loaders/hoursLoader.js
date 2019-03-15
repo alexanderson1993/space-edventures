@@ -15,7 +15,9 @@ const hoursLoader = new DataLoader(async docs => {
         flightUserRecords.map(f => f.flightRecordId)
       );
       const flightTypes = await Promise.all(
-        flightRecords.map(record => flightTypeLoader.load(record.flightTypeId))
+        flightRecords
+          .filter(Boolean)
+          .map(record => flightTypeLoader.load(record.flightTypeId))
       );
       const hours = flightTypes.reduce(
         (prev, type) => prev + (type[hourType] || 0),
