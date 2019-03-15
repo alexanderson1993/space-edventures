@@ -35,6 +35,10 @@ const {
   schema: FlightUserRecordSchema,
   resolver: FlightUserRecordResolver
 } = require("./flightUserRecord");
+const {
+  schema: OfficerLogSchema,
+  resolver: OfficerLogResolver
+} = require("./officerLog");
 
 const { schema: directivesSchema, schemaDirectives } = require("./directives");
 
@@ -73,7 +77,8 @@ module.exports = makeExecutableSchema({
     CoppaVerifySchema,
     RankSchema,
     MessageSchema,
-    FlightUserRecordSchema
+    FlightUserRecordSchema,
+    OfficerLogSchema
   ].concat(directivesSchema),
   resolvers: merge(
     MainResolver,
@@ -89,7 +94,8 @@ module.exports = makeExecutableSchema({
     CoppaVerifyResolver,
     RankResolver,
     MessageResolver,
-    FlightUserRecordResolver
+    FlightUserRecordResolver,
+    OfficerLogResolver
   ),
   schemaDirectives
 });

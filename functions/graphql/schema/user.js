@@ -118,8 +118,6 @@ module.exports.resolver = {
       let theDate = profile.birthDate
         ? new Date(profile.birthDate._seconds * 1000)
         : new Date();
-      console.log(profile);
-      console.log(theDate);
       return new Date().getFullYear() - theDate.getFullYear();
     }
   },
