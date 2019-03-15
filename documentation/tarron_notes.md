@@ -21,6 +21,7 @@
   - [x] Data Loaders to query by badge
 
 - [ ] Double check graphql permissions
+  - [ ] Badge schema
 - [ ] Test front-end
 
 ## Recently Finished
