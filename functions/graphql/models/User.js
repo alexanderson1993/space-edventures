@@ -114,7 +114,9 @@ module.exports = class User {
    * Returns true if user has any of the roles
    */
   hasOneOfRoles(roles, centerId = "") {
-    const userRoles = (this.roles[centerId] || []).concat("authenticated");
+    const userRoles = ((this.roles && this.roles[centerId]) || []).concat(
+      "authenticated"
+    );
     // Automatically has the authenticated role if it exists.
     return roles.reduce(
       (prev, next) => prev || userRoles.indexOf(next) > -1,

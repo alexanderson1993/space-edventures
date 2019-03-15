@@ -4,30 +4,16 @@
 
 ## TODO
 
-- [x] Limit centers' permissions on objects that don't directly have the center's ID on the object
-  - Existing resolvers might need to have this check added on them
-- [ ] flight type from record
-  - center
-- [x] User profile get flight hours and class hours (parse badges)
-- [x] Messages
 - [ ] Double check permissions on everything (since front-end can't do any secure permission checking)
 
-- [ ] Change token generator to a random space phrase generator
+- [ ] Figure out how to hide errors on GraphQL (for production)
+- [ ] Delete locked users after 30 days line 439 Model/User.Js
 
 ## Working on
-
-- [x] Badge -> users query (found in flightRecord)
-
-  - [x] Data Loaders to query by badge
 
 - [ ] Double check graphql permissions
   - [ ] Badge schema
 - [ ] Test front-end
-
-## Recently Finished
-
-- [x] Check messages GRAPHQL
-- [x] Flight record generate token (need to use transactions)
 
 ## Backlog
 
@@ -75,7 +61,7 @@ mutation {
         image: ""
         flightTypeId: ""
     }
-    centerId: ""
+    centerId: "qcjMy8SGBPuvQ3ufN9cl"
   )
 }
 

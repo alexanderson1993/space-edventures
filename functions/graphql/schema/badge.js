@@ -3,7 +3,13 @@ const {
   ForbiddenError,
   UserInputError
 } = require("apollo-server-express");
-const { Badge, User, BadgeAssignment, FlightUserRecord } = require("../models");
+const {
+  Badge,
+  User,
+  BadgeAssignment,
+  FlightUserRecord,
+  FlightType
+} = require("../models");
 const { badgeLoader } = require("../loaders");
 
 // We define a schema that encompasses all of the types
@@ -115,7 +121,30 @@ module.exports.resolver = {
   Mutation: {
     // You should only be able to create a badge for a center that you own
     badgeCreate: async (rootQuery, { badge, centerId }, context) => {
-      console.log(context.user);
+      // Check to make sure they have permissions on the center
+      // This is already technically accounted for in the auth.js file (checks to see if they have a role matching the center id they submitted)
+      // But this is a good safe-guard in case that logic changes
+      const centerCheck =
+        typeof context.user.roles !== "undefined" &&
+        context.user.roles[centerId] === "director"
+          ? true
+          : false;
+      if (!centerCheck) {
+        throw new ForbiddenError(
+          "Cannot create a badge for a space center you do not own."
+        );
+      }
+
+      const flightType = await FlightType.getFlightType(badge.flightTypeId);
+      const flightTypeCheck = flightType.spaceCenterId === centerId;
+
+      if (!flightTypeCheck) {
+        throw new ForbiddenError(
+          "Cannot create badge for a flight record that does not exist for the space center."
+        );
+      }
+
+      // Make sure center has this flight type
       return Badge.createBadge(badge, centerId);
     },
     badgeRemove: async (rootQuery, { badgeId, centerId }, context) => {
@@ -213,6 +242,7 @@ module.exports.resolver = {
       };
     }
   },
+  // Must be the user, a center, or a director
   User: {
     badges: async (user, { type }, context) => {
       // Get all of the flight records.
