@@ -43,7 +43,6 @@ const Staff = lazy(() => import("../routes/director/staff"));
 
 const RankChecker = lazy(() => import("../routes/director/rankChecker"));
 
-
 export const CenterContext = React.createContext();
 
 const Routes = ({ centerId }) => {
@@ -83,7 +82,6 @@ const Routes = ({ centerId }) => {
           <Billing path="billing" />
           <Staff path="staff" />
           <RankChecker path="rankCheck" />
-
         </Router>
       </Navigation>
     </CenterContext.Provider>

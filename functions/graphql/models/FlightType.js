@@ -17,7 +17,9 @@ module.exports = class FlightType {
 
   static async getFlightType(id) {
     const flightType = await flightTypeLoader.load(id);
-
+    if (!flightType) {
+      return false;
+    }
     return new FlightType(flightType);
   }
 

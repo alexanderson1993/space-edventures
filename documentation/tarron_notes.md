@@ -4,35 +4,35 @@
 
 ## TODO
 
-- [x] Limit centers' permissions on objects that don't directly have the center's ID on the object
-  - Existing resolvers might need to have this check added on them
-- [ ] flight type from record
-  - center
-- [x] User profile get flight hours and class hours (parse badges)
-- [x] Messages
 - [ ] Double check permissions on everything (since front-end can't do any secure permission checking)
 
-- [ ] Change token generator to a random space phrase generator
+- [ ] Figure out how to hide errors on GraphQL (for production)
+- [ ] Delete locked users after 30 days line 439 Model/User.Js
+
+- [ ] Officer log
 
 ## Working on
 
-- [x] Edit flight record
-- [x] Question: what should the stations resolver do on the simulator object? Should it query all flight records with that simulator id and see what stations it's been associated with?
-- [x] Check messages GRAPHQL
-- [x] Flight record generate token (need to use transactions)
-
-- [ ] Badge -> users query (found in flightRecord)
-
-  - [ ] Data Loaders to query by badge
-
 - [ ] Double check graphql permissions
+
+  - [x] Badge schema
+  - [x] Center Schema
+  - [x] Coppa Verify
+  - [x] Flight records
+  - [x] Flight Types
+    - Make sure badge flight type matches the type of the flight record being assigned to the badge
+      badge { flight type }
+  - [x] Flight user records
+  - [ ] user
+  - [ ] stripe
+  - [ ] simulators
+  - [ ] Ranks
+  - [ ] Officer Log
+  - [ ] Messages
+
+    - Can users view their own flight records?
+
 - [ ] Test front-end
-
-## Recently Finished
-
-- [x] Flight Assignment and flight records
-- [x] From user, get flight records
-- [x] User getFlights will only return stations/simulators that the user is on
 
 ## Backlog
 
@@ -50,6 +50,41 @@
 ## GraphQL Queries
 
 ```graphql
+
+<!-- ----------------------------------------------------------------------- -->
+<!-- Centers -->
+<!-- ----------------------------------------------------------------------- -->
+mutation {
+  centerCreate(
+    name: "Tarron's Test Space Center"
+    website: "https://www.Example.com"
+    email: "tarronlane@gmail.com"
+    token: "123456789012345678901234567890123456"
+    planId: "plan_EOHo5AwhQNNvGE"
+  ) {
+    id
+  }
+}
+
+<!-- ======================================================================= -->
+<!-- Badges -->
+<!-- ======================================================================= -->
+
+mutation {
+  badgeCreate(
+    badge :{
+        # id: ""
+        name: "TarronTest"
+        type: badge
+        description: "Test badge created by Tarron"
+        flightTypeId: "rV0TVOnZNEMH36Ypv8ne"
+    }
+    centerId: "qcjMy8SGBPuvQ3ufN9cl_"
+  ){
+		id
+  }
+}
+
 mutation {
   badgeClaim(token: "lgg8plx96z") {
     isSuccess
@@ -77,6 +112,10 @@ mutation {
     }
   }
 }
+
+<!-- ----------------------------------------------------------------------- -->
+<!-- Flight Types -->
+<!-- ----------------------------------------------------------------------- -->
 
 mutation {
   flightTypeCreate(
@@ -114,6 +153,12 @@ mutation {
       }
     ]
   ) {
+    id
+  }
+}
+
+{
+	flightRecord(id:"ey46TG6Jm6v6ZfIJvIXN", centerId:"qcjMy8SGBPuvQ3ufN9cl") {
     id
   }
 }

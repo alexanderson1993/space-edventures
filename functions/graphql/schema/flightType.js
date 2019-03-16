@@ -39,6 +39,10 @@ module.exports.schema = gql`
     flightHours: Float
     classHours: Float
   }
+
+  extend type Badge {
+    flightType: FlightType
+  }
 `;
 
 // We define all of the resolvers necessary for

@@ -3,7 +3,14 @@ const {
   ForbiddenError,
   UserInputError
 } = require("apollo-server-express");
-const { Badge, User, BadgeAssignment, FlightUserRecord } = require("../models");
+const {
+  Badge,
+  User,
+  BadgeAssignment,
+  FlightUserRecord,
+  FlightType,
+  FlightRecord
+} = require("../models");
 const { badgeLoader } = require("../loaders");
 
 // We define a schema that encompasses all of the types
@@ -37,22 +44,29 @@ module.exports.schema = gql`
     badges(type: BADGE_TYPE, centerId: ID!): [Badge]
     badge(id: ID!): Badge
   }
+
   extend type Mutation {
     # Used to create assignable badges and assign badges to users
     badgeCreate(badge: BadgeInput, centerId: ID!): Badge
       @auth(requires: [director])
+
     badgeRemove(badgeId: ID!, centerId: ID!): Badge @auth(requires: [director])
+
     badgeRename(badgeId: ID!, name: String!, centerId: ID!): Badge
       @auth(requires: [director])
+
     badgeChangeDescription(
       badgeId: ID!
       description: String!
       centerId: ID!
     ): Badge @auth(requires: [director])
+
     badgeChangeImage(badgeId: ID!, image: Upload!, centerId: ID!): Badge
       @auth(requires: [director])
+
     badgeAssign(badges: [BadgeAssignInput!]!): [Badge]
       @auth(requires: [center, director, staff])
+
     badgeClaim(token: String!): ClaimResult @auth(requires: [authenticated])
   }
 
@@ -96,15 +110,42 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   Query: {
+    // Anyone should be able to see any badge
     badges: async (rootQuery, { type, centerId }, context) => {
       return Badge.getBadges(type, centerId);
     },
+    // Anyone should be able to see any badge
     badge: (rootQuery, { id }, context) => {
       return Badge.getBadge(id);
     }
   },
   Mutation: {
+    // You should only be able to create a badge for a center that you own
     badgeCreate: async (rootQuery, { badge, centerId }, context) => {
+      // Check to make sure they have permissions on the center
+      // This is already technically accounted for in the auth.js file (checks to see if they have a role matching the center id they submitted)
+      // But this is a good safe-guard in case that logic changes
+      const centerCheck =
+        typeof context.user.roles !== "undefined" &&
+        context.user.roles[centerId] === "director"
+          ? true
+          : false;
+      if (!centerCheck) {
+        throw new ForbiddenError(
+          "Cannot create a badge for a space center you do not own."
+        );
+      }
+
+      const flightType = await FlightType.getFlightType(badge.flightTypeId);
+      const flightTypeCheck = flightType.spaceCenterId === centerId;
+
+      if (!flightTypeCheck) {
+        throw new ForbiddenError(
+          "Cannot create badge for a flight record that does not exist for the space center."
+        );
+      }
+
+      // Make sure center has this flight type
       return Badge.createBadge(badge, centerId);
     },
     badgeRemove: async (rootQuery, { badgeId, centerId }, context) => {
@@ -161,6 +202,14 @@ module.exports.resolver = {
           );
         }
 
+        // Make sure the assigned flight id has a matching type with the badge flight type
+        const flight = await FlightRecord.getFlightRecord(flightId);
+        if (badge.flightTypeId && flight.flightTypeId !== badge.flightTypeId) {
+          throw new ForbiddenError(
+            "Cannot assign a flight to a badge with a mismatched flight type."
+          );
+        }
+
         if (typeof userId !== "undefined") {
           user = await User.getUserById(userId);
         }
@@ -202,6 +251,7 @@ module.exports.resolver = {
       };
     }
   },
+  // Must be the user, a center, or a director
   User: {
     badges: async (user, { type }, context) => {
       // Get all of the flight records.
