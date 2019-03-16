@@ -39,6 +39,10 @@ module.exports.schema = gql`
     flightHours: Float
     classHours: Float
   }
+
+  extend type Badge {
+    flightType: FlightType
+  }
 `;
 
 // We define all of the resolvers necessary for
@@ -50,6 +54,9 @@ module.exports.resolver = {
     flightTypes: async (rootObj, { centerId }, context) => {
       return FlightType.getFlightTypes(centerId);
     }
+  },
+  Badge: {
+    flightType
   },
   FlightRecord: {
     // flightType: (flightRecord, args, context) => FlightType.getFlightType(flightRecord.flightTypeId)

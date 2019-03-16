@@ -8,7 +8,8 @@ const {
   User,
   BadgeAssignment,
   FlightUserRecord,
-  FlightType
+  FlightType,
+  FlightRecord
 } = require("../models");
 const { badgeLoader } = require("../loaders");
 
@@ -198,6 +199,14 @@ module.exports.resolver = {
         if (badge.spaceCenterId !== context.center.id) {
           throw new ForbiddenError(
             "You do not have access to assign this badge"
+          );
+        }
+
+        // Make sure the assigned flight id has a matching type with the badge flight type
+        const flight = await FlightRecord.getFlightRecord(flightId);
+        if (badge.flightTypeId && flight.flightTypeId !== badge.flightTypeId) {
+          throw new ForbiddenError(
+            "Cannot assign a flight to a badge with a mismatched flight type."
           );
         }
 

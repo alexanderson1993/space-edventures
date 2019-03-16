@@ -14,11 +14,23 @@
 ## Working on
 
 - [ ] Double check graphql permissions
+
   - [x] Badge schema
   - [x] Center Schema
   - [x] Coppa Verify
-  - [ ] Flight records
+  - [x] Flight records
+  - [ ] Flight Types
+    - Make sure badge flight type matches the type of the flight record being assigned to the badge
+  - [ ] Flight user records
+  - [ ] user
+  - [ ] stripe
+  - [ ] simulators
+  - [ ] Ranks
+  - [ ] Officer Log
+  - [ ] Messages
+
     - Can users view their own flight records?
+
 - [ ] Test front-end
 
 ## Backlog

@@ -67,8 +67,9 @@ module.exports.schema = gql`
   }
 
   extend type Center {
-    flightRecordCount: Int
+    flightRecordCount: Int @auth(requires: [director])
     flightRecords(limit: Int, skip: Int): [FlightRecord]
+      @auth(requires: [director])
   }
 
   extend type FlightUserRecord {
@@ -212,10 +213,12 @@ module.exports.resolver = {
           return;
         })
       );
+
       const stations = simulators.reduce(
         (prev, sim) => prev.concat(sim.stations),
         []
       );
+
       const badgesCheck = stations.map(station =>
         station.badges.map(badgeId =>
           Badge.getBadge(badgeId).then(badge => {
@@ -283,8 +286,6 @@ module.exports.resolver = {
         id,
         date
       );
-
-      // TODO need to generate the token here as well (if changed)
 
       await FlightUserRecord.editFlightUserRecordsByFlightRecord(flightRecord);
 
