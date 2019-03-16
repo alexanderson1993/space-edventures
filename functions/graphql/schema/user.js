@@ -10,6 +10,7 @@ module.exports.schema = gql`
   extend type Query {
     me: User
     user(id: ID, email: String): User @auth(requires: [self, admin, director])
+
     userGetRank(id: String!, centerId: ID!): User
       @auth(requires: [staff, director])
 
@@ -98,7 +99,7 @@ module.exports.resolver = {
     users: () => {
       return User.getAllUsers();
     },
-    userGetRank: async (_, { id }, context) => {
+    userGetRank: async (_, { id, centerId }, context) => {
       // We should filter the result we get from the user
       // so it is only relevant information. id could be an
       // email address

@@ -19,9 +19,10 @@
   - [x] Center Schema
   - [x] Coppa Verify
   - [x] Flight records
-  - [ ] Flight Types
+  - [x] Flight Types
     - Make sure badge flight type matches the type of the flight record being assigned to the badge
-  - [ ] Flight user records
+      badge { flight type }
+  - [x] Flight user records
   - [ ] user
   - [ ] stripe
   - [ ] simulators

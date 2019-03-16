@@ -55,9 +55,6 @@ module.exports.resolver = {
       return FlightType.getFlightTypes(centerId);
     }
   },
-  Badge: {
-    flightType
-  },
   FlightRecord: {
     // flightType: (flightRecord, args, context) => FlightType.getFlightType(flightRecord.flightTypeId)
     flightType: (flightRecord, args, context) => {

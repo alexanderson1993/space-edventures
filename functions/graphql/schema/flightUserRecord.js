@@ -11,10 +11,10 @@ module.exports.schema = gql`
     stationName: String!
     date: Date!
     token: String # This is here so that space directors could manually give out tokens
-    # user: User # extended in user // TODO: add to the other file
-    # simulator: Simulator # extended in simulator // TODO: add to the other file
-    # flightRecord: FlightRecord # extended in flight record // TODO: Add to other file
-    # badges: [Badge] # extended in flightRecord // TODO: Add to other file
+    # user: User # extended in user
+    # simulator: Simulator # extended in simulator
+    # flightRecord: FlightRecord # extended in flight record
+    # badges: [Badge] # extended in flightRecord
   }
 
   # Return the flight user records assigned to that logged in user
@@ -22,7 +22,7 @@ module.exports.schema = gql`
     flightRecords: [FlightUserRecord]
   }
   extend type Query {
-    flightUserRecord(token: String): FlightUserRecord
+    flightUserRecord(token: String!): FlightUserRecord
   }
 `;
 
@@ -35,19 +35,4 @@ module.exports.resolver = {
       return FlightUserRecord.getByToken(token);
     }
   }
-  // TODO FIX THESE (JUST COPIED FOR NOW)
-  // Profile: {
-  //   flightHours: async (profile, args, context) => {
-  //     return hoursLoader.load({
-  //       userId: profile.userId,
-  //       hourType: "flightHours"
-  //     });
-  //   },
-  //   classHours: async (profile, args, context) => {
-  //     return hoursLoader.load({
-  //       userId: profile.userId,
-  //       hourType: "classHours"
-  //     });
-  //   }
-  // }
 };
