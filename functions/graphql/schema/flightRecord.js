@@ -1,4 +1,8 @@
-const { gql, UserInputError } = require("apollo-server-express");
+const {
+  gql,
+  UserInputError,
+  ForbiddenError
+} = require("apollo-server-express");
 const {
   FlightRecord,
   FlightType,
@@ -45,14 +49,15 @@ module.exports.schema = gql`
   }
 
   extend type User {
-    flights: [FlightUserRecord] @auth(requires: [authenticated])
+    flights: [FlightUserRecord] @auth(requires: [authenticated, self, director])
   }
 
   extend type Query {
     # CenterID is required for director auth
     flightRecord(id: ID!, centerId: ID!): FlightRecord
       @auth(requires: [director])
-    flightRecords(userId: ID, centerId: ID, simulatorId: ID): [FlightRecord]
+
+    flightRecords(userId: ID, centerId: ID!, simulatorId: ID): [FlightRecord]
       @auth(requires: [director])
   }
 
@@ -76,7 +81,7 @@ module.exports.schema = gql`
     flightRecordCreate(
       thoriumFlightId: ID!
       flightTypeId: ID!
-      centerId: ID
+      centerId: ID!
       simulators: [FlightSimulatorInput!]!
     ): FlightRecord @auth(requires: [center, director])
 
@@ -102,8 +107,20 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   Query: {
-    flightRecord: (rootQuery, { id }, context) =>
-      FlightRecord.getFlightRecord(id),
+    flightRecord: async (rootQuery, { id, centerId }, context) => {
+      flightRecord = await FlightRecord.getFlightRecord(id);
+
+      console.log(flightRecord.spaceCenterId);
+      console.log(centerId);
+      // Make sure this director has permission to view this flight record (it's for a space center they own)
+      if (flightRecord.spaceCenterId !== centerId) {
+        throw new ForbiddenError(
+          "You cannot view a flight record for a space center you do not own"
+        );
+      }
+
+      return FlightRecord.getFlightRecord(id);
+    },
     flightRecords: async (
       rootQuery,
       { userId, centerId, simulatorId },
@@ -170,7 +187,7 @@ module.exports.resolver = {
     ) => {
       // Make sure this center has this flight type ID
       let flightType = await FlightType.getFlightType(flightTypeId);
-      if (!flightType) {
+      if (!flightType && flightType.spaceCenterId !== centerId) {
         throw new UserInputError("Invalid flight type id provided.");
       }
       // Make sure this flight record doesn't already exist

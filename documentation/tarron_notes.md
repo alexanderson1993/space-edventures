@@ -14,7 +14,11 @@
 ## Working on
 
 - [ ] Double check graphql permissions
-  - [ ] Badge schema
+  - [x] Badge schema
+  - [x] Center Schema
+  - [x] Coppa Verify
+  - [ ] Flight records
+    - Can users view their own flight records?
 - [ ] Test front-end
 
 ## Backlog
@@ -55,16 +59,17 @@ mutation {
 
 mutation {
   badgeCreate(
-    badgeInput:{
+    badge :{
         # id: ""
         name: "TarronTest"
-        type: "badge"
+        type: badge
         description: "Test badge created by Tarron"
-        image: ""
-        flightTypeId: ""
+        flightTypeId: "rV0TVOnZNEMH36Ypv8ne"
     }
-    centerId: "qcjMy8SGBPuvQ3ufN9cl"
-  )
+    centerId: "qcjMy8SGBPuvQ3ufN9cl_"
+  ){
+		id
+  }
 }
 
 mutation {
@@ -135,6 +140,12 @@ mutation {
       }
     ]
   ) {
+    id
+  }
+}
+
+{
+	flightRecord(id:"ey46TG6Jm6v6ZfIJvIXN", centerId:"qcjMy8SGBPuvQ3ufN9cl") {
     id
   }
 }
