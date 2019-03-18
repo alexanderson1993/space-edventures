@@ -79,7 +79,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-create-client-paths`,
       options: {
-        prefixes: [`/director/*`, `/admin/*`, `/staff/*`, "/accounts/*"]
+        prefixes: [`/director/*`, `/admin/*`, `/staff/*`]
       }
     }
   ]

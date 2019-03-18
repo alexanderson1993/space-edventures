@@ -8,7 +8,8 @@ import {
   Link,
   ProfilePicture,
   Modal,
-  ImageUploader
+  ImageUploader,
+  Content
 } from "../../components";
 import "./profile.scss";
 import ProfileContext from "../../helpers/profileContext";
@@ -82,56 +83,57 @@ const Profile = () => {
     return user.loading ? (
       <Loading animate />
     ) : (
-      <Container className="profile-page">
-        <Header>
-          <Words>Profile</Words>
-        </Header>
-        <ProfilePictureGrid>
-          <ProfilePicture />
-          <Button onClick={() => setEditPicture(true)}>
-            Edit Profile Picture
-          </Button>
-        </ProfilePictureGrid>
-        <UserData>
-          <Updater
-            title={"name"}
-            value={user.profile.name}
-            editMode={editMode}
-          />
-          <Updater
-            title={"displayName"}
-            value={user.profile.displayName}
-            editMode={editMode}
-          />
-          <FormGroup>
-            <Label>Rank</Label>
-            <h3>{user.profile.rank && user.profile.rank.name}</h3>
-            <div>Flight Hours: {user.profile.flightHours}</div>
-            <div>Class Hours: {user.profile.classHours}</div>
-          </FormGroup>
-          <Link to="/user/certificate">
-            <Button>View Rank Certificate</Button>
-          </Link>
-          <Button onClick={() => setEditMode(!editMode)}>
-            {editMode ? "Done Editing" : "Edit Profile"}
-          </Button>
-        </UserData>
-        <History>
-          <div>
-            <h2>History</h2>
+      <Content>
+        <Container className="profile-page">
+          <Header>
+            <Words>Profile</Words>
+          </Header>
+          <ProfilePictureGrid>
+            <ProfilePicture />
+            <Button onClick={() => setEditPicture(true)}>
+              Edit Profile Picture
+            </Button>
+          </ProfilePictureGrid>
+          <UserData>
+            <Updater
+              title={"name"}
+              value={user.profile.name}
+              editMode={editMode}
+            />
+            <Updater
+              title={"displayName"}
+              value={user.profile.displayName}
+              editMode={editMode}
+            />
+            <FormGroup>
+              <Label>Rank</Label>
+              <h3>{user.profile.rank && user.profile.rank.name}</h3>
+              <div>Flight Hours: {user.profile.flightHours}</div>
+              <div>Class Hours: {user.profile.classHours}</div>
+            </FormGroup>
+            <Link to="/user/certificate">
+              <Button>View Rank Certificate</Button>
+            </Link>
+            <Button onClick={() => setEditMode(!editMode)}>
+              {editMode ? "Done Editing" : "Edit Profile"}
+            </Button>
+          </UserData>
+          <History>
+            <div>
+              <h2>History</h2>
 
-            <Table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Center</th>
-                  <th>Simulator</th>
-                  <th>Station</th>
-                  <th>Mission</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* {user.history.map(h => (
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Center</th>
+                    <th>Simulator</th>
+                    <th>Station</th>
+                    <th>Mission</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* {user.history.map(h => (
                 <tr key={h.id}>
                   <td>{h.date.toLocaleDateString()}</td>
                   <td>{h.center}</td>
@@ -140,33 +142,34 @@ const Profile = () => {
                   <td>{h.mission}</td>
                 </tr>
               ))} */}
-              </tbody>
-            </Table>
-          </div>
-        </History>
-        <Modal show={editPicture} onCancel={() => setEditPicture(false)}>
-          <div
-            css={css`
-              width: 600px;
-              height: 600px;
-              max-height: 800vh;
-              max-width: 80vw;
-            `}
-          >
-            <Mutation mutation={SET_PROFILE_PICTURE}>
-              {action => (
-                <ImageUploader
-                  onChange={image => {
-                    setEditPicture(false);
-                    const picture = dataURItoBlob(image);
-                    action({ variables: { picture } });
-                  }}
-                />
-              )}
-            </Mutation>
-          </div>
-        </Modal>
-      </Container>
+                </tbody>
+              </Table>
+            </div>
+          </History>
+          <Modal show={editPicture} onCancel={() => setEditPicture(false)}>
+            <div
+              css={css`
+                width: 600px;
+                height: 600px;
+                max-height: 800vh;
+                max-width: 80vw;
+              `}
+            >
+              <Mutation mutation={SET_PROFILE_PICTURE}>
+                {action => (
+                  <ImageUploader
+                    onChange={image => {
+                      setEditPicture(false);
+                      const picture = dataURItoBlob(image);
+                      action({ variables: { picture } });
+                    }}
+                  />
+                )}
+              </Mutation>
+            </div>
+          </Modal>
+        </Container>
+      </Content>
     );
   return null;
 };
