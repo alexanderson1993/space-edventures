@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "../../../helpers/testRender";
-import MagicLinkPage from "../../../routes/accounts/magicLink";
+import MagicLinkPage from "../../../pages/accounts/magicLink";
 import { ErrorProvider } from "../../../helpers/errorContext";
 
 test("magicLinkPage", () => {

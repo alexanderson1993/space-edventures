@@ -111,8 +111,6 @@ module.exports.resolver = {
     flightRecord: async (rootQuery, { id, centerId }, context) => {
       flightRecord = await FlightRecord.getFlightRecord(id);
 
-      console.log(flightRecord.spaceCenterId);
-      console.log(centerId);
       // Make sure this director has permission to view this flight record (it's for a space center they own)
       if (flightRecord.spaceCenterId !== centerId) {
         throw new ForbiddenError(
