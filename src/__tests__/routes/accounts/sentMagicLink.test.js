@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "react-testing-library";
-import SentMagicLink from "../../../routes/accounts/sentMagicLink";
+import SentMagicLink from "../../../pages/accounts/sentMagicLink";
 import { ErrorProvider } from "../../../helpers/errorContext";
 
 test("sentMagicLink", () => {

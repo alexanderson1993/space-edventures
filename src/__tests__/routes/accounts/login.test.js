@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "../../../helpers/testRender";
-import Login from "../../../routes/accounts/login";
+import Login from "../../../pages/accounts/login";
 import { ErrorProvider } from "../../../helpers/errorContext";
 
 describe("login", () => {

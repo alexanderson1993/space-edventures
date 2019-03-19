@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AuthContext from "./";
 import propTypes from "prop-types";
-import { auth } from "../../helpers/firebase";
+import { auth, baseAuth } from "../../helpers/firebase";
 import client from "../../helpers/graphqlClient";
 import CREATE_USER from "./createUser.graphql";
 
@@ -12,14 +12,14 @@ const AuthProvider = ({ children }) => {
   // Update the user state whenever the Firebase auth status changes
   useEffect(() => {
     auth.onAuthStateChanged(userObj => {
-      if (loading) setLoading(false);
+      setLoading(false);
       if (userObj) {
         setUser(userObj);
       } else {
         setUser(null);
       }
     });
-  }, [loading]);
+  }, []);
 
   const actions = {
     login: ({ email, password }) => {
@@ -87,6 +87,23 @@ const AuthProvider = ({ children }) => {
             return client.mutate({ mutation: CREATE_USER }).catch(() => {});
           });
       }
+    },
+    checkMagicLink: email => {
+      return auth
+        .fetchSignInMethodsForEmail(email)
+        .then(function(signInMethods) {
+          if (
+            signInMethods.indexOf(
+              baseAuth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD
+            ) !== -1 ||
+            signInMethods.indexOf(
+              baseAuth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+            ) !== -1
+          ) {
+            return true;
+          }
+          return false;
+        });
     }
   };
   return (
