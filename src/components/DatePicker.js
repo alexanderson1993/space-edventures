@@ -17,17 +17,36 @@ const DatePickerComp = ({ theme, ...props }) => {
     div {
       overflow: visible;
     }
+    .react-date-picker__calendar {
+      width: 100%;
+    }
     .react-calendar {
+      bottom: 0;
+      position: absolute;
       border: solid 1px ${theme.color.primary.base};
       background-color: rgba(0, 0, 0, 0.8);
       * {
         color: ${theme.color.primary.base};
       }
+      .react-calendar__tile,
+      .react-calendar__navigation button {
+        font-size: 18px;
+      }
       .react-calendar__navigation button:enabled:hover,
       .react-calendar__tile:enabled:hover,
-      .react-calendar__tile--active:enabled:focus {
+      .react-calendar__tile:enabled:focus,
+      .react-calendar__navigation button:enabled:focus,
+      .react-calendar__navigation button[disabled] {
         background-color: ${transparentize(0.8, theme.color.primary.base)};
       }
+      .react-calendar__year-view .react-calendar__tile,
+      .react-calendar__decade-view .react-calendar__tile,
+      .react-calendar__century-view .react-calendar__tile {
+        padding: 1em 0.5em;
+      }
+    }
+    .react-date-picker {
+      width: 100%;
     }
     .react-date-picker__button g {
       stroke: ${theme.color.primary.base} !important;

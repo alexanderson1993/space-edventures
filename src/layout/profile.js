@@ -54,6 +54,15 @@ const Profile = () => {
                   Profile
                 </ArwesButton>
               </Link>
+              {user && user.centers && user.centers.length > 0 && (
+                <div>
+                  <Link to="/director">
+                    <ArwesButton animate show={open} style={{ width: "100%" }}>
+                      Director Panel
+                    </ArwesButton>
+                  </Link>
+                </div>
+              )}
               <ArwesButton
                 animate
                 show={open}
