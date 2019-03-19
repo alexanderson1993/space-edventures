@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Blockquote, Loading } from "@arwes/arwes";
-import { auth, baseAuth } from "../../helpers/firebase";
 import { Input, Words, Button, Navigator, DatePicker } from "../../components";
 import AuthContext from "../../helpers/authContext";
 import styled from "@emotion/styled";
@@ -24,7 +23,14 @@ const Center = styled("div")`
 `;
 
 const Login = ({ signingUp = false, to = "/", location }) => {
-  const { login, signUp: signUpMethod, magicLink } = useContext(AuthContext);
+  const {
+    login,
+    signUp: signUpMethod,
+    magicLink,
+    checkMagicLink = () => {
+      return Promise.resolve();
+    }
+  } = useContext(AuthContext);
   const { hide, reveal } = useContext(AnimateContext);
   const [signUp, setSignUp] = useState(
     signingUp || (location && location.search === "?signUp")
@@ -40,20 +46,9 @@ const Login = ({ signingUp = false, to = "/", location }) => {
   const [magicLinkAllowed, setMagicLinkAllowed] = useState(false);
   useEffect(() => {
     if (!magicLinkAllowed) {
-      auth.fetchSignInMethodsForEmail(email).then(function(signInMethods) {
-        if (
-          signInMethods.indexOf(
-            baseAuth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD
-          ) !== -1 ||
-          signInMethods.indexOf(
-            baseAuth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
-          ) !== -1
-        ) {
-          setMagicLinkAllowed(true);
-        }
-      });
+      checkMagicLink(email).then(allowed => setMagicLinkAllowed(allowed));
     }
-  }, [email, magicLinkAllowed]);
+  }, [checkMagicLink, email, magicLinkAllowed]);
   const checkError = type => {
     if (!email) {
       setError({ field: "email", message: "Email is a required field." });
