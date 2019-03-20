@@ -1,6 +1,9 @@
 # Tarron's Notes
 
-## Questions
+## Bugs
+
+- [ ] Profile photo upload doesn't work
+- [ ] New loading image doesn't disappear on same page reloads
 
 ## TODO
 
