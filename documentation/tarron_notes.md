@@ -1,6 +1,8 @@
 # Tarron's Notes
 
-## Questions
+## Bugs
+
+- [ ]
 
 ## TODO
 
