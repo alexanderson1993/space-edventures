@@ -1,0 +1,5 @@
+mutation UpdatePayment($token: String!, $centerId: ID!) {
+  stripe {
+    updatePayment(token: $token, centerId: $centerId)
+  }
+}

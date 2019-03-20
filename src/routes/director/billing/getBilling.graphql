@@ -1,0 +1,29 @@
+query Billing($id: ID!) {
+  center(id: $id) {
+    id
+    stripeCustomer {
+      id
+      created
+      subscriptions {
+        id
+        current_period_start
+        current_period_end
+        status
+        plan {
+          id
+          amount
+          interval
+          interval_count
+          nickname
+        }
+      }
+      sources {
+        id
+        brand
+        exp_month
+        exp_year
+        last4
+      }
+    }
+  }
+}

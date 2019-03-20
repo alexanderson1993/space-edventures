@@ -3,6 +3,7 @@ query Me {
     id
     email
     token
+    locked
     profile {
       name
       displayName

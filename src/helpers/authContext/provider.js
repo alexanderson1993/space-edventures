@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AuthContext from "./";
+import { navigate } from "gatsby";
 import propTypes from "prop-types";
 import { auth, baseAuth } from "../../helpers/firebase";
 import client from "../../helpers/graphqlClient";
@@ -16,7 +17,9 @@ const AuthProvider = ({ children }) => {
       if (userObj) {
         setUser(userObj);
       } else {
+        client.resetStore();
         setUser(null);
+        navigate("/");
       }
     });
   }, []);

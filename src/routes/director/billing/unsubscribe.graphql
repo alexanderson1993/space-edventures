@@ -1,0 +1,5 @@
+mutation Unsubscribe($centerId: ID!) {
+  stripe {
+    unsubscribe(centerId: $centerId)
+  }
+}

@@ -1,0 +1,5 @@
+mutation Subscribe($planId: String!, $centerId: ID!) {
+  stripe {
+    subscribe(planId: $planId, centerId: $centerId)
+  }
+}

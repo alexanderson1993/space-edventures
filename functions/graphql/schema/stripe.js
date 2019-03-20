@@ -1,6 +1,5 @@
 const { gql } = require("apollo-server-express");
-const { Stripe } = require("../models");
-const { firestore } = require("../connectors/firebase");
+const { Stripe, Center } = require("../models");
 
 // We define a schema that encompasses all of the types
 // necessary for the functionality in this file.
@@ -13,14 +12,16 @@ module.exports.schema = gql`
     # Subscribe based on the center which
     # The user is the director of, if any.
     # No arguments are necessary.
-    subscribe(planId: String!): Boolean
+    subscribe(planId: String!, centerId: ID!): Boolean
+      @auth(requires: [director])
 
     # Unsubscribe based on the center which
     # The user is the director of, if any.
     # No arguments are necessary.
-    unsubscribe: Boolean
+    unsubscribe(centerId: ID!): Boolean @auth(requires: [director])
 
-    updatePayment(token: String!): Boolean
+    updatePayment(token: String!, centerId: ID!): Boolean
+      @auth(requires: [director])
   }
 
   type StripePlan {
@@ -84,10 +85,18 @@ module.exports.resolver = {
     plans: (rootQuery, args, context) => Stripe.getPlans()
   },
   StripeMutation: {
-    subscribe: (rootQuery, { planId }, context) =>
-      Stripe.startDirectorTrial(context, planId),
-    unsubscribe: (rootQuery, args, context) => ({}),
-    updatePayment: (rootQuery, { token }, context) => ({})
+    subscribe: async (rootQuery, { planId, centerId }, context) => {
+      const center = await Center.getCenter(centerId);
+      return Boolean(await Stripe.subscribe(center.stripeCustomer, planId));
+    },
+    unsubscribe: async (rootQuery, { centerId }, context) => {
+      const center = await Center.getCenter(centerId);
+      return Boolean(await Stripe.unsubscribe(center.stripeCustomer));
+    },
+    updatePayment: async (rootQuery, { token, centerId }, context) => {
+      const center = await Center.getCenter(centerId);
+      return Boolean(await Stripe.updatePayment(center.stripeCustomer, token));
+    }
   },
   Center: {
     /* TODO: Add checks to make sure only the director can view this, including if the auth directive works */
