@@ -31,6 +31,7 @@
     "graphql-upload": "^8.0.3",
     "lodash": "^4.17.11",
     "nodemailer": "^5.1.1",
+    "random-ship-names": "^1.0.0",
     "react-image-crop": "^6.0.12",
     "stripe": "^6.20.1",
     "uuid": "^3.3.2"

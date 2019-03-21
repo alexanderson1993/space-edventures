@@ -19,6 +19,8 @@ import SET_PROFILE_PICTURE from "./setProfilePicture.graphql";
 import UPDATE_PROFILE from "./updateProfile.graphql";
 import { dataURItoBlob } from "../../helpers/dataURIToBlob";
 import { titleCase } from "change-case";
+import randomName from "random-ship-names";
+import useKonami from "react-konami-hook";
 
 const Container = styled("div")`
   display: grid;
@@ -50,6 +52,8 @@ const Table = styled("table")`
 
 const Updater = ({ title, value, editMode }) => {
   const [newValue, setNewValue] = useState(value);
+  const [pirate, setPirate] = useState(false);
+  useKonami(() => setPirate(true));
   return !editMode ? (
     <h3>
       {titleCase(title)}: {newValue}
@@ -70,6 +74,31 @@ const Updater = ({ title, value, editMode }) => {
               }}
             />
           </Label>
+          {title === "displayName" && (
+            <>
+              <Button
+                onClick={() => {
+                  const name = randomName.civilian;
+                  setNewValue(name);
+                  action({ variables: { [title]: name } });
+                }}
+              >
+                Random Display Name
+              </Button>
+              {pirate && (
+                <Button
+                  layer="alert"
+                  onClick={() => {
+                    const name = randomName.pirate;
+                    setNewValue(name);
+                    action({ variables: { [title]: name } });
+                  }}
+                >
+                  Random Pirate Name
+                </Button>
+              )}
+            </>
+          )}
         </FormGroup>
       )}
     </Mutation>

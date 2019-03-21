@@ -19,6 +19,7 @@ const parentConsent = require("../emails/parentConsent");
 const childConsent = require("../emails/childConsent");
 const parentReverify = require("../emails/parentReverify");
 const tokenGenerator = require("../helpers/tokenGenerator");
+const randomName = require("random-ship-names");
 
 const collectionName = "users";
 module.exports = class User {
@@ -414,7 +415,7 @@ module.exports = class User {
   static async createUser({
     id,
     email,
-    displayName,
+    displayName = randomName.civilian,
     name,
     birthDate,
     parentEmail,
@@ -427,12 +428,14 @@ module.exports = class User {
         email,
         parentEmail,
         locked,
-        birthDate,
-        displayName,
-        name,
+        profile: {
+          birthDate,
+          displayName,
+          name,
+          classHours: 0,
+          flightHours: 0
+        },
         registeredDate: new Date(),
-        classHours: 0,
-        flightHours: 0,
         token: tokenGenerator(),
         badges: [],
         roles: []

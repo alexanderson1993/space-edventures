@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useContext } from "react";
 import { Loading } from "@arwes/arwes";
 import { ApolloProvider } from "react-apollo";
 import ErrorBoundary from "./helpers/errorBoundary";
@@ -8,7 +8,34 @@ import AuthProvider from "./helpers/authContext/provider";
 import ProfileProvider from "./helpers/profileContext/provider";
 import StripeAPIProvider from "./helpers/stripe";
 import { ErrorProvider } from "./helpers/errorContext";
+import ProfileContext from "./helpers/profileContext";
+import css from "@emotion/css";
 
+const UserLock = ({ children }) => {
+  const { user } = useContext(ProfileContext);
+  if (user.locked)
+    return (
+      <div
+        css={css`
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        `}
+      >
+        <h1>Account Locked</h1>
+        <p
+          css={css`
+            max-width: 500px;
+          `}
+        >
+          To use Space EdVentures, we need to collect parental approval
+          verification. Once you are approved by your parent, your account will
+          be unlocked.
+        </p>
+      </div>
+    );
+  return children;
+};
 // eslint-disable-next-line react/display-name,react/prop-types
 export default (input = {}) => data => {
   const { ssr } = input;
@@ -24,13 +51,15 @@ export default (input = {}) => data => {
             <ProfileProvider>
               <ArwesProvider>
                 <ErrorBoundary>
-                  {ssr ? (
-                    element
-                  ) : (
-                    <Suspense fallback={<Loading animate />}>
-                      {element}
-                    </Suspense>
-                  )}
+                  <UserLock>
+                    {ssr ? (
+                      element
+                    ) : (
+                      <Suspense fallback={<Loading animate />}>
+                        {element}
+                      </Suspense>
+                    )}
+                  </UserLock>
                 </ErrorBoundary>
               </ArwesProvider>
             </ProfileProvider>

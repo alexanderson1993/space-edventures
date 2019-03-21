@@ -22,7 +22,6 @@ const Section = styled("section")`
 `;
 const Splash = ({ data }) => {
   const { user } = useContext(ProfileContext);
-  console.log(data);
   if (user && user.email) {
     return (
       <Content>

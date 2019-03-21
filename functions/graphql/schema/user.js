@@ -135,15 +135,14 @@ module.exports.resolver = {
       const userObj = await User.getUserById(user.id);
       if (userObj) return userObj;
       // No user - create it.
+      console.log(parentEmail);
       return User.createUser({
         id: user.id,
         birthDate,
         email: user.email,
-        profile: {
-          displayName: user.email,
-          name: user.email,
-          parentEmail
-        },
+        displayName: user.email,
+        name: user.email,
+        parentEmail,
         locked: Boolean(parentEmail)
       });
     },

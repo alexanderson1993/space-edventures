@@ -71,23 +71,6 @@ module.exports = class Stripe {
   }
 
   /**
-   * Figure out the current user's stripe customer id, and subscribe them to a trial of the planId
-   * This should call the subscribe method from above
-   * UNFINISHED
-   */
-  static startDirectorTrial(context, planId) {
-    // Get the current user
-    let user = context.user;
-    // Get the data we store about the user in the database
-    // Get the center the user is tied to
-    // Get the stripe customer id off the center
-    // Subscribe the stripe customer to the plan
-    let customerId = "";
-
-    // DEBUG
-  }
-
-  /**
    * Deletes the first subscription on the customer (index 0)
    * Params customerId (string)
    * Returns Promise(confirmation)
