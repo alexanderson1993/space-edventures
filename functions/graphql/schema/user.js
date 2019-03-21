@@ -137,11 +137,13 @@ module.exports.resolver = {
       // No user - create it.
       return User.createUser({
         id: user.id,
-        displayName: user.email,
-        email: user.email,
-        name: user.email,
-        parentEmail,
         birthDate,
+        email: user.email,
+        profile: {
+          displayName: user.email,
+          name: user.email,
+          parentEmail
+        },
         locked: Boolean(parentEmail)
       });
     },
