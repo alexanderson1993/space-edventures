@@ -1,16 +1,5 @@
 # Tarron's Notes
 
-## Bugs
-
-- [ ]
-
-- [x] Doesn't redirect on logout
-- [x] User object creation not doing sub-profile
-- [ ] Edit Username doesn't autofill -- only on the first time
-- [ ] Random display name button doesn't do anything (until you click done editing)
-- [ ] On login page top right buttons don't navigate
-- [ ] If user over age, adds blank parent email
-
 ### Notes
 
 - Remember to be in the "functions" folder before running commands
