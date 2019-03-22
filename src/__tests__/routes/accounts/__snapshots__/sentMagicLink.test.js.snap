@@ -10,6 +10,13 @@ exports[`sentMagicLink 1`] = `
   margin-bottom: 10%;
 }
 
+@media only screen and (max-width:600px) {
+  .emotion-0 {
+    padding: 0px 0.5875rem 1.45rem;
+    max-width: 98%;
+  }
+}
+
 <div>
   <div
     class="emotion-0 emotion-1"

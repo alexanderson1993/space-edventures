@@ -1,0 +1,28 @@
+query {
+  flightUser: me {
+    id
+    flights(limit: 1) {
+      id
+      date
+      flightRecord {
+        id
+        flightType {
+          id
+          name
+          flightHours
+          classHours
+        }
+      }
+      simulator {
+        id
+        name
+      }
+      stationName
+      badges {
+        id
+        type
+        name
+      }
+    }
+  }
+}

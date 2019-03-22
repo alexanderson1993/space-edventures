@@ -158,7 +158,19 @@ module.exports = class FlightUserRecord {
     });
   }
 
-  static async getFlightUserRecordsByUser(userId) {
+  static async getFlightUserRecordsByUser(userId, limit, skip) {
+    if (limit || skip) {
+      return (
+        firestore()
+          .collection("flightUserRecord")
+          .where("userId", "==", userId)
+          .orderBy("date", "desc")
+          // .startAt(skip || 0)
+          .limit(limit || 25)
+          .get()
+          .then(ref => ref.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+      );
+    }
     return flightRecordUserLoader.load(userId);
   }
 

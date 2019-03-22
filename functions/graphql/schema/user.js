@@ -174,7 +174,7 @@ module.exports.resolver = {
         throw new AuthenticationError(
           "Must be logged in to change profile picture."
         );
-      if (user.roles && user.roles.includes("admin") && args.id) {
+      if (user.isAdmin && args.id) {
         const setUser = User.getUserById(args.id);
         return setUser.changeProfilePicture(args.picture);
       }
