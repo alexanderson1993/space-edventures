@@ -29,7 +29,7 @@ const Center = styled("div")`
   text-align: center;
 `;
 
-const Login = ({ signingUp = false, to = "/", location }) => {
+const Login = ({ signingUp = false, to = "/", location: propsLocation }) => {
   const {
     login,
     signUp: signUpMethod, // Gets the signUp from the authContext and assigns it to a variable called signUpMethod
@@ -40,14 +40,15 @@ const Login = ({ signingUp = false, to = "/", location }) => {
   } = useContext(AuthContext);
   const { hide, reveal } = useContext(AnimateContext);
 
-  const defaultSignUp =
-    signingUp || (location && location.search === "?signUp");
+  // const defaultSignUp =
+  //   signingUp || (location && location.search === "?signUp");
 
-  const [signUp, setSignUp] = useState(defaultSignUp);
+  // const [signUp, setSignUp] = useState(defaultSignUp);
 
-  if (signUp !== defaultSignUp) {
-    setSignUp(defaultSignUp);
-  }
+  // if (signUp !== defaultSignUp) {
+  //   setSignUp(defaultSignUp);
+  // }
+  const signUp = propsLocation && propsLocation.search.includes("?signUp");
 
   const [email, setEmail] = useState("");
   const [parentEmail, setParentEmail] = useState("");
@@ -285,7 +286,7 @@ const Login = ({ signingUp = false, to = "/", location }) => {
                     css={{ marginBottom: "10px" }}
                     onClick={e => {
                       e.preventDefault();
-                      setSignUp(!signUp);
+                      // setSignUp(!signUp);
                       setError(null);
                     }}
                   >
