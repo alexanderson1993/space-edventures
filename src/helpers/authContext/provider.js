@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
       if (userObj) {
         setUser(userObj);
       } else {
-        client.resetStore();
+        client.clearStore();
         setUser(null);
         navigate("/");
       }
