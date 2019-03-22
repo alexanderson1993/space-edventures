@@ -45,11 +45,13 @@ module.exports.resolver = {
     ) => {
       const user = await User.getUserById(id);
 
-      // Uf the birthdate or parent email don't match, don't return the user
+      // If the birthdate or parent email don't match, don't return the user
       if (
         user.parentEmail.toLowerCase() !== parentEmail.toLowerCase() ||
-        user.birthDate.toDate().getTime() !== birthDate.getTime() ||
-        user.locked === false // Also don't let them get a user unless it needs verification (prevents any getting the user if they know the birthDate, even after verification)
+        user.profile.birthDate
+          ? user.profile.birthDate.toDate().getTime()
+          : user.birthDate.toDate().getTime() !== birthDate.getTime() ||
+            user.locked === false // Also don't let them get a user unless it needs verification (prevents any getting the user if they know the birthDate, even after verification)
       )
         return null;
       return user;

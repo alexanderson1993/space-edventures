@@ -4,41 +4,12 @@
 
 - [ ]
 
-## TODO
-
-- [ ] Double check permissions on everything (since front-end can't do any secure permission checking)
-
-- [ ] Figure out how to hide errors on GraphQL (for production)
-- [ ] Delete locked users after 30 days line 439 Model/User.Js
-
-- [ ] Officer log
-
-## Working on
-
-- [ ] Double check graphql permissions
-
-  - [x] Badge schema
-  - [x] Center Schema
-  - [x] Coppa Verify
-  - [x] Flight records
-  - [x] Flight Types
-    - Make sure badge flight type matches the type of the flight record being assigned to the badge
-      badge { flight type }
-  - [x] Flight user records
-  - [ ] user
-  - [ ] stripe
-  - [ ] simulators
-  - [ ] Ranks
-  - [ ] Officer Log
-  - [ ] Messages
-
-    - Can users view their own flight records?
-
-- [ ] Test front-end
-
-## Backlog
-
-## Notes on how to use Firebase Functions
+- [x] Doesn't redirect on logout
+- [x] User object creation not doing sub-profile
+- [ ] Edit Username doesn't autofill -- only on the first time
+- [ ] Random display name button doesn't do anything (until you click done editing)
+- [ ] On login page top right buttons don't navigate
+- [ ] If user over age, adds blank parent email
 
 ### Notes
 

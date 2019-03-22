@@ -88,7 +88,7 @@ module.exports.resolver = {
       return role;
     },
     profile: user => {
-      return { ...user.profile, birthDate: user.birthDate };
+      return { birthDate: user.birthDate, ...user.profile };
     }
   },
   Query: {
@@ -137,11 +137,11 @@ module.exports.resolver = {
       // No user - create it.
       return User.createUser({
         id: user.id,
-        displayName: user.email,
+        birthDate,
         email: user.email,
+        displayName: user.email,
         name: user.email,
         parentEmail,
-        birthDate,
         locked: Boolean(parentEmail)
       });
     },

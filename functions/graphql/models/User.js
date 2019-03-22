@@ -428,12 +428,14 @@ module.exports = class User {
         email,
         parentEmail,
         locked,
-        birthDate,
-        displayName,
-        name,
+        profile: {
+          birthDate,
+          displayName,
+          name,
+          classHours: 0,
+          flightHours: 0
+        },
         registeredDate: new Date(),
-        classHours: 0,
-        flightHours: 0,
         token: tokenGenerator(),
         badges: [],
         roles: []

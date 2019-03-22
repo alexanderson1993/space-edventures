@@ -67,9 +67,9 @@ const Updater = ({ title, value, editMode }) => {
             <Input
               block
               type="text"
-              defaultValue={value}
+              value={newValue}
+              onChange={e => setNewValue(e.target.value)}
               onBlur={e => {
-                setNewValue(e.target.value);
                 action({ variables: { [title]: e.target.value } });
               }}
             />
