@@ -99,7 +99,6 @@ module.exports.resolver = {
     }
   },
   Center: {
-    /* TODO: Add checks to make sure only the director can view this, including if the auth directive works */
     stripeCustomer: (center, args, context) => {
       return Stripe.getCustomer(center.stripeCustomer);
     }

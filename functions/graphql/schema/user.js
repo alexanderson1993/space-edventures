@@ -88,7 +88,7 @@ module.exports.resolver = {
       return role;
     },
     profile: user => {
-      return { ...user.profile, birthDate: user.birthDate };
+      return { birthDate: user.birthDate, ...user.profile };
     }
   },
   Query: {
