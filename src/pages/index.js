@@ -48,7 +48,7 @@ const Splash = ({ data }) => {
           <Words>Join the Space Center community and track your rank!</Words>
         </Header>
         <div>
-          <Link to="/accounts/login">
+          <Link to="/accounts/login?signUp">
             <Button>Join Now</Button>
           </Link>
         </div>

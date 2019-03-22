@@ -1,6 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Blockquote, Loading } from "@arwes/arwes";
-import { Input, Words, Button, Navigator, DatePicker } from "../../components";
+import {
+  Input,
+  Words,
+  Button,
+  Navigator,
+  DatePicker,
+  Link
+} from "../../components";
 import AuthContext from "../../helpers/authContext";
 import styled from "@emotion/styled";
 import AnimateContext from "../../helpers/animateContext";
@@ -25,16 +32,23 @@ const Center = styled("div")`
 const Login = ({ signingUp = false, to = "/", location }) => {
   const {
     login,
-    signUp: signUpMethod,
+    signUp: signUpMethod, // Gets the signUp from the authContext and assigns it to a variable called signUpMethod
     magicLink,
     checkMagicLink = () => {
       return Promise.resolve();
     }
   } = useContext(AuthContext);
   const { hide, reveal } = useContext(AnimateContext);
-  const [signUp, setSignUp] = useState(
-    signingUp || (location && location.search === "?signUp")
-  );
+
+  const defaultSignUp =
+    signingUp || (location && location.search === "?signUp");
+
+  const [signUp, setSignUp] = useState(defaultSignUp);
+
+  if (signUp !== defaultSignUp) {
+    setSignUp(defaultSignUp);
+  }
+
   const [email, setEmail] = useState("");
   const [parentEmail, setParentEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -264,18 +278,20 @@ const Login = ({ signingUp = false, to = "/", location }) => {
                 <Center>
                   <small>‒ OR ‒</small>
                 </Center>
-                <Button
-                  type="button"
-                  block
-                  css={{ marginBottom: "10px" }}
-                  onClick={e => {
-                    e.preventDefault();
-                    setSignUp(!signUp);
-                    setError(null);
-                  }}
-                >
-                  {signUp ? "Login" : "Create Account"}
-                </Button>
+                <Link to={"/accounts/login" + (signUp ? "" : "?signUp")}>
+                  <Button
+                    type="button"
+                    block
+                    css={{ marginBottom: "10px" }}
+                    onClick={e => {
+                      e.preventDefault();
+                      setSignUp(!signUp);
+                      setError(null);
+                    }}
+                  >
+                    {signUp ? "Login" : "Create Account"}
+                  </Button>
+                </Link>
                 {magicLinkAllowed && (
                   <Button
                     type="button"
