@@ -19,10 +19,9 @@ const AuthProvider = ({ children }) => {
       } else {
         client.clearStore();
         setUser(null);
-        navigate("/");
       }
     });
-  }, []);
+  }, [user]);
 
   const actions = {
     login: ({ email, password }) => {
