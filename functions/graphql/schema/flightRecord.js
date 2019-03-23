@@ -68,7 +68,7 @@ module.exports.schema = gql`
   }
 
   extend type Center {
-    flightRecordCount: Int @auth(requires: [director])
+    flightRecordCount: Int @auth(requires: [staff, director])
     flightRecords(limit: Int, skip: Int): [FlightRecord]
       @auth(requires: [director])
   }
