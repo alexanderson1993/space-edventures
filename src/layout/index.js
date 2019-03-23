@@ -70,7 +70,7 @@ const Intro = props => {
       clearTimeout(timeout);
       clearTimeout(otherTimeout);
     };
-  }, [user.loaded, user.loading]);
+  }, [user.loading]);
   return (
     <>
       <PageContent loaded={loaded}>{children}</PageContent>

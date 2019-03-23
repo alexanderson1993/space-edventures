@@ -17,10 +17,6 @@ module.exports.schema = gql`
     # badges: [Badge] # extended in flightRecord
   }
 
-  # Return the flight user records assigned to that logged in user
-  extend type User {
-    flightRecords: [FlightUserRecord]
-  }
   extend type Query {
     flightUserRecord(token: String!): FlightUserRecord
   }

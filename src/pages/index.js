@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import ProfileContext from "../helpers/profileContext";
 import { default as GImg } from "gatsby-image";
 import css from "@emotion/css";
+import UserPage from "../routes/user";
 
 const Header = styled("h1")`
   text-align: center;
@@ -20,23 +21,13 @@ const Section = styled("section")`
     margin-left: 2em;
   }
 `;
+
 const Splash = ({ data }) => {
   const { user } = useContext(ProfileContext);
   if (user && user.email) {
-    return (
-      <Content>
-        <h1>
-          Welcome,{" "}
-          {user.profile
-            ? user.profile.displayName || user.profile.name
-            : user.email}
-        </h1>
-        <Link to="/redeem">
-          <Button>Redeem A Flight</Button>
-        </Link>
-      </Content>
-    );
+    return <UserPage />;
   }
+  if (user.loading) return null;
   const images = data.front.edges.map(d => ({
     ...d.node.childImageSharp.fluid,
     name: d.node.name
