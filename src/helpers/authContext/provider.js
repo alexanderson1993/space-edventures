@@ -17,12 +17,14 @@ const AuthProvider = ({ children }) => {
       if (userObj) {
         setUser(userObj);
       } else {
-        client.resetStore();
+        if (user) {
+          client.resetStore();
+          navigate("/");
+        }
         setUser(null);
-        navigate("/");
       }
     });
-  }, []);
+  }, [user]);
 
   const actions = {
     login: ({ email, password }) => {
