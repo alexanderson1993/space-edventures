@@ -1,5 +1,5 @@
-query Flight {
-  flightUser: me {
+query Flight($id: ID!) {
+  flightUser: me(id: $id) {
     id
     flights(limit: 1) {
       id

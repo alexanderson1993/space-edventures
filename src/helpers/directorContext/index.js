@@ -14,8 +14,11 @@ export const DirectorProvider = ({ children }) => {
       {({ match }) => (
         <Query
           query={CENTER_DIRECTOR}
-          variables={{ centerId: match && match.centerId }}
-          skip={!user}
+          variables={{
+            centerId: match && match.centerId,
+            id: user && user.id
+          }}
+          skip={!user || !user.id}
         >
           {graphQLHelper(({ me }) => (
             <DirectorContext.Provider value={me || {}}>

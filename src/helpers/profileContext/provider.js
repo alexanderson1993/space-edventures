@@ -1,36 +1,29 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext } from "react";
 import ProfileContext from "./";
 import propTypes from "prop-types";
-import { Query } from "react-apollo";
 import ME_QUERY from "../../queries/me.graphql";
 import AuthContext from "../authContext";
+import { useQuery } from "react-apollo-hooks";
 
 const ProfileProvider = ({ children }) => {
-  const { loading, user } = useContext(AuthContext);
-  const result = useCallback(
-    ({ data, loading: queryLoading }) => (
-      <ProfileContext.Provider
-        value={{
-          user: {
-            ...(data ? data.me : {}),
-            profile: data && data.me ? data.me.profile : {},
-            loading:
-              (user && data && !data.me) || (data && data.me && !data.me.id)
-                ? true
-                : loading || queryLoading
-          }
-        }}
-      >
-        {children}
-      </ProfileContext.Provider>
-    ),
-    [children, loading, user]
-  );
-
+  const { loading: authLoading, user } = useContext(AuthContext);
+  const { data = {}, loading } = useQuery(ME_QUERY, {
+    variables: { id: user && user.id },
+    skip: !user || !user.id
+  });
+  const { me } = data;
   return (
-    <Query query={ME_QUERY} skip={!user} variables={{ user: user && user.id }}>
-      {result}
-    </Query>
+    <ProfileContext.Provider
+      value={{
+        user: {
+          ...me,
+          profile: me ? me.profile : {},
+          loading: loading || authLoading
+        }
+      }}
+    >
+      {children}
+    </ProfileContext.Provider>
   );
 };
 

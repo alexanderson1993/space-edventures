@@ -24,14 +24,14 @@ const NavComp = ({ navigate, location, ...props }) => {
   const [error, setError] = useState(null);
   const to =
     (typeof window !== "undefined" &&
-      window.localStorage.getItem("postLoginPath")) ||
+      window.sessionStorage.getItem("postLoginPath")) ||
     "/";
   const completeSignin = useRef(href => {
     completeMagicLinkSignin(href)
       .then(() => {
         navigate(to)(
           typeof window !== "undefined" &&
-            window.localStorage.removeItem("postLoginPath")
+            window.sessionStorage.removeItem("postLoginPath")
         );
       })
       .catch(error => setError(error));

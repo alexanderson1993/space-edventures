@@ -1,0 +1,33 @@
+query Flight($id: ID!, $skip: Int!) {
+  me(id: $id) {
+    id
+    flightCount
+    flights(limit: 10, skip: $skip) {
+      id
+      date
+      badges {
+        id
+        type
+        name
+      }
+      simulator {
+        id
+        name
+      }
+      stationName
+      flightRecord {
+        id
+        center {
+          id
+          name
+        }
+        flightType {
+          id
+          name
+          flightHours
+          classHours
+        }
+      }
+    }
+  }
+}

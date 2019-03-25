@@ -1,5 +1,5 @@
-query Me {
-  me {
+query Me($id: ID!) {
+  me(id: $id) {
     id
     email
     token
