@@ -45,14 +45,6 @@ const Login = ({
   } = useContext(AuthContext);
   const { hide, reveal } = useContext(AnimateContext);
 
-  // const defaultSignUp =
-  //   signingUp || (location && location.search === "?signUp");
-
-  // const [signUp, setSignUp] = useState(defaultSignUp);
-
-  // if (signUp !== defaultSignUp) {
-  //   setSignUp(defaultSignUp);
-  // }
   const signUp = propsLocation && propsLocation.search.includes("?signUp");
 
   const [email, setEmail] = useState("");

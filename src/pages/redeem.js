@@ -14,10 +14,10 @@ const Redeem = ({ location }) => {
   useEffect(() => {
     if (!user.loading && !user.id) {
       typeof window !== "undefined" &&
-        window.localStorage.setItem("postLoginPath", location.href);
+        window.localStorage.setItem("postLoginPath", "/redeem");
       navigate("/accounts/login");
     }
-  }, [location.href, user]);
+  }, [user]);
 
   const { token = "" } = queryString.parse(location.search);
 
