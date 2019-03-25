@@ -83,7 +83,7 @@ module.exports.schema = gql`
     flightRecordCreate(
       thoriumFlightId: ID!
       flightTypeId: ID!
-      centerId: ID!
+      centerId: ID
       simulators: [FlightSimulatorInput!]!
     ): FlightRecord @auth(requires: [center, director])
 
@@ -185,6 +185,7 @@ module.exports.resolver = {
       { thoriumFlightId, flightTypeId, simulators, centerId },
       context
     ) => {
+      centerId = centerId || context.center.id;
       // Make sure this center has this flight type ID
       let flightType = await FlightType.getFlightType(flightTypeId);
       if (!flightType && flightType.spaceCenterId !== centerId) {

@@ -28,7 +28,12 @@ const NavComp = ({ navigate, location, ...props }) => {
     "/";
   const completeSignin = useRef(href => {
     completeMagicLinkSignin(href)
-      .then(() => navigate(to))
+      .then(() => {
+        navigate(to)(
+          typeof window !== "undefined" &&
+            window.localStorage.removeItem("postLoginPath")
+        );
+      })
       .catch(error => setError(error));
   });
   return error ? (

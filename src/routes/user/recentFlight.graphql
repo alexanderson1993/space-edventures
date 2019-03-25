@@ -1,4 +1,4 @@
-query {
+query Flight {
   flightUser: me {
     id
     flights(limit: 1) {

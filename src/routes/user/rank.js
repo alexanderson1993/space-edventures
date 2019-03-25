@@ -25,7 +25,6 @@ const Rank = () => {
               r.flightHours > user.profile.flightHours &&
               r.classHours > user.profile.classHours
           )[0];
-        console.log(nextRank);
         return (
           <>
             <h1

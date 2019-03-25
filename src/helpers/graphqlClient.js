@@ -17,7 +17,7 @@ const uri =
 
 const AuthLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = await auth.currentUser.getIdToken();
+  const token = auth.currentUser && (await auth.currentUser.getIdToken());
   // return the headers to the context so httpLink can read them
   return {
     headers: {

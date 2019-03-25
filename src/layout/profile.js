@@ -45,19 +45,26 @@ const Profile = () => {
         </div>
         <div
           className="profile-extra-frame"
-          style={{ pointerEvents: open ? null : "none" }}
+          css={{ pointerEvents: open ? null : "none" }}
         >
-          <Appear animate show={open} style={{ width: "100%" }}>
+          <Appear animate show={open} css={{ width: "100%" }}>
             <div className="profile-extra">
+              <div>
+                <Link to="/">
+                  <ArwesButton animate show={open} css={{ width: "100%" }}>
+                    Dashboard
+                  </ArwesButton>
+                </Link>
+              </div>
               <Link to="/user/profile">
-                <ArwesButton animate show={open} style={{ width: "100%" }}>
+                <ArwesButton animate show={open} css={{ width: "100%" }}>
                   Profile
                 </ArwesButton>
               </Link>
               {user && user.centers && user.centers.length > 0 && (
                 <div>
                   <Link to="/director">
-                    <ArwesButton animate show={open} style={{ width: "100%" }}>
+                    <ArwesButton animate show={open} css={{ width: "100%" }}>
                       Director Panel
                     </ArwesButton>
                   </Link>
@@ -66,7 +73,7 @@ const Profile = () => {
               <ArwesButton
                 animate
                 show={open}
-                style={{ width: "100%" }}
+                css={{ width: "100%" }}
                 onClick={logout}
               >
                 Logout
@@ -77,11 +84,11 @@ const Profile = () => {
       </div>
     );
   return (
-    <div style={{ display: "flex" }}>
+    <div css={{ display: "flex" }}>
       <Link to="/accounts/login">
         <Button size="sm">Login</Button>
       </Link>{" "}
-      <span style={{ margin: "0 10px" }}>or</span>{" "}
+      <span css={{ margin: "0 10px" }}>or</span>{" "}
       <Link to="/accounts/login?signUp">
         <Button size="sm">Sign Up</Button>
       </Link>
