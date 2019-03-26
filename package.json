@@ -55,6 +55,7 @@
     "gatsby-plugin-sitemap": "^2.0.6",
     "gatsby-plugin-svgr": "^2.0.1",
     "gatsby-source-filesystem": "^2.0.23",
+    "gatsby-source-firebase-firestore": "^1.1.0",
     "gatsby-source-wordpress": "^3.0.43",
     "gatsby-transformer-sharp": "^2.1.15",
     "graphql": "^14.1.1",

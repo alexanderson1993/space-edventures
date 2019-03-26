@@ -75,6 +75,34 @@ module.exports = {
       }
     },
     {
+      resolve: `gatsby-source-firebase-firestore`,
+      options: {
+        // pass you Firebase credentials in here.
+        credential: require("./firebase-credentials.json"),
+        databaseURL: "https://space-edventures-beta.firebaseio.com",
+        // An array of the different Firestore resources you want to make available to Gatsby.
+        types: [
+          {
+            // The TypeName - Will become `FirebaseLike` in Gatsby
+            // *required*
+            type: "Rank",
+            // The path to the resource in your Firestore database
+            // *required*
+            path: "ranks",
+            // Any additional Firestore queries
+            // Default: (ref) => ref
+            // query: ref => ref.limit(50),
+            // Use the map function to transform your nodes however you like.
+            // Default: (node) => node
+            map: node => {
+              node.id = `rank-${node.id}`;
+              return node;
+            }
+          }
+        ]
+      }
+    },
+    {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
         trackingId: "UA-121191437-2",
