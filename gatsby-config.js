@@ -83,17 +83,8 @@ module.exports = {
         // An array of the different Firestore resources you want to make available to Gatsby.
         types: [
           {
-            // The TypeName - Will become `FirebaseLike` in Gatsby
-            // *required*
             type: "Rank",
-            // The path to the resource in your Firestore database
-            // *required*
             path: "ranks",
-            // Any additional Firestore queries
-            // Default: (ref) => ref
-            // query: ref => ref.limit(50),
-            // Use the map function to transform your nodes however you like.
-            // Default: (node) => node
             map: node => {
               node.id = `rank-${node.id}`;
               return node;
@@ -118,7 +109,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-create-client-paths`,
       options: {
-        prefixes: [`/director/*`, `/admin/*`, `/staff/*`]
+        prefixes: [`/director/*`, `/admin/*`, `/staff/*`, `/user/flight/*`]
       }
     }
   ]

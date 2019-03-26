@@ -52,6 +52,13 @@ module.exports = class FlightUserRecord {
   // ===========================================================================
   // Static methods
   // ===========================================================================
+  static async getById(id) {
+    return firestore()
+      .collection(collectionName)
+      .doc(id)
+      .get()
+      .then(doc => doc && new FlightUserRecord({ id: doc.id, ...doc.data() }));
+  }
   static async getByToken(token) {
     return firestore()
       .collection(collectionName)
