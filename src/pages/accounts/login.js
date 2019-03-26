@@ -31,7 +31,7 @@ const Center = styled("div")`
 
 const Login = ({
   to = (typeof window !== "undefined" &&
-    window.localStorage.getItem("postLoginPath")) ||
+    window.sessionStorage.getItem("postLoginPath")) ||
     "/",
   location: propsLocation
 }) => {
@@ -120,7 +120,7 @@ const Login = ({
     if (checkError("magic")) {
       setLoading(true);
       typeof window !== "undefined" &&
-        localStorage.setItem("postLoginPath", to);
+        window.sessionStorage.setItem("postLoginPath", to);
       magicLink({ email })
         .then(() => navigate(`/accounts/sentMagicLink?email=${email}`))
         .catch(error => {
@@ -139,9 +139,9 @@ const Login = ({
       setLoading(true);
       method({ email, password, birthDate, parentEmail })
         .then(() => {
-          navigate(to);
           typeof window !== "undefined" &&
-            window.localStorage.removeItem("postLoginPath");
+            window.sessionStorage.removeItem("postLoginPath");
+          navigate(to);
         })
         .catch(error => {
           setError({

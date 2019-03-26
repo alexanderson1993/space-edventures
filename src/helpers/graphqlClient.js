@@ -4,9 +4,14 @@ import { onError } from "apollo-link-error";
 import { setContext } from "apollo-link-context";
 import { ApolloLink } from "apollo-link";
 import { createUploadLink } from "apollo-upload-client";
+import { ApolloProvider } from "react-apollo";
+import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
+
 import fetch from "isomorphic-fetch";
 
 import { auth } from "./firebase";
+import React, { useContext } from "react";
+import AuthContext from "./authContext";
 
 const uri =
   process.env.NODE_ENV === "production"
@@ -17,14 +22,18 @@ const uri =
 
 const AuthLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = auth.currentUser && (await auth.currentUser.getIdToken());
-  // return the headers to the context so httpLink can read them
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : ""
-    }
-  };
+  try {
+    const token = await auth.currentUser.getIdToken();
+    // return the headers to the context so httpLink can read them
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : ""
+      }
+    };
+  } catch (err) {
+    return headers;
+  }
 });
 
 const ErrorLink = onError(({ graphQLErrors, networkError }) => {
@@ -42,10 +51,19 @@ const DataLink = createUploadLink({
   credentials: "same-origin"
 });
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   link: ApolloLink.from([AuthLink, ErrorLink, DataLink]),
   cache: new InMemoryCache(),
   fetch: typeof window !== "undefined" ? window.fetch : fetch
 });
 
-export default client;
+export default ({ children }) => {
+  const { loading } = useContext(AuthContext);
+  if (!loading)
+    return (
+      <ApolloProvider client={client}>
+        <ApolloHooksProvider client={client}>{children}</ApolloHooksProvider>
+      </ApolloProvider>
+    );
+  return null;
+};

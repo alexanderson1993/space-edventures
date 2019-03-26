@@ -1,5 +1,5 @@
-query CenterDirector($centerId: ID) {
-  me {
+query CenterDirector($centerId: ID, $id: ID!) {
+  me(id: $id) {
     id
     roles(centerId: $centerId)
     centers {

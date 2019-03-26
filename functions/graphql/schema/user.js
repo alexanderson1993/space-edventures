@@ -8,7 +8,7 @@ let User = require("../models/User");
 
 module.exports.schema = gql`
   extend type Query {
-    me: User
+    me(id: ID!): User
     user(id: ID, email: String): User @auth(requires: [self, admin, director])
 
     userGetRank(id: String!, centerId: ID!): User
@@ -92,7 +92,8 @@ module.exports.resolver = {
     }
   },
   Query: {
-    me: (_, __, context) => context.user,
+    me: (_, { id }, context) =>
+      context.user && context.user.id === id ? context.user : null,
     user: (_, { id }, context) => {
       return User.getUserById(id);
     },

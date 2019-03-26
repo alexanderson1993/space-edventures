@@ -2,12 +2,19 @@ import React, { useEffect, useReducer } from "react";
 import AuthContext from "./";
 import propTypes from "prop-types";
 import { auth, baseAuth } from "../../helpers/firebase";
-import client from "../../helpers/graphqlClient";
+import { client } from "../../helpers/graphqlClient";
 import CREATE_USER from "./createUser.graphql";
 
 function reducer({ loading, user }, action) {
+  console.log(action.type);
   if (action.type === "gotUser") {
-    return { loading: false, user: action.user };
+    return {
+      loading: false,
+      user: {
+        ...auth.currentUser,
+        id: auth.currentUser && auth.currentUser.uid
+      }
+    };
   }
   if (action.type === "logout") {
     return { loading: false, user: null };
@@ -19,18 +26,16 @@ const AuthProvider = ({ children }) => {
     loading: true,
     user: null
   });
-
   // Update the user state whenever the Firebase auth status changes
   useEffect(() => {
     auth.onAuthStateChanged(userObj => {
       if (userObj) {
-        dispatch({ type: "gotUser", user: userObj });
+        dispatch({ type: "gotUser" });
       } else {
-        client.clearStore();
         dispatch({ type: "logout" });
       }
     });
-  }, [user]);
+  }, []);
 
   const actions = {
     login: ({ email, password }) => {

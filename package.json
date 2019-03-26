@@ -67,6 +67,7 @@
     "random-ship-names": "^1.0.0",
     "react": "^16.8.2",
     "react-apollo": "^2.4.1",
+    "react-apollo-hooks": "^0.4.4",
     "react-date-picker": "^7.2.0",
     "react-dom": "^16.8.2",
     "react-google-maps": "^9.4.5",

@@ -49,6 +49,7 @@ module.exports.schema = gql`
   }
 
   extend type User {
+    flightCount: Int @auth(requires: [self, director])
     flights(limit: Int, skip: Int): [FlightUserRecord]
       @auth(requires: [authenticated, self, director])
   }
@@ -312,6 +313,10 @@ module.exports.resolver = {
   },
 
   User: {
+    flightCount: async user => {
+      return (await FlightUserRecord.getFlightUserRecordsByUser(user.id))
+        .length;
+    },
     flights: (user, { limit, skip }, context) => {
       return FlightUserRecord.getFlightUserRecordsByUser(user.id, limit, skip);
     }

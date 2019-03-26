@@ -14,7 +14,7 @@ const Redeem = ({ location }) => {
   useEffect(() => {
     if (!user.loading && !user.id) {
       typeof window !== "undefined" &&
-        window.localStorage.setItem("postLoginPath", "/redeem");
+        window.sessionStorage.setItem("postLoginPath", "/redeem");
       navigate("/accounts/login");
     }
   }, [user]);

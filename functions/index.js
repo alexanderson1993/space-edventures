@@ -12,4 +12,4 @@ const server = configureServer();
 
 // create and export the api
 exports.api = functions.https.onRequest(server);
-exports.manageDatabase = functions.https.onRequest(manageDatabase);
+// exports.manageDatabase = functions.https.onRequest(manageDatabase);

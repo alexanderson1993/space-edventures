@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import RECENT_FLIGHT from "./recentFlight.graphql";
 import graphQLHelper from "../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import styled from "@emotion/styled";
 import css from "@emotion/css";
 import { Button, Link } from "../../components";
+import AuthContext from "../../helpers/authContext";
 
 const GridContainer = styled("div")`
   display: flex;
@@ -24,8 +25,9 @@ const GridItem = styled("div")`
   }
 `;
 const RecentFlight = () => {
+  const { user } = useContext(AuthContext);
   return (
-    <Query query={RECENT_FLIGHT}>
+    <Query query={RECENT_FLIGHT} variables={{ id: user.id }}>
       {graphQLHelper(({ flightUser: { flights: [flight] } }) =>
         flight ? (
           <GridContainer>
