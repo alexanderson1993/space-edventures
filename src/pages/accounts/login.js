@@ -29,7 +29,12 @@ const Center = styled("div")`
   text-align: center;
 `;
 
-const Login = ({ signingUp = false, to = "/", location: propsLocation }) => {
+const Login = ({
+  to = (typeof window !== "undefined" &&
+    window.localStorage.getItem("postLoginPath")) ||
+    "/",
+  location: propsLocation
+}) => {
   const {
     login,
     signUp: signUpMethod, // Gets the signUp from the authContext and assigns it to a variable called signUpMethod
@@ -40,14 +45,6 @@ const Login = ({ signingUp = false, to = "/", location: propsLocation }) => {
   } = useContext(AuthContext);
   const { hide, reveal } = useContext(AnimateContext);
 
-  // const defaultSignUp =
-  //   signingUp || (location && location.search === "?signUp");
-
-  // const [signUp, setSignUp] = useState(defaultSignUp);
-
-  // if (signUp !== defaultSignUp) {
-  //   setSignUp(defaultSignUp);
-  // }
   const signUp = propsLocation && propsLocation.search.includes("?signUp");
 
   const [email, setEmail] = useState("");
@@ -143,6 +140,8 @@ const Login = ({ signingUp = false, to = "/", location: propsLocation }) => {
       method({ email, password, birthDate, parentEmail })
         .then(() => {
           navigate(to);
+          typeof window !== "undefined" &&
+            window.localStorage.removeItem("postLoginPath");
         })
         .catch(error => {
           setError({

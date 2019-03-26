@@ -4,7 +4,7 @@ import graphQLHelper from "../../helpers/graphQLHelper";
 import { Query } from "react-apollo";
 import styled from "@emotion/styled";
 import css from "@emotion/css";
-import { Button } from "../../components";
+import { Button, Link } from "../../components";
 
 const GridContainer = styled("div")`
   display: flex;
@@ -67,7 +67,9 @@ const RecentFlight = () => {
             `}
           >
             <h1>No Recent Flight</h1>
-            <Button>Redeem a Flight</Button>
+            <Link to="/redeem">
+              <Button>Redeem a Flight</Button>
+            </Link>
           </div>
         )
       )}

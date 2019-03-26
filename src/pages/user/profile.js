@@ -147,34 +147,6 @@ const Profile = () => {
               {editMode ? "Done Editing" : "Edit Profile"}
             </Button>
           </UserData>
-          <History>
-            <div>
-              <h2>History</h2>
-
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Center</th>
-                    <th>Simulator</th>
-                    <th>Station</th>
-                    <th>Mission</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* {user.history.map(h => (
-                <tr key={h.id}>
-                  <td>{h.date.toLocaleDateString()}</td>
-                  <td>{h.center}</td>
-                  <td>{h.simulator}</td>
-                  <td>{h.station}</td>
-                  <td>{h.mission}</td>
-                </tr>
-              ))} */}
-                </tbody>
-              </Table>
-            </div>
-          </History>
           <Modal show={editPicture} onCancel={() => setEditPicture(false)}>
             <div
               css={css`

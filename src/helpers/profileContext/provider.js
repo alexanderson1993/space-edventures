@@ -14,14 +14,17 @@ const ProfileProvider = ({ children }) => {
           user: {
             ...(data ? data.me : {}),
             profile: data && data.me ? data.me.profile : {},
-            loading: data ? false : loading || queryLoading
+            loading:
+              (user && data && !data.me) || (data && data.me && !data.me.id)
+                ? true
+                : loading || queryLoading
           }
         }}
       >
         {children}
       </ProfileContext.Provider>
     ),
-    [children, loading]
+    [children, loading, user]
   );
 
   return (

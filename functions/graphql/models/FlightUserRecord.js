@@ -96,9 +96,9 @@ module.exports = class FlightUserRecord {
       simulatorId,
       badges,
       logs,
-      email,
       date: new Date()
     };
+    if (email) data.email = email;
     if (typeof userId !== "undefined") {
       data.userId = userId;
     }

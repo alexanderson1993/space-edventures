@@ -79,7 +79,6 @@ const ContentBox = ({ title, className, action, callToAction, children }) => {
 
 const UserPage = () => {
   const { user } = useContext(ProfileContext);
-  console.log(user);
   return (
     <Content>
       <h1>

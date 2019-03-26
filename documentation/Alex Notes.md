@@ -9,3 +9,4 @@
 - [ ] Add a ranks page
 - [ ] Add a flights page
 - [ ] Add a Officer Log page
+- [x] Make the redeem page redirect to login if the user isn't logged in

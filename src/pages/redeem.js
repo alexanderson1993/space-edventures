@@ -1,13 +1,24 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect, useContext } from "react";
 import { Content, Button, Input, Words } from "../components";
 import queryString from "query-string";
 import { Mutation } from "react-apollo";
 import REDEEM_FLIGHT from "../queries/redeemFlight.graphql";
 import { Loading, Blockquote } from "@arwes/arwes";
+import { navigate } from "gatsby";
+import ProfileContext from "../helpers/profileContext";
 
 const QrScanner = React.lazy(() => import("../components/QrScanner"));
 
 const Redeem = ({ location }) => {
+  const { user } = useContext(ProfileContext);
+  useEffect(() => {
+    if (!user.loading && !user.id) {
+      typeof window !== "undefined" &&
+        window.localStorage.setItem("postLoginPath", "/redeem");
+      navigate("/accounts/login");
+    }
+  }, [user]);
+
   const { token = "" } = queryString.parse(location.search);
 
   const [showScanner, setShowScanner] = useState(false);
