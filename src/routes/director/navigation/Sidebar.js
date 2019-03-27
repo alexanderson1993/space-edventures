@@ -12,7 +12,8 @@ import {
   FaTrafficLight,
   FaSignOutAlt,
   FaUsers,
-  FaSearch
+  FaSearch,
+  FaRing
 } from "react-icons/fa";
 import { Link, Auth } from "../../../components";
 import { CenterContext } from "../../../pages/director";
@@ -69,6 +70,12 @@ const sidebarLinks = [
     label: "Rank Check",
     icon: FaSearch,
     url: "/rankCheck",
+    roles: ["staff", "director"]
+  },
+  {
+    label: "Flight Assign",
+    icon: FaRing,
+    url: "/flightAssign",
     roles: ["staff", "director"]
   },
   {

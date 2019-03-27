@@ -68,35 +68,41 @@ module.exports = class FlightUserRecord {
       .then(doc => doc && new FlightUserRecord({ id: doc.id, ...doc.data() }));
   }
 
-  static createFlightUserRecordsFromFlightRecord(flightRecord) {
+  static createFlightUserRecordsFromFlightRecord(flightRecord, silent) {
     return Promise.all(
       flightRecord.simulators.map(sim =>
         sim.stations.map(station =>
-          this.createFlightUserRecord({
-            simulatorId: sim.simulatorId,
-            token: station.token,
-            userId: station.userId,
-            email: station.email,
-            stationName: station.name,
-            flightRecordId: flightRecord.id,
-            badges: station.badges,
-            logs: station.logs || []
-          })
+          this.createFlightUserRecord(
+            {
+              simulatorId: sim.simulatorId,
+              token: station.token,
+              userId: station.userId,
+              email: station.email,
+              stationName: station.name,
+              flightRecordId: flightRecord.id,
+              badges: station.badges,
+              logs: station.logs || []
+            },
+            silent
+          )
         )
       )
     );
   }
 
-  static async createFlightUserRecord({
-    simulatorId,
-    token,
-    userId,
-    stationName,
-    flightRecordId,
-    badges,
-    logs,
-    email
-  }) {
+  static async createFlightUserRecord(
+    {
+      simulatorId,
+      token,
+      userId,
+      stationName,
+      flightRecordId,
+      badges,
+      logs,
+      email
+    },
+    silent
+  ) {
     let data = {
       stationName,
       flightRecordId,
@@ -125,30 +131,33 @@ module.exports = class FlightUserRecord {
     const badgeRecords = await badgeLoader.loadMany(badges);
     const flightRecord = await flightRecordLoader.load(flightRecordId);
     const flightType = await flightTypeLoader.load(flightRecord.flightTypeId);
-    if (data.userId) {
-      // Send a congratulatory email
-      const user = await User.getUserById(data.userId);
-      if (user) {
+
+    if (!silent) {
+      if (data.userId) {
+        // Send a congratulatory email
+        const user = await User.getUserById(data.userId);
+        if (user) {
+          emailTransport.sendMail({
+            from: `"Space EdVentures" hello@spaceedventures.org`,
+            to: user.email,
+            subject: "Your flight has been recorded",
+            html: congrats({
+              ...data,
+              simulator,
+              badges: badgeRecords,
+              flightType
+            })
+          });
+        }
+      } else if (data.email && data.token) {
+        // Send an email with the token
         emailTransport.sendMail({
           from: `"Space EdVentures" hello@spaceedventures.org`,
-          to: user.email,
-          subject: "Your flight has been recorded",
-          html: congrats({
-            ...data,
-            simulator,
-            badges: badgeRecords,
-            flightType
-          })
+          to: data.email,
+          subject: "Redeem your SpaceEdventures Flight",
+          html: redeem({ ...data, simulator, badges: badgeRecords, flightType })
         });
       }
-    } else if (data.email && data.token) {
-      // Send an email with the token
-      emailTransport.sendMail({
-        from: `"Space EdVentures" hello@spaceedventures.org`,
-        to: data.email,
-        subject: "Redeem your SpaceEdventures Flight",
-        html: redeem({ ...data, simulator, badges: badgeRecords, flightType })
-      });
     }
     // Clear out some loaders so we don't have a stale cache
     if (data.userId) {

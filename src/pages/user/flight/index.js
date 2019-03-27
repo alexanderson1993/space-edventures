@@ -47,7 +47,6 @@ const FlightRecord = ({ id }) => {
   );
 };
 const Flight = props => {
-  console.log(props);
   return (
     <Match path="/user/flight/:flightId">
       {({ match: { flightId } }) => <FlightRecord id={flightId} />}

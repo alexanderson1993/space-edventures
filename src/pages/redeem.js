@@ -6,6 +6,7 @@ import REDEEM_FLIGHT from "../queries/redeemFlight.graphql";
 import { Loading, Blockquote } from "@arwes/arwes";
 import { navigate } from "gatsby";
 import ProfileContext from "../helpers/profileContext";
+import ME_QUERY from "../queries/me.graphql";
 
 const QrScanner = React.lazy(() => import("../components/QrScanner"));
 
@@ -24,7 +25,16 @@ const Redeem = ({ location }) => {
   const [showScanner, setShowScanner] = useState(false);
   const [code, setCode] = useState(token);
   return (
-    <Mutation mutation={REDEEM_FLIGHT} variables={{ token: code }}>
+    <Mutation
+      mutation={REDEEM_FLIGHT}
+      variables={{ token: code }}
+      refetchQueries={[
+        {
+          query: ME_QUERY,
+          variables: { id: user && user.id }
+        }
+      ]}
+    >
       {(action, { loading, error, data }) => {
         if (loading)
           return (
