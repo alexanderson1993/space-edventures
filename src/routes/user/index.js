@@ -6,6 +6,7 @@ import css from "@emotion/css";
 import styled from "@emotion/styled";
 import { Frame } from "@arwes/arwes";
 import Rank from "./rank";
+import OfficerLog from "./logs";
 const MapComponent = lazy(() => import("./map"));
 const RecentFlight = lazy(() => import("./recentFlight"));
 
@@ -137,7 +138,9 @@ const UserPage = () => {
           title="Officer Log Entries"
           callToAction="See All Entries"
           action="/user/officerLog"
-        />
+        >
+          <OfficerLog />
+        </ContentBox>
         <ContentBox title="Recommended Missions" />
         <ContentBox
           title="Track Your Progress"

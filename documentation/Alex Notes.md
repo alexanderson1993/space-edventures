@@ -6,7 +6,8 @@
 - [x] Clean up the queries in Thorium so it isn't reloading every render
 - [x] Make it possible to add extra crew to a Thorium space edventures flight, like the captain/admiral
 - [x] Make sure user accounts are truly locked during COPPA verification
-- [ ] Add a ranks page
-- [ ] Add a flights page
-- [ ] Add a Officer Log page
+- [x] Add a ranks page
+- [x] Add a flights page
+- [x] Add a Officer Log page
+- [ ] Add pagination to the officer log page
 - [x] Make the redeem page redirect to login if the user isn't logged in

@@ -21,11 +21,14 @@ module.exports = function congrats({
 </p><p><b>Class Hours: </b>${flightType.classHours}
 </p><p><b>Simulator: </b>${simulator.name}
 </p><p><b>Station: </b>${stationName}
-${mission && `</p><p><b>Mission: </b>${mission.name}`}
-${regularBadges.length > 0 &&
-  `</p><p><b>Badges:</b> <ul>${regularBadges
-    .map(b => `<li>${b.name}</li>`)
-    .join("")}</ul>`}
+${mission ? `</p><p><b>Mission: </b>${mission.name}` : ""}
+${
+  regularBadges.length > 0
+    ? `</p><p><b>Badges:</b> <ul>${regularBadges
+        .map(b => `<li>${b.name}</li>`)
+        .join("")}</ul>`
+    : ""
+}
 
 </p><p>Check out your new <a href="https://spaceedventures.org/user/certificate">rank certificate.</a>
 

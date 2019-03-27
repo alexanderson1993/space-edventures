@@ -1,0 +1,13 @@
+query GetLogs($id: ID!) {
+  me(id: $id) {
+    id
+    logs {
+      id
+      date
+      log
+      flight {
+        id
+      }
+    }
+  }
+}

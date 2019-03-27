@@ -18,7 +18,7 @@ module.exports.schema = gql`
   }
 
   extend type Query {
-    flightUserRecord(token: String!): FlightUserRecord
+    flightUserRecord(token: String, id: ID): FlightUserRecord
   }
 `;
 
@@ -27,8 +27,16 @@ module.exports.schema = gql`
 // deep merged with the other resolvers.
 module.exports.resolver = {
   Query: {
-    flightUserRecord(rootQuery, { token }) {
-      return FlightUserRecord.getByToken(token);
+    async flightUserRecord(rootQuery, { token, id }) {
+      if (token) {
+        return FlightUserRecord.getByToken(token);
+      }
+      if (id) {
+        // Remove sensitive information
+        const { token, userId, ...record } = await FlightUserRecord.getById(id);
+        return record;
+      }
+      return null;
     }
   }
 };
