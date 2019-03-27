@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import styled from "@emotion/styled";
 import css from "@emotion/css";
-import { Button, ImageUploader, Input, Auth } from "../../../components";
+import { Button, ImageUploader, Input, Auth, Image } from "../../../components";
 import UPDATE_NAME from "./updateName.graphql";
 import UPDATE_DESCRIPTION from "./updateDescription.graphql";
 import UPDATE_WEBSITE from "./updateWebsite.graphql";
@@ -157,7 +157,7 @@ const Website = ({ id, website: centerWebsite, editMode }) => {
   );
 };
 
-const Image = ({ id, name, imageUrl, editMode }) => {
+const ImageContainer = ({ id, name, imageUrl, editMode }) => {
   return (
     <Mutation
       mutation={UPDATE_IMAGE}
@@ -181,6 +181,19 @@ const Image = ({ id, name, imageUrl, editMode }) => {
           <>
             <h3>Image</h3>
 
+            {/* If they are not in edit mode */}
+            {!editMode && (
+              <div
+                css={css`
+                  width: 300px;
+                  height: 300px;
+                `}
+              >
+                <Image src={imageUrl} alt={name} />
+              </div>
+            )}
+
+            {/* If they are in edit mode */}
             {editMode && (
               <div
                 css={css`
@@ -224,7 +237,7 @@ const Dashboard = () => {
         </Button>
       </Auth>
       <Description {...center} editMode={editMode} />
-      <Image {...center} editMode={editMode} />
+      <ImageContainer {...center} editMode={editMode} />
       <Website {...center} editMode={editMode} />
       <div
         css={css`
