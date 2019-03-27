@@ -86,6 +86,10 @@ module.exports.schema = gql`
       flightTypeId: ID!
       centerId: ID
       simulators: [FlightSimulatorInput!]!
+      """
+      Don't send emails when creating this flight
+      """
+      silent: Boolean
     ): FlightRecord @auth(requires: [center, director])
 
     flightClaim(token: String!): FlightUserRecord
@@ -183,7 +187,7 @@ module.exports.resolver = {
      */
     flightRecordCreate: async (
       rootQuery,
-      { thoriumFlightId, flightTypeId, simulators, centerId },
+      { thoriumFlightId, flightTypeId, simulators, centerId, silent },
       context
     ) => {
       centerId = centerId || context.center.id;
@@ -247,7 +251,10 @@ module.exports.resolver = {
       );
 
       // Also create the flight user record (to help when querying based on user/token)
-      await FlightUserRecord.createFlightUserRecordsFromFlightRecord(record);
+      await FlightUserRecord.createFlightUserRecordsFromFlightRecord(
+        record,
+        silent
+      );
 
       return record;
     },
@@ -317,8 +324,14 @@ module.exports.resolver = {
       return (await FlightUserRecord.getFlightUserRecordsByUser(user.id))
         .length;
     },
-    flights: (user, { limit, skip }, context) => {
-      return FlightUserRecord.getFlightUserRecordsByUser(user.id, limit, skip);
+    flights: async (user, { limit, skip }, context) => {
+      const flights = await FlightUserRecord.getFlightUserRecordsByUser(
+        user.id,
+        limit,
+        skip
+      );
+      console.log(flights);
+      return flights;
     }
   },
 

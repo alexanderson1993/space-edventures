@@ -126,7 +126,6 @@ class AuthDirective extends SchemaDirectiveVisitor {
           user &&
           (user.hasOneOfRoles(requiredRoles, queryArgs.centerId) ||
             user.hasOneOfRoles(requiredRoles, data.centerId));
-
         // the field has required roles and the user does not have one of those roles
         // Since roles only apply in the context of centers, it is based on the center ID
         if (requiredRoles && !userHasAccess) {

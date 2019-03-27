@@ -6,7 +6,6 @@ import { client } from "../../helpers/graphqlClient";
 import CREATE_USER from "./createUser.graphql";
 
 function reducer({ loading, user }, action) {
-  console.log(action.type);
   if (action.type === "gotUser") {
     return {
       loading: false,

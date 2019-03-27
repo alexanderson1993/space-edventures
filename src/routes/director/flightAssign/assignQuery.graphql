@@ -1,0 +1,22 @@
+query AssignQuery($centerId: ID!) {
+  simulators(centerId: $centerId) {
+    id
+    name
+  }
+  missions: badges(centerId: $centerId, type: mission) {
+    id
+    type
+    name
+  }
+  badges(centerId: $centerId, type: badge) {
+    id
+    type
+    name
+  }
+  flightTypes(centerId: $centerId) {
+    id
+    name
+    flightHours
+    classHours
+  }
+}

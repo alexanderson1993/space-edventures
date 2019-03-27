@@ -32,7 +32,7 @@ module.exports.schema = gql`
     userChangeProfilePicture(id: ID, picture: Upload!): User
   }
 
-  type Profile @auth(requires: [self, admin]) {
+  type Profile @auth(requires: [self, staff, director, admin]) {
     age: Int
     name: String @auth(requires: [self, director, authenticated, center])
     # rank: String
@@ -46,7 +46,7 @@ module.exports.schema = gql`
     id: ID!
     email: String
     username: String @auth(requires: [self])
-    profile: Profile
+    profile(centerId: ID): Profile
     registeredDate: Date
     locked: Boolean
     token: String
@@ -87,8 +87,8 @@ module.exports.resolver = {
       if (user.isAdmin) role = "admin";
       return role;
     },
-    profile: user => {
-      return { birthDate: user.birthDate, ...user.profile };
+    profile: (user, { centerId }) => {
+      return { birthDate: user.birthDate, ...user.profile, centerId };
     }
   },
   Query: {
