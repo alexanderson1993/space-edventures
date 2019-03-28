@@ -36,6 +36,7 @@ const AuthLink = setContext(async (_, { headers }) => {
   }
 });
 
+// TODO: Add sentry event tracking to this when Sentry eventually gets added.
 const ErrorLink = onError(({ graphQLErrors, networkError }) => {
   // if (graphQLErrors)
   //   graphQLErrors.map(({ message, locations, path }) =>
