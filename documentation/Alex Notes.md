@@ -9,5 +9,7 @@
 - [x] Add a ranks page
 - [x] Add a flights page
 - [x] Add a Officer Log page
-- [ ] Add pagination to the officer log page
 - [x] Make the redeem page redirect to login if the user isn't logged in
+- [ ] Add pagination to the officer log page
+- [ ] Add pagination to the director flights page
+- [ ] Add filtering & searching to the director flights page
