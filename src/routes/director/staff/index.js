@@ -41,7 +41,11 @@ const Staff = () => {
               <>
                 <Button
                   disabled={loading || !email}
-                  onClick={() => action().then(() => setEmail(""))}
+                  onClick={() =>
+                    action()
+                      .then(() => setEmail(""))
+                      .catch(e => e)
+                  }
                 >
                   {loading ? "Adding user..." : "Add User"}
                 </Button>
