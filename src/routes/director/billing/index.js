@@ -178,7 +178,10 @@ export default () => {
                                                 token: token.id,
                                                 centerId: center.id
                                               }
-                                            }).then(() => setToken(null))
+                                            }).then(() => {
+                                              setToken(null);
+                                              setPayment(false);
+                                            })
                                           }
                                         >
                                           Complete Payment Update
