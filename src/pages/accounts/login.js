@@ -29,6 +29,12 @@ const Center = styled("div")`
   text-align: center;
 `;
 
+function diffYears(dt2, dt1) {
+  var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+  diff /= 60 * 60 * 24;
+  return Math.abs(Math.round(diff / 365.25));
+}
+
 const Login = ({
   to = (typeof window !== "undefined" &&
     window.sessionStorage.getItem("postLoginPath")) ||
@@ -90,10 +96,7 @@ const Login = ({
       });
       return false;
     }
-    if (
-      !needsVerification &&
-      new Date().getFullYear() - birthDate.getFullYear() < 13
-    ) {
+    if (!needsVerification && diffYears(new Date(), birthDate) < 13) {
       // The user is under 13. Do additional verification.
       hide();
       setTimeout(() => {

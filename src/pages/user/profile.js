@@ -43,13 +43,6 @@ const UserData = styled("div")`
 `;
 const Label = styled("label")``;
 const FormGroup = styled("div")``;
-const History = styled("div")`
-  grid-area: history;
-`;
-const Table = styled("table")`
-  width: 100%;
-`;
-
 const Updater = ({ title, value, editMode }) => {
   const [newValue, setNewValue] = useState(value);
   const [pirate, setPirate] = useState(false);

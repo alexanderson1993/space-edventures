@@ -20,7 +20,7 @@ const childConsent = require("../emails/childConsent");
 const parentReverify = require("../emails/parentReverify");
 const tokenGenerator = require("../helpers/tokenGenerator");
 const randomName = require("random-ship-names");
-
+const validateEmail = require("../helpers/validateEmail");
 const collectionName = "users";
 module.exports = class User {
   /**
@@ -421,6 +421,24 @@ module.exports = class User {
     parentEmail,
     locked
   }) {
+    function diffYears(dt2, dt1) {
+      var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+      diff /= 60 * 60 * 24;
+      return Math.abs(Math.round(diff / 365.25));
+    }
+    if (diffYears(new Date(), new Date(birthDate)) < 13) {
+      // TODO: Add a process to delete locked users after 30 days
+      if (!parentEmail || !validateEmail(parentEmail)) {
+        throw new Error("Invalid parent email.");
+      }
+      // Handle sending emails for parental permission.
+      const message = await emailTransport.sendMail({
+        from: `"Space EdVentures" hello@spaceedventures.org`,
+        to: parentEmail,
+        subject: "Your Child Registered at SpaceEdVentures.org",
+        html: parentVerify({ id, email })
+      });
+    }
     const user = await firestore()
       .collection("users")
       .doc(id)
@@ -440,17 +458,6 @@ module.exports = class User {
         badges: [],
         roles: []
       });
-
-    // TODO: Add a process to delete locked users after 30 days
-    if (parentEmail) {
-      // Handle sending emails for parental permission.
-      const message = await emailTransport.sendMail({
-        from: `"Space EdVentures" hello@spaceedventures.org`,
-        to: parentEmail,
-        subject: "Your Child Registered at SpaceEdVentures.org",
-        html: parentVerify({ id, email })
-      });
-    }
 
     return firestore()
       .collection("users")
