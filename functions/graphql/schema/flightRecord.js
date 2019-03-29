@@ -330,7 +330,6 @@ module.exports.resolver = {
         limit,
         skip
       );
-      console.log(flights);
       return flights;
     }
   },

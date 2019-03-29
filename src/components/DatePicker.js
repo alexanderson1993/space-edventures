@@ -21,10 +21,10 @@ const DatePickerComp = ({ theme, ...props }) => {
       width: 100%;
     }
     .react-calendar {
-      bottom: 0;
+      top: -350px;
       position: absolute;
       border: solid 1px ${theme.color.primary.base};
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.9);
       * {
         color: ${theme.color.primary.base};
       }

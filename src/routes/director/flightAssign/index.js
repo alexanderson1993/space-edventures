@@ -100,7 +100,7 @@ const Picker = ({ userId, data, values, dispatch }) => {
           <Button
             block
             key={f.id}
-            disabled={console.log(f.id, mission) || f.id === mission}
+            disabled={f.id === mission}
             onClick={() => dispatch({ type: "setMission", value: f.id })}
           >
             {f.name}
@@ -143,7 +143,6 @@ const FlightAssign = () => {
   const [qr, setQr] = useState(false);
 
   const [values, dispatch] = useReducer(pickerReducer, {});
-  console.log("Values", values);
   const center = useContext(CenterContext);
   const client = useApolloClient();
 

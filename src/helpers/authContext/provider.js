@@ -4,6 +4,7 @@ import propTypes from "prop-types";
 import { auth, baseAuth } from "../../helpers/firebase";
 import { client } from "../../helpers/graphqlClient";
 import CREATE_USER from "./createUser.graphql";
+import ME_QUERY from "../../queries/me.graphql";
 
 function reducer({ loading, user }, action) {
   if (action.type === "gotUser") {
@@ -48,7 +49,10 @@ const AuthProvider = ({ children }) => {
           return client
             .mutate({
               mutation: CREATE_USER,
-              variables: { birthDate, parentEmail }
+              variables: { birthDate, parentEmail },
+              refetchQueries: [
+                { query: ME_QUERY, variables: { id: res.user.uid } }
+              ]
             })
             .catch(() => {});
         }
