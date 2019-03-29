@@ -99,6 +99,7 @@ const Updater = ({ title, value, editMode }) => {
 };
 const Profile = () => {
   const { user } = useContext(ProfileContext);
+  const [loadingPicture, setLoadingPicture] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editPicture, setEditPicture] = useState(false);
   if (user)
@@ -111,10 +112,16 @@ const Profile = () => {
             <Words>Profile</Words>
           </Header>
           <ProfilePictureGrid>
-            <ProfilePicture />
-            <Button onClick={() => setEditPicture(true)}>
-              Edit Profile Picture
-            </Button>
+            {loadingPicture ? (
+              <Loading />
+            ) : (
+              <>
+                <ProfilePicture />
+                <Button onClick={() => setEditPicture(true)}>
+                  Edit Profile Picture
+                </Button>
+              </>
+            )}
           </ProfilePictureGrid>
           <UserData>
             <Updater
@@ -154,8 +161,11 @@ const Profile = () => {
                   <ImageUploader
                     onChange={image => {
                       setEditPicture(false);
+                      setLoadingPicture(true);
                       const picture = dataURItoBlob(image);
-                      action({ variables: { picture } });
+                      action({ variables: { picture } }).then(res => {
+                        setLoadingPicture(false);
+                      });
                     }}
                   />
                 )}

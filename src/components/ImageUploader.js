@@ -27,19 +27,54 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
     // Lazy-load the load-image function.
     const { default: loadImage } = await loadImagePromise;
     loadImage(file, img => {
+      const width = 1000;
+      const scaleFactor = width / img.width;
+      const aspectRatio = img.width / img.height;
       // It provides the image as a <img> element - convert it to dataURL
       const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
+      canvas.width = width;
+      canvas.height = img.height * scaleFactor;
       var context = canvas.getContext("2d");
-      context.drawImage(img, 0, 0);
-      var dataUrl = canvas.toDataURL();
-
+      context.drawImage(img, 0, 0, width, img.height * scaleFactor);
+      var dataUrl = canvas.toDataURL("image/jpeg");
       setImage(dataUrl);
-      setCroppedImage(null);
+
+      // Do a pre-crop
+      const cropCanvas = document.createElement("canvas");
+      cropCanvas.width = width;
+      cropCanvas.height = width;
+      const ctx = cropCanvas.getContext("2d");
+      if (aspectRatio > 1) {
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          img.width / aspectRatio,
+          img.height,
+          0,
+          0,
+          width,
+          width
+        );
+      } else {
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          img.width,
+          img.height * aspectRatio,
+          0,
+          0,
+          width,
+          width
+        );
+      }
+      const image = cropCanvas.toDataURL("image/jpeg");
+      setCroppedImage(image);
+
       setCropping(false);
       setCrop(cropDefault);
-      noSave && onChange(dataUrl);
+      noSave && onChange(image);
     });
   };
 
@@ -89,6 +124,7 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
             flex: 1;
             display: flex;
             justify-content: center;
+            max-height: 500px;
           `}
         >
           {cropping ? (
@@ -132,6 +168,17 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
           justify-content: center;
         `}
       >
+        {cropping && (
+          <Button
+            type="button"
+            block
+            onClick={() => {
+              setCropping(!cropping);
+            }}
+          >
+            Cancel Crop
+          </Button>
+        )}
         {!noCrop && image && (
           <Button
             type="button"
@@ -146,6 +193,7 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
             Crop Image
           </Button>
         )}
+
         {!cropping && (
           <label htmlFor="image-file-upload">
             <Button
