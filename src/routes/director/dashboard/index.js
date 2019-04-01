@@ -131,12 +131,18 @@ const Website = ({ id, website: centerWebsite, editMode }) => {
           <Spacer>
             <h3>Website</h3>
             {editMode && editingWebsite ? (
-              <Input
-                block
-                type="url"
-                value={website}
-                onChange={e => setWebsite(e.target.value)}
-              />
+              <>
+                <Input
+                  block
+                  type="url"
+                  value={website}
+                  placeholder="https://spaceedventures.org"
+                  onChange={e => setWebsite(e.target.value)}
+                />
+                <small>
+                  Make sure you include <code>http://</code>
+                </small>
+              </>
             ) : (
               <a href={website} target="_blank" rel="noopener noreferrer">
                 {website}
