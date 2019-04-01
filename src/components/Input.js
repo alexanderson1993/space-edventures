@@ -19,7 +19,12 @@ export default withStyles(() => {})(
     return (
       <AnimateContext.Consumer>
         {({ show }) => (
-          <div style={{ display: block ? "block" : "inline-block" }}>
+          <div
+            css={{
+              display: block ? "block" : "inline-block",
+              width: block ? "100%" : ""
+            }}
+          >
             <Frame animate show={show} level={2} corners={2} {...props}>
               {(() => {
                 if (type === "textarea")
