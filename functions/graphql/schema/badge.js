@@ -136,16 +136,6 @@ module.exports.resolver = {
         );
       }
 
-      const flightType = await FlightType.getFlightType(badge.flightTypeId);
-      const flightTypeCheck = flightType.spaceCenterId === centerId;
-
-      if (!flightTypeCheck) {
-        throw new ForbiddenError(
-          "Cannot create badge for a flight record that does not exist for the space center."
-        );
-      }
-
-      // Make sure center has this flight type
       return Badge.createBadge(badge, centerId);
     },
     badgeRemove: async (rootQuery, { badgeId, centerId }, context) => {

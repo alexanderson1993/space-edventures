@@ -26,9 +26,13 @@ const EditBadge = ({ create }) => {
             centerId: center.id
           }}
           update={(cache, { data: { badgeCreate } }) => {
-            const { badges } = cache.readQuery({ query: BADGES_QUERY });
+            const { badges } = cache.readQuery({
+              query: BADGES_QUERY,
+              variables: { centerId: center.id }
+            });
             cache.writeQuery({
               query: BADGES_QUERY,
+              variables: { centerId: center.id },
               data: { badges: badges.concat([badgeCreate]) }
             });
           }}
@@ -80,7 +84,9 @@ const EditBadge = ({ create }) => {
                     disabled={!name}
                     onClick={() =>
                       create().then(({ data: { badgeCreate } }) =>
-                        navigate(`/director/badges/${badgeCreate.id}`)
+                        navigate(
+                          `/director/${center.id}/badges/${badgeCreate.id}`
+                        )
                       )
                     }
                   >

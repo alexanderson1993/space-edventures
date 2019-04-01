@@ -27,9 +27,13 @@ const EditMission = ({ create }) => {
             centerId: center.id
           }}
           update={(cache, { data: { missionCreate } }) => {
-            const { missions } = cache.readQuery({ query: MISSIONS_QUERY });
+            const { missions } = cache.readQuery({
+              query: MISSIONS_QUERY,
+              variables: { centerId: center.id }
+            });
             cache.writeQuery({
               query: MISSIONS_QUERY,
+              variables: { centerId: center.id },
               data: { missions: missions.concat([missionCreate]) }
             });
           }}
@@ -81,7 +85,9 @@ const EditMission = ({ create }) => {
                     disabled={!name}
                     onClick={() =>
                       create().then(({ data: { missionCreate } }) =>
-                        navigate(`/director/missions/${missionCreate.id}`)
+                        navigate(
+                          `/director/${center.id}/missions/${missionCreate.id}`
+                        )
                       )
                     }
                   >
