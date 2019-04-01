@@ -50,7 +50,8 @@ module.exports.schema = gql`
     badgeCreate(badge: BadgeInput, centerId: ID!): Badge
       @auth(requires: [director])
 
-    badgeRemove(badgeId: ID!, centerId: ID!): Badge @auth(requires: [director])
+    badgeRemove(badgeId: ID!, centerId: ID!): Boolean
+      @auth(requires: [director])
 
     badgeRename(badgeId: ID!, name: String!, centerId: ID!): Badge
       @auth(requires: [director])

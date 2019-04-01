@@ -16,7 +16,7 @@ const ButtonAlign = styled("div")`
 `;
 
 const MissionIndex = React.memo(props => {
-  const center = useContext(CenterContext);
+  const center = useContext(CenterContext) || {};
   return (
     <div>
       <ButtonAlign>
