@@ -53,10 +53,16 @@ const RecentFlight = () => {
               <h3>{flight.stationName}</h3>
             </GridItem>
 
-            {flight.badges.find(b => b.type === "mission") && (
+            {flight.badges.filter(Boolean).find(b => b.type === "mission") && (
               <GridItem>
                 <p>Mission</p>
-                <h3>{flight.badges.find(b => b.type === "mission").name}</h3>
+                <h3>
+                  {
+                    flight.badges
+                      .filter(Boolean)
+                      .find(b => b.type === "mission").name
+                  }
+                </h3>
               </GridItem>
             )}
           </GridContainer>
