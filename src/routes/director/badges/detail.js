@@ -7,9 +7,11 @@ import BADGES_QUERY from "./badges.graphql";
 import CHANGE_IMAGE from "./changeImage.graphql";
 import CHANGE_DESCRIPTION from "./changeDescription.graphql";
 import CHANGE_NAME from "./changeName.graphql";
+import DELETE_BADGE from "./deleteBadge.graphql";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import { Frame, Loading } from "@arwes/arwes";
 import { CenterContext } from "../../../pages/director";
+import { navigate } from "@reach/router";
 
 const BadgeComp = ({ badges, badgeId }) => {
   const center = useContext(CenterContext);
@@ -50,6 +52,36 @@ const BadgeComp = ({ badges, badgeId }) => {
       ) : (
         <Button onClick={() => setRenaming(true)}>Rename</Button>
       )}
+      <Mutation
+        mutation={DELETE_BADGE}
+        variables={{ centerId: center.id, badgeId: badgeId }}
+        update={cache => {
+          const { badges } = cache.readQuery({
+            query: BADGES_QUERY,
+            variables: { centerId: center.id }
+          });
+          cache.writeQuery({
+            query: BADGES_QUERY,
+            variables: { centerId: center.id },
+            data: { badges: badges.filter(m => m.id !== badgeId) }
+          });
+        }}
+      >
+        {(remove, { loading }) =>
+          loading ? (
+            <Loading />
+          ) : (
+            <Button
+              layer="alert"
+              onClick={() =>
+                remove().then(() => navigate(`/director/${center.id}/badges`))
+              }
+            >
+              Delete Badge
+            </Button>
+          )
+        }
+      </Mutation>
       <div>
         <h2>Description:</h2>
       </div>

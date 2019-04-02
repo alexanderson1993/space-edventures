@@ -7,9 +7,11 @@ import MISSIONS_QUERY from "./missions.graphql";
 import CHANGE_IMAGE from "./changeImage.graphql";
 import CHANGE_DESCRIPTION from "./changeDescription.graphql";
 import CHANGE_NAME from "./changeName.graphql";
+import DELETE_MISSION from "./deleteMIssion.graphql";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import { Frame, Loading } from "@arwes/arwes";
 import { CenterContext } from "../../../pages/director";
+import { navigate } from "gatsby";
 
 const MissionsComp = ({ missionId, missions }) => {
   const center = useContext(CenterContext);
@@ -50,6 +52,36 @@ const MissionsComp = ({ missionId, missions }) => {
       ) : (
         <Button onClick={() => setRenaming(true)}>Rename</Button>
       )}
+      <Mutation
+        mutation={DELETE_MISSION}
+        variables={{ centerId: center.id, missionId: missionId }}
+        update={(cache, { data: { missionRemove } }) => {
+          const { missions } = cache.readQuery({
+            query: MISSIONS_QUERY,
+            variables: { centerId: center.id }
+          });
+          cache.writeQuery({
+            query: MISSIONS_QUERY,
+            variables: { centerId: center.id },
+            data: { missions: missions.filter(m => m.id !== missionId) }
+          });
+        }}
+      >
+        {(remove, { loading }) =>
+          loading ? (
+            <Loading />
+          ) : (
+            <Button
+              layer="alert"
+              onClick={() =>
+                remove().then(() => navigate(`/director/${center.id}/missions`))
+              }
+            >
+              Delete Mission
+            </Button>
+          )
+        }
+      </Mutation>
       <div>
         <h2>Description:</h2>
       </div>

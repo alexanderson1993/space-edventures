@@ -1,0 +1,3 @@
+mutation DeleteBadge($centerId: ID!, $badgeId: ID!) {
+  badgeRemove(badgeId: $badgeId, centerId: $centerId)
+}

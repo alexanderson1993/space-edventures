@@ -1,0 +1,3 @@
+mutation DeleteMission($centerId: ID!, $missionId: ID!) {
+  missionRemove: badgeRemove(badgeId: $missionId, centerId: $centerId)
+}

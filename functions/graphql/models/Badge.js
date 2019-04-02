@@ -5,18 +5,14 @@ const uploadFile = require("../helpers/uploadFile");
 // =============================================================================
 
 module.exports = class Badge {
-  static async createBadge(
-    { name, description, type, image, flightTypeId },
-    centerId
-  ) {
+  static async createBadge({ name, description, type, image }, centerId) {
     const badgeData = await firestore()
       .collection("badges")
       .add({
         name,
         type,
         description,
-        centerId,
-        flightTypeId
+        centerId
       });
     let file = null;
     if (image) {

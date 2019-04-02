@@ -23,6 +23,9 @@ import { CenterContext } from "../../../pages/director";
 // const Mission = styled(Badge)`
 //   background-color: #1b3d94;
 // `;
+const Spacer = styled("div")`
+  margin-bottom: 2em;
+`;
 const Highlight = styled("div")`
   display: flex;
   flex-direction: column;
@@ -43,7 +46,7 @@ const Name = ({ name: centerName, id, editMode }) => {
         loading ? (
           <Loading animate />
         ) : (
-          <div
+          <Spacer
             css={css`
               display: flex;
               align-items: baseline;
@@ -67,7 +70,7 @@ const Name = ({ name: centerName, id, editMode }) => {
                 </Button>
               </div>
             )}
-          </div>
+          </Spacer>
         )
       }
     </Mutation>
@@ -85,10 +88,11 @@ const Description = ({ editMode, description: centerDescription, id }) => {
         loading ? (
           <Loading animate />
         ) : (
-          <>
+          <Spacer>
             <h3>Description</h3>
             {editMode && editingDescription ? (
               <Input
+                block
                 type="textarea"
                 value={description}
                 onChange={e => setDescription(e.target.value)}
@@ -109,7 +113,7 @@ const Description = ({ editMode, description: centerDescription, id }) => {
                 </Button>
               </div>
             )}
-          </>
+          </Spacer>
         )
       }
     </Mutation>
@@ -124,14 +128,21 @@ const Website = ({ id, website: centerWebsite, editMode }) => {
         loading ? (
           <Loading animate />
         ) : (
-          <>
+          <Spacer>
             <h3>Website</h3>
             {editMode && editingWebsite ? (
-              <Input
-                type="url"
-                value={website}
-                onChange={e => setWebsite(e.target.value)}
-              />
+              <>
+                <Input
+                  block
+                  type="url"
+                  value={website}
+                  placeholder="https://spaceedventures.org"
+                  onChange={e => setWebsite(e.target.value)}
+                />
+                <small>
+                  Make sure you include <code>http://</code>
+                </small>
+              </>
             ) : (
               <a href={website} target="_blank" rel="noopener noreferrer">
                 {website}
@@ -150,7 +161,7 @@ const Website = ({ id, website: centerWebsite, editMode }) => {
                 </Button>
               </div>
             )}
-          </>
+          </Spacer>
         )
       }
     </Mutation>
@@ -178,11 +189,11 @@ const ImageContainer = ({ id, name, imageUrl, editMode }) => {
         loading ? (
           <Loading animate />
         ) : (
-          <>
+          <Spacer>
             <h3>Image</h3>
 
             {/* If they are not in edit mode */}
-            {!editMode && (
+            {!editMode && imageUrl && (
               <div
                 css={css`
                   width: 300px;
@@ -212,7 +223,7 @@ const ImageContainer = ({ id, name, imageUrl, editMode }) => {
                 />
               </div>
             )}
-          </>
+          </Spacer>
         )
       }
     </Mutation>
@@ -225,20 +236,18 @@ const Dashboard = () => {
 
   return (
     <>
-      <div
-        css={css`
-          float: right;
-        `}
-      />
-      <Name {...center} editMode={editMode} />
       <Auth roles={["director"]}>
-        <Button onClick={() => setEditMode(!editMode)}>
+        <Button
+          css={css`
+            float: right;
+            margin-right: 20px;
+          `}
+          onClick={() => setEditMode(!editMode)}
+        >
           {editMode ? "Done Editing" : "Edit"}
         </Button>
       </Auth>
-      <Description {...center} editMode={editMode} />
-      <ImageContainer {...center} editMode={editMode} />
-      <Website {...center} editMode={editMode} />
+      <Name {...center} editMode={editMode} />
       <div
         css={css`
           margin-top: 60px;
@@ -269,6 +278,9 @@ const Dashboard = () => {
           </Highlight>
         </div>
       </div>
+      <Description {...center} editMode={editMode} />
+      <ImageContainer {...center} editMode={editMode} />
+      <Website {...center} editMode={editMode} />
     </>
   );
 };

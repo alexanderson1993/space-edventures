@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useRef } from "react";
+import React, { Suspense, useState, useRef, useCallback } from "react";
 import { css } from "@emotion/core";
 import { Loading } from "@arwes/arwes";
 import { Button } from ".";
@@ -109,6 +109,14 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
     noSave && onChange(image);
   };
 
+  const [height, setHeight] = useState(0);
+
+  const imageRef = useCallback(node => {
+    if (node !== null) {
+      setHeight(node.getBoundingClientRect().width);
+    }
+  }, []);
+
   return (
     <div
       css={css`
@@ -120,11 +128,11 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
     >
       {image || src ? (
         <div
+          ref={imageRef}
           css={css`
             flex: 1;
             display: flex;
             justify-content: center;
-            max-height: 500px;
           `}
         >
           {cropping ? (
@@ -141,7 +149,8 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
           ) : (
             <img
               css={{
-                objectFit: "contain"
+                objectFit: "contain",
+                height: height
               }}
               src={croppedImage || image || src}
               alt="uploaded"
