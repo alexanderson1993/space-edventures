@@ -15,9 +15,7 @@ import AuthContext from "./authContext";
 
 const uri =
   process.env.NODE_ENV === "production"
-    ? process.env.REACT_APP_IS_LIVE
-      ? "https://us-central1-space-edventures.cloudfunctions.net/api/graphql"
-      : "https://us-central1-space-edventures-beta.cloudfunctions.net/api/graphql"
+    ? process.env.GRAPHQL_URL
     : "http://localhost:5000/space-edventures-beta/us-central1/api/graphql";
 
 const AuthLink = setContext(async (_, { headers }) => {

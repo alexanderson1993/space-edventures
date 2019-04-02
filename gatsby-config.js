@@ -1,4 +1,11 @@
-require("dotenv").config();
+let activeEnv =
+  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || "development";
+
+console.log(`Using environment config: '${activeEnv}'`);
+
+require("dotenv").config({
+  path: `.env.${activeEnv}`
+});
 module.exports = {
   siteMetadata: {
     title: "Space EdVentures",
@@ -78,8 +85,20 @@ module.exports = {
       resolve: `gatsby-source-firebase-firestore`,
       options: {
         // pass you Firebase credentials in here.
-        credential: require("./firebase-credentials.json"),
-        databaseURL: "https://space-edventures-beta.firebaseio.com",
+        credential: {
+          type: "service_account",
+          project_id: process.env.FIREBASE_PROJECT_ID,
+          private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+          private_key: process.env.FIREBASE_PRIVATE_KEY,
+          client_email: process.env.FIREBASE_CLIENT_EMAIL,
+          client_id: process.env.FIREBASE_CLIENT_ID,
+          auth_uri: "https://accounts.google.com/o/oauth2/auth",
+          token_uri: "https://oauth2.googleapis.com/token",
+          auth_provider_x509_cert_url:
+            "https://www.googleapis.com/oauth2/v1/certs",
+          client_x509_cert_url: process.env.FIREBASE_CERT_URL
+        },
+        databaseURL: process.env.FIREBASE_DATABASE_URL,
         // An array of the different Firestore resources you want to make available to Gatsby.
         types: [
           {
