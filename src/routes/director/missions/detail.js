@@ -7,7 +7,7 @@ import MISSIONS_QUERY from "./missions.graphql";
 import CHANGE_IMAGE from "./changeImage.graphql";
 import CHANGE_DESCRIPTION from "./changeDescription.graphql";
 import CHANGE_NAME from "./changeName.graphql";
-import DELETE_MISSION from "./deleteMIssion.graphql";
+import DELETE_MISSION from "./deleteMission.graphql";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import { Frame, Loading } from "@arwes/arwes";
 import { CenterContext } from "../../../pages/director";
