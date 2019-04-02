@@ -6,6 +6,7 @@ console.log(`Using environment config: '${activeEnv}'`);
 require("dotenv").config({
   path: `.env.${activeEnv}`
 });
+console.log(process.env.FIREBASE_SERVICE_JSON);
 module.exports = {
   siteMetadata: {
     title: "Space EdVentures",
