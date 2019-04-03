@@ -25,7 +25,8 @@ const defaultError = ({ error: { networkError, graphQLErrors } }) => {
             <li key={`error-${i}`}>
               {g.message} - <code>{g.extensions.code}</code>
               <details style={{ whiteSpace: "pre-wrap" }}>
-                {g.extensions.exception.stacktrace.join("\n")}
+                {g.extensions.exception.stacktrace &&
+                  g.extensions.exception.stacktrace.join("\n")}
               </details>
             </li>
           ))}
