@@ -36,21 +36,25 @@ const Rank = () => {
                 {user.profile.rank.name}
               </Link>
             </h1>
-            <p>
-              To reach the next rank of{" "}
-              <Link to={`/ranks#${nextRank.name}`}>{nextRank.name}</Link>, you
-              need{" "}
-              {nextRank.flightHours - user.profile.flightHours > 0
-                ? `${nextRank.flightHours -
-                    user.profile.flightHours} more flight
+            {nextRank ? (
+              <p>
+                To reach the next rank of{" "}
+                <Link to={`/ranks#${nextRank.name}`}>{nextRank.name}</Link>, you
+                need{" "}
+                {nextRank.flightHours - user.profile.flightHours > 0
+                  ? `${nextRank.flightHours -
+                      user.profile.flightHours} more flight
               hours`
-                : ""}
-              {nextRank.classHours - user.profile.classHours > 0
-                ? ` and ${nextRank.classHours - user.profile.classHours} more
+                  : ""}
+                {nextRank.classHours - user.profile.classHours > 0
+                  ? ` and ${nextRank.classHours - user.profile.classHours} more
               class hours`
-                : ""}
-              .
-            </p>
+                  : ""}
+                .
+              </p>
+            ) : (
+              <p>You have reached the highest rank. Congratulations!</p>
+            )}
           </>
         );
       })}
