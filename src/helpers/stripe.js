@@ -1,7 +1,8 @@
 import { StripeProvider } from "react-stripe-elements";
 import React, { Component } from "react";
 
-const PUB_KEY = process.env.STRIPE_KEY || "pk_test_oGcUy9t6hiRpmVPS6c6L9MJe";
+const PUB_KEY =
+  process.env.GATSBY_STRIPE_KEY || "pk_test_oGcUy9t6hiRpmVPS6c6L9MJe";
 
 export default class StripeAPIProvider extends Component {
   state = { stripe: null };

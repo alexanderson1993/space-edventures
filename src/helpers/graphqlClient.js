@@ -15,7 +15,7 @@ import AuthContext from "./authContext";
 
 const uri =
   process.env.NODE_ENV === "production"
-    ? process.env.GRAPHQL_URL
+    ? process.env.GATSBY_GRAPHQL_URL
     : "http://localhost:5000/space-edventures-beta/us-central1/api/graphql";
 
 const AuthLink = setContext(async (_, { headers }) => {
