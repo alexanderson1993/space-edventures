@@ -4,6 +4,7 @@ query Me($id: ID!) {
     email
     token
     locked
+    roles
     profile {
       name
       displayName

@@ -1,11 +1,14 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import ProfileContext from "../helpers/profileContext";
 import { DirectorContext } from "../helpers/directorContext";
+import { Words, Content, Button } from ".";
+import { Link } from "gatsby";
 
 const Auth = ({ roles = [], children, userId }) => {
   const { user } = useContext(ProfileContext);
   const director = useContext(DirectorContext);
+  console.log(roles, user, director);
   const allowed = roles.find(role => {
     if (role === "self") return user.id === userId;
     return (
@@ -14,7 +17,17 @@ const Auth = ({ roles = [], children, userId }) => {
     );
   });
   if (allowed) return children;
-  return null;
+  return (
+    <Content>
+      <h1>
+        <Words layer="alert">Permission Denied</Words>
+      </h1>
+      <p>You do not have permission to view this page.</p>
+      <Link to="/">
+        <Button>Go Home</Button>
+      </Link>
+    </Content>
+  );
 };
 
 Auth.propTypes = {

@@ -119,7 +119,7 @@ const Certificate = ({ theme, numberToWords }) => {
               </Words>
             </p>
             <h3>
-              <Words>{user.profile.rank && user.profile.rank.name}</Words>
+              <Words>{user.profile.rank ? user.profile.rank.name : ""}</Words>
             </h3>
             <p>
               <Words>
