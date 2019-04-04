@@ -255,9 +255,12 @@ module.exports.resolver = {
       );
 
       // Get and filter badges to not count badges multiple times.
-      const badges = (await badgeLoader.loadMany(badgeIds)).filter(
-        (a, i, arr) => arr.findIndex(b => b.id === a.id) === i
-      );
+      const badges =
+        badgeIds.length > 0
+          ? (await badgeLoader.loadMany(badgeIds)).filter(
+              (a, i, arr) => arr.findIndex(b => b.id === a.id) === i
+            )
+          : [];
 
       // Filter
       if (type) {
