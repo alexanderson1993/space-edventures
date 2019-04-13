@@ -1,0 +1,15 @@
+query Centers {
+  centers {
+    id
+    name
+    description
+    website
+    address {
+      description
+      location {
+        lat
+        lng
+      }
+    }
+  }
+}

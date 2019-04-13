@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  withScriptjs,
   withGoogleMap,
   GoogleMap,
   Marker,
@@ -8,38 +7,96 @@ import {
 } from "react-google-maps";
 import mapStyles from "./mapStyles";
 import { Loading } from "@arwes/arwes";
+import CENTER_MAP from "./centerMap.graphql";
+import { Query } from "react-apollo";
+import graphQLHelper from "../../helpers/graphQLHelper";
+import { css } from "@emotion/core";
 
-const MapMarker = ({ ...props }) => {
+const MapMarker = ({ name, description, website, address, ...props }) => {
   const [open, setOpen] = useState(false);
   const toggleOpen = () => setOpen(!open);
   return (
     <Marker {...props} onClick={toggleOpen}>
       {open && (
         <InfoWindow onCloseClick={toggleOpen}>
-          <div>Space Center</div>
+          <div
+            css={css`
+              color: black;
+              h4 {
+                color: black;
+              }
+              a {
+                color: #3f9caf;
+              }
+              p {
+                margin-bottom: 0.5em;
+              }
+            `}
+          >
+            <h4>{name}</h4>
+            {website && (
+              <p>
+                <a href={website} target="_blank" rel="noopener noreferrer">
+                  {website}
+                </a>
+              </p>
+            )}
+            <p>{address.description}</p>
+            {description && <p>{description}</p>}
+          </div>
         </InfoWindow>
       )}
     </Marker>
   );
 };
-const MapComponent = withGoogleMap(props => {
+const MapComponent = withGoogleMap(({ centers }) => {
+  const mapRef = useRef();
+  const [zoom, setZoom] = useState(11);
+
+  useEffect(() => {
+    zoomExtends(centers);
+    function zoomExtends(centers) {
+      var bounds = new window.google.maps.LatLngBounds();
+      if (centers.length > 0) {
+        for (var i = 0; i < centers.length; i++) {
+          if (centers[i].address) {
+            bounds.extend(centers[i].address.location);
+          }
+        }
+        if (mapRef.current) {
+          mapRef.current.fitBounds(bounds);
+          zoomChange();
+        }
+      }
+    }
+  }, [centers]);
+
+  function zoomChange() {
+    if (mapRef.current) {
+      const zoomLevel = mapRef.current.getZoom();
+      setZoom(zoomLevel < 15 ? zoomLevel : 15);
+    }
+  }
+  console.log(zoom);
   return (
     <GoogleMap
+      ref={mapRef}
       clickableIcons={false}
       options={{
         styles: mapStyles,
         gestureHandling: "cooperative",
         disableDefaultUI: true
       }}
-      defaultZoom={11}
+      zoom={zoom}
       defaultCenter={{ lat: 40.357, lng: -111.764 }}
+      onZoomChanged={zoomChange}
     >
-      {/* TODO: Add these markers dynamically from the centers */}
-      <MapMarker position={{ lat: 40.430437, lng: -111.8347337 }} />
-      <MapMarker position={{ lat: 40.4017056, lng: -111.7526479 }} />
-      <MapMarker position={{ lat: 40.3648575, lng: -111.7358007 }} />
-      <MapMarker position={{ lat: 40.2859766, lng: -111.7364041 }} />
-      <MapMarker position={{ lat: 40.3685109, lng: -111.9302172 }} />
+      {centers.map(
+        c =>
+          c.address && (
+            <MapMarker key={c.id} position={c.address.location} {...c} />
+          )
+      )}
     </GoogleMap>
   );
 });
@@ -53,11 +110,18 @@ const MapWrapper = () => {
   }, [loading]);
   if (loading) return <Loading />;
   return (
-    <MapComponent
-      loadingElement={<div style={{ height: `100%` }} />}
-      containerElement={<div style={{ height: `100%`, minHeight: "400px" }} />}
-      mapElement={<div style={{ height: `100%` }} />}
-    />
+    <Query query={CENTER_MAP}>
+      {graphQLHelper(({ centers }) => (
+        <MapComponent
+          loadingElement={<div style={{ height: `100%` }} />}
+          containerElement={
+            <div style={{ height: `100%`, minHeight: "400px" }} />
+          }
+          mapElement={<div style={{ height: `100%` }} />}
+          centers={centers}
+        />
+      ))}
+    </Query>
   );
 };
 
