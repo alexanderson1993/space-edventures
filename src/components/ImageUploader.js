@@ -36,7 +36,7 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
       canvas.height = img.height * scaleFactor;
       var context = canvas.getContext("2d");
       context.drawImage(img, 0, 0, width, img.height * scaleFactor);
-      var dataUrl = canvas.toDataURL("image/jpeg");
+      var dataUrl = canvas.toDataURL("image/png");
       setImage(dataUrl);
 
       // Do a pre-crop
@@ -69,7 +69,7 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
           width
         );
       }
-      const image = cropCanvas.toDataURL("image/jpeg");
+      const image = cropCanvas.toDataURL("image/png");
       setCroppedImage(image);
 
       setCropping(false);
@@ -104,7 +104,7 @@ const ImageUploader = ({ src, onChange = () => {}, noSave, noCrop }) => {
     );
 
     // As Base64 string
-    const image = canvas.toDataURL("image/jpeg");
+    const image = canvas.toDataURL("image/png");
     setCroppedImage(image);
     noSave && onChange(image);
   };

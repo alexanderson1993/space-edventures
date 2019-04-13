@@ -14,10 +14,26 @@ module.exports.schema = gql`
     registeredDate: Date
     website: String
     email: String
-
+    address: Address
     apiToken: String @auth(requires: [director])
   }
 
+  type Address {
+    description: String
+    location: Coordinates
+  }
+  type Coordinates {
+    lat: Float
+    lng: Float
+  }
+  input AddressInput {
+    description: String!
+    location: CoordinatesInput!
+  }
+  input CoordinatesInput {
+    lat: Float
+    lng: Float
+  }
   # We can extend other graphQL types using the "extend" keyword.
   extend type Query {
     centers: [Center]
@@ -40,6 +56,8 @@ module.exports.schema = gql`
     centerUpdateWebsite(centerId: ID!, website: String!): Center
       @auth(requires: [director])
     centerUpdateImage(centerId: ID!, image: Upload!): Center
+      @auth(requires: [director])
+    centerUpdateAddress(centerId: ID!, address: AddressInput!): Center
       @auth(requires: [director])
   }
 
@@ -93,6 +111,11 @@ module.exports.resolver = {
     centerUpdateImage: async (rootQuery, { centerId, image }, context) => {
       const center = new Center(await Center.getCenter(centerId));
       await center.updateImage(image);
+      return center;
+    },
+    centerUpdateAddress: async (rootQuery, { centerId, address }, context) => {
+      const center = new Center(await Center.getCenter(centerId));
+      await center.updateAddress(address);
       return center;
     }
   },

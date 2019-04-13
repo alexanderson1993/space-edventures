@@ -8,6 +8,9 @@ query CenterDirector($centerId: ID, $id: ID!) {
       description
       imageUrl
       website
+      address {
+        description
+      }
       simulatorCount
       badgeCount
       missionCount

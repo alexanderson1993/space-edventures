@@ -134,19 +134,12 @@ const UserPage = () => {
         >
           <Rank />
         </ContentBox>
-        <ContentBox
-          title="Officer Log Entries"
-          callToAction="See All Entries"
-          action="/user/officerLog"
-        >
-          <OfficerLog />
-        </ContentBox>
-        <ContentBox title="Recommended Missions" />
-        <ContentBox
+        {/* <ContentBox title="Recommended Missions" /> */}
+        {/* <ContentBox
           title="Track Your Progress"
           callToAction="See Progress Details"
           action="/user/flights"
-        />
+        /> */}
         <ContentBox
           title="Space Center Map"
           css={css`
@@ -155,6 +148,13 @@ const UserPage = () => {
           `}
         >
           <MapComponent />
+        </ContentBox>
+        <ContentBox
+          title="Officer Log Entries"
+          callToAction="See All Entries"
+          action="/user/officerLog"
+        >
+          <OfficerLog />
         </ContentBox>
       </ProfileBox>
     </Content>

@@ -1,0 +1,13 @@
+mutation UpdateAddress($centerId: ID!, $address: AddressInput!) {
+  centerUpdateAddress(centerId: $centerId, address: $address) {
+    id
+    name
+    address {
+      description
+      location {
+        lat
+        lng
+      }
+    }
+  }
+}

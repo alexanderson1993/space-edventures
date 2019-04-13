@@ -1,6 +1,6 @@
 import React, { Suspense, useContext } from "react";
 import { Loading } from "@arwes/arwes";
-
+import { withScriptjs } from "react-google-maps";
 import ErrorBoundary from "./helpers/errorBoundary";
 import ArwesProvider from "./layout/arwesProvider";
 import GraphQL from "./helpers/graphqlClient";
@@ -10,6 +10,11 @@ import StripeAPIProvider from "./helpers/stripe";
 import { ErrorProvider } from "./helpers/errorContext";
 import ProfileContext from "./helpers/profileContext";
 import css from "@emotion/css";
+
+const MapLoader = () => {
+  return null;
+};
+const MapLoaderWrapped = withScriptjs(MapLoader);
 
 const UserLock = ({ children }) => {
   const { user } = useContext(ProfileContext);
@@ -56,6 +61,10 @@ export default (input = {}) => data => {
                       element
                     ) : (
                       <Suspense fallback={<Loading animate />}>
+                        <MapLoaderWrapped
+                          googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjNViSP0Sxa7oFUw9A_91gSP51FrgXWJA&v=3.exp&libraries=geometry,drawing,places"
+                          loadingElement={<div style={{ height: `100%` }} />}
+                        />
                         {element}
                       </Suspense>
                     )}

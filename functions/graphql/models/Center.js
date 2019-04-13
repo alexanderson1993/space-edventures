@@ -144,6 +144,10 @@ module.exports = class Center {
   }
   async updateWebsite(website) {
     this.website = website;
+    await firestore()
+      .collection("spaceCenters")
+      .doc(this.id)
+      .update({ website });
     return this;
   }
   async updateImage(image) {
@@ -155,6 +159,14 @@ module.exports = class Center {
       .update({ imageUrl: file.metadata.mediaLink });
 
     this.imageUrl = file.metadata.mediaLink;
+    return this;
+  }
+  async updateAddress(address) {
+    await firestore()
+      .collection("spaceCenters")
+      .doc(this.id)
+      .update({ address });
+    this.address = address;
     return this;
   }
 };
