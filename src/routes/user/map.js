@@ -77,7 +77,6 @@ const MapComponent = withGoogleMap(({ centers }) => {
       setZoom(zoomLevel < 15 ? zoomLevel : 15);
     }
   }
-  console.log(zoom);
   return (
     <GoogleMap
       ref={mapRef}

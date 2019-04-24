@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { css } from "@emotion/core";
 import AuthContext from "../helpers/authContext";
 import ProfileContext from "../helpers/profileContext";
@@ -7,13 +7,46 @@ import { Words, Button, Link, ProfilePicture } from "../components";
 import { subscribe } from "../helpers/pubsub";
 import "./profile.scss";
 
+function useOnClickOutside(ref, handler) {
+  useEffect(
+    () => {
+      const listener = event => {
+        // Do nothing if clicking ref's element or descendent elements
+        if (!ref.current || ref.current.contains(event.target)) {
+          return;
+        }
+
+        handler(event);
+      };
+
+      document.addEventListener("mousedown", listener);
+      document.addEventListener("touchstart", listener);
+
+      return () => {
+        document.removeEventListener("mousedown", listener);
+        document.removeEventListener("touchstart", listener);
+      };
+    },
+    // Add ref and handler to effect dependencies
+    // It's worth noting that because passed in handler is a new ...
+    // ... function on every render that will cause this effect ...
+    // ... callback/cleanup to run every render. It's not a big deal ...
+    // ... but to optimize you can wrap handler in useCallback before ...
+    // ... passing it into this hook.
+    [ref, handler]
+  );
+}
+
 const Profile = () => {
+  const dropdownRef = useRef();
   const [open, setOpen] = useState(false);
   useEffect(() =>
     subscribe("routeChanged", () => {
       setOpen(false);
     })
   );
+  useOnClickOutside(dropdownRef, () => setOpen(false));
+
   const { user: authUser, loading, logout } = useContext(AuthContext);
   const { user } = useContext(ProfileContext);
   if (loading || user.loading) return <Loading animate small />;
@@ -45,6 +78,7 @@ const Profile = () => {
         </div>
         <div
           className="profile-extra-frame"
+          ref={dropdownRef}
           css={{ pointerEvents: open ? null : "none" }}
         >
           <Appear animate show={open} css={{ width: "100%" }}>

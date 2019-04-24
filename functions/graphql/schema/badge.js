@@ -257,9 +257,9 @@ module.exports.resolver = {
       // Get and filter badges to not count badges multiple times.
       const badges =
         badgeIds.length > 0
-          ? (await badgeLoader.loadMany(badgeIds)).filter(
-              (a, i, arr) => arr.findIndex(b => b.id === a.id) === i
-            )
+          ? (await badgeLoader.loadMany(badgeIds))
+              .filter((a, i, arr) => arr.findIndex(b => b.id === a.id) === i)
+              .filter(Boolean)
           : [];
 
       // Filter
@@ -285,12 +285,16 @@ module.exports.resolver = {
   },
   Station: {
     badges: async station => {
-      return station.badges && badgeLoader.loadMany(station.badges);
+      const badges = station.badges
+        ? await badgeLoader.loadMany(station.badges)
+        : [];
+      return badges.filter(Boolean);
     }
   },
   FlightUserRecord: {
     badges: async rec => {
-      return rec.badges && badgeLoader.loadMany(rec.badges);
+      const badges = rec.badges ? await badgeLoader.loadMany(rec.badges) : [];
+      return badges.filter(Boolean);
     }
   }
 };

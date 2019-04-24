@@ -9,6 +9,7 @@ import Rank from "./rank";
 import OfficerLog from "./logs";
 const MapComponent = lazy(() => import("./map"));
 const RecentFlight = lazy(() => import("./recentFlight"));
+const SpaceCenter = lazy(() => import("./spaceCenter"));
 
 const ContentFrame = styled(Frame)`
   height: 100%;
@@ -30,6 +31,7 @@ const ProfileBox = styled("div")`
   }
   @media only screen and (max-width: 600px) {
     grid-template-columns: 1fr;
+    column-gap: 0;
   }
   grid-template-rows: 1fr 1fr;
   grid-auto-rows: auto;
@@ -41,7 +43,7 @@ const ProfileBox = styled("div")`
 const ContentBox = ({ title, className, action, callToAction, children }) => {
   return (
     <ContentFrame animate={true} level={3} corners={4} className={className}>
-      <div
+      <section
         css={css`
           height: 100%;
           display: flex;
@@ -73,7 +75,7 @@ const ContentBox = ({ title, className, action, callToAction, children }) => {
               {callToAction}
             </Button>
           ))}
-      </div>
+      </section>
     </ContentFrame>
   );
 };
@@ -118,6 +120,16 @@ const UserPage = () => {
           </div>
         </ContentBox>
         <ContentBox
+          title="Space Center Highlight"
+          css={css`
+            grid-column: span 2;
+          `}
+          callToAction="See All Centers"
+          action="/centers"
+        >
+          <SpaceCenter />
+        </ContentBox>
+        <ContentBox
           title="My Flights"
           css={css`
             grid-column: span 2;
@@ -146,6 +158,8 @@ const UserPage = () => {
             grid-column: span 2;
             grid-row: span 2;
           `}
+          callToAction="See All Space Centers"
+          action="/centers"
         >
           <MapComponent />
         </ContentBox>
