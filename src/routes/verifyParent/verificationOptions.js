@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Words, Center } from "../../../components";
+import { Button, Words, Center } from "../../components";
 import PaymentVerify from "./paymentVerify";
 import PhotoVerify from "./photoVerify";
 import css from "@emotion/css";

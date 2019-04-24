@@ -57,12 +57,12 @@ export const client = new ApolloClient({
 });
 
 export default ({ children }) => {
-  const { loading } = useContext(AuthContext);
-  if (!loading)
-    return (
-      <ApolloProvider client={client}>
-        <ApolloHooksProvider client={client}>{children}</ApolloHooksProvider>
-      </ApolloProvider>
-    );
-  return null;
+  // const { loading } = useContext(AuthContext);
+  // if (!loading)
+  return (
+    <ApolloProvider client={client}>
+      <ApolloHooksProvider client={client}>{children}</ApolloHooksProvider>
+    </ApolloProvider>
+  );
+  // return null;
 };

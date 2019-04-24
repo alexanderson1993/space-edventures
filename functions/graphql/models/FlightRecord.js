@@ -39,13 +39,18 @@ module.exports = class FlightRecord {
       .get()
       .then(res => res.size);
   }
-  static getFlightRecords(userId, centerId, simulatorId) {
+  static getFlightRecords(userId, centerId, simulatorId, limit, skip) {
     let matchingRecords = firestore().collection(collectionName);
 
     if (typeof centerId !== "undefined") {
       matchingRecords = matchingRecords.where("spaceCenterId", "==", centerId);
     }
-
+    if (limit || skip) {
+      matchingRecords = matchingRecords
+        .orderBy("date", "desc")
+        .limit(limit || 25)
+        .offset(skip || 0);
+    }
     // return Promise.all(
     return matchingRecords
       .get()

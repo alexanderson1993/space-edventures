@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button, ImageUploader, Center, Words } from "../../../components";
-import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
+import { Button, ImageUploader, Center, Words } from "../../components";
+import { dataURItoBlob } from "../../helpers/dataURIToBlob";
 import styled from "@emotion/styled";
 import css from "@emotion/css";
 import PHOTO_VERIFY from "./setPhotosVerify.graphql";

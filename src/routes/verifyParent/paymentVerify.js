@@ -1,6 +1,6 @@
 import React from "react";
 import { Loading, Blockquote } from "@arwes/arwes";
-import { Button, PaymentEntry, Center, Words } from "../../../components";
+import { Button, PaymentEntry, Center, Words } from "../../components";
 import { Mutation } from "react-apollo";
 import SET_PAYMENT from "./setPaymentVerify.graphql";
 

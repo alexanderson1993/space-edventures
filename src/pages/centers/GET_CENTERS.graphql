@@ -1,0 +1,26 @@
+query Centers {
+  centers {
+    id
+    name
+    address {
+      description
+    }
+    website
+    imageUrl
+    description
+    simulators {
+      id
+      name
+    }
+    badges(type: badge) {
+      id
+      name
+      description
+    }
+    missions: badges(type: mission) {
+      id
+      name
+      description
+    }
+  }
+}

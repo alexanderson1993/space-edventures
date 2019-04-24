@@ -38,7 +38,7 @@ const Flights = () => {
   const [skip, dispatch] = useReducer(reducer, 0);
   const { user } = useContext(AuthContext);
   return (
-    <Query query={GET_FLIGHTS} variables={{ id: user.id, skip }}>
+    <Query query={GET_FLIGHTS} variables={{ id: user && user.id, skip }}>
       {graphQLHelper(({ me = {} }) => {
         const { flights = [], flightCount = 0 } = me;
         return (

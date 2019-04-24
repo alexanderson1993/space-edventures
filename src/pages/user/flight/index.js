@@ -49,7 +49,10 @@ const FlightRecord = ({ id }) => {
 const Flight = props => {
   return (
     <Match path="/user/flight/:flightId">
-      {({ match: { flightId } }) => <FlightRecord id={flightId} />}
+      {({ match = {} }) => {
+        const { flightId } = match || {};
+        return <FlightRecord id={flightId} />;
+      }}
     </Match>
   );
 };

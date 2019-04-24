@@ -96,6 +96,14 @@ module.exports = {
               node.id = `rank-${node.id}`;
               return node;
             }
+          },
+          {
+            type: "Centers",
+            path: "spaceCenters",
+            map: node => {
+              node.id = `space-center-${node.id}`;
+              return node;
+            }
           }
         ]
       }

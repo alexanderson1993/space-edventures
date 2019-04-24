@@ -1,5 +1,6 @@
-query FlightRecords($centerId: ID!) {
-  flightRecords(centerId: $centerId) {
+query FlightRecords($centerId: ID!, $skip: Int!) {
+  flightRecordCount(centerId: $centerId)
+  flightRecords(centerId: $centerId, limit: 10, skip: $skip) {
     id
     date
     flightType {

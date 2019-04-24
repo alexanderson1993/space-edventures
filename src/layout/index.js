@@ -22,6 +22,7 @@ import AuthContext from "../helpers/authContext";
 const FooterContent = styled("div")`
   width: 960px;
   max-width: 80%;
+  margin: 0 auto;
   display: flex;
   justify-content: space-around;
   transition: opacity 0.2s ease;
@@ -137,6 +138,11 @@ const PageContent = React.memo(({ children, loaded }) => {
             <Link to="/support/tos">Terms of Service</Link>
           </span>
           <span>Copyright © {new Date().getFullYear()}</span>
+          <span>
+            <a href="mailto:support@spaceedventures.org?subject=Feedback for Space EdVentures">
+              Feedback
+            </a>
+          </span>
         </FooterContent>
       </Footer>
     </>
