@@ -30,13 +30,8 @@ export const pageQuery = graphql`
         node {
           id
           name
-          email
           website
           address {
-            location {
-              lat
-              lng
-            }
             description
           }
           imageUrl
