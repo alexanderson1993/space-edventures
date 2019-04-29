@@ -50,6 +50,7 @@ module.exports.schema = gql`
     registeredDate: Date
     locked: Boolean
     token: String
+    parentEmail: String @auth(requires: [staff, director])
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
     # flights
@@ -107,8 +108,22 @@ module.exports.resolver = {
       const user = validateEmail(id)
         ? new User(await User.getUserByEmail(id))
         : new User(await User.getUserByToken(id));
-      const { id: userId, profile, email, birthDate, registeredDate } = user;
-      return { id: userId, profile, email, birthDate, registeredDate };
+      const {
+        id: userId,
+        profile,
+        email,
+        birthDate,
+        registeredDate,
+        parentEmail
+      } = user;
+      return {
+        id: userId,
+        profile,
+        email,
+        birthDate,
+        registeredDate,
+        parentEmail
+      };
     },
     userByToken(_, { token }, context) {
       return User.getUserByToken(token);

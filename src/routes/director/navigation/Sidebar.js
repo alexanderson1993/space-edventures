@@ -6,6 +6,7 @@ import {
   FaUserSecret,
   FaIdBadge,
   FaHome,
+  FaUnlockAlt as FaUnlock,
   FaFeatherAlt,
   FaCogs,
   FaDollarSign,
@@ -70,6 +71,12 @@ const sidebarLinks = [
     label: "Rank Check",
     icon: FaSearch,
     url: "/rankCheck",
+    roles: ["staff", "director"]
+  },
+  {
+    label: "Account Unlock",
+    icon: FaUnlock,
+    url: "/accountUnlock",
     roles: ["staff", "director"]
   },
   {

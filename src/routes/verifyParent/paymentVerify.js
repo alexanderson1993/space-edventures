@@ -4,8 +4,8 @@ import { Button, PaymentEntry, Center, Words } from "../../components";
 import { Mutation } from "react-apollo";
 import SET_PAYMENT from "./setPaymentVerify.graphql";
 
-const PaymentVerify = ({ back, user: { id, verification = {} } }) => {
-  const { stripeCustomerId } = verification;
+const PaymentVerify = ({ back, user: { id, verification } }) => {
+  const { stripeCustomerId } = verification || {};
   return (
     <div>
       <div>

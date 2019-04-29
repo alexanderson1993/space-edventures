@@ -43,6 +43,7 @@ const Staff = lazy(() => import("../routes/director/staff"));
 
 const RankChecker = lazy(() => import("../routes/director/rankChecker"));
 const FlightAssign = lazy(() => import("../routes/director/flightAssign"));
+const AccountUnlock = lazy(() => import("../routes/director/accountUnlock"));
 
 export const CenterContext = React.createContext();
 
@@ -84,6 +85,7 @@ const Routes = ({ centerId }) => {
           <Staff path="staff" />
           <RankChecker path="rankCheck" />
           <FlightAssign path="flightAssign" />
+          <AccountUnlock path="accountUnlock" />
         </Router>
       </Navigation>
     </CenterContext.Provider>

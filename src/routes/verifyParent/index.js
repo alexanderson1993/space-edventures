@@ -1,5 +1,5 @@
 import React from "react";
-import { Content } from "../../../components";
+import { Content } from "../../components";
 import GetUser from "./getUser";
 import VerificationOptions from "./verificationOptions";
 

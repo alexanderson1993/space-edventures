@@ -43,6 +43,7 @@ module.exports = class User {
     this.birthDate = params.birthDate;
     this.token = params.token;
     this.isAdmin = params.isAdmin || false;
+    this.verification = params.verification || {};
   }
 
   /**
@@ -310,6 +311,39 @@ module.exports = class User {
         html: parentReverify()
       });
     }
+
+    this.verification = {};
+
+    return this;
+  }
+  async unlock() {
+    const userRef = firestore()
+      .collection("users")
+      .doc(this.id);
+
+    // We should delete all of the information we have collected
+
+    // Delete the files
+    try {
+      const parentPhotoFileRef = storage()
+        .bucket()
+        .file(`${this.id}/parentPhoto`)
+        .delete();
+      const idPhotoFileRef = storage()
+        .bucket()
+        .file(`${this.id}/idPhoto`)
+        .delete();
+      // Run these operations concurrently
+      await parentPhotoFileRef;
+      await idPhotoFileRef;
+      await Stripe.deleteCustomer(this.verification.stripeCustomerId);
+    } catch (_) {
+      // Swallow the error - it probably is because the objects don't exist
+    }
+
+    await userRef.update({ locked: false, approved: true, verification: {} });
+    this.locked = false;
+    this.approved = true;
 
     this.verification = {};
 

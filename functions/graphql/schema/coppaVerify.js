@@ -13,6 +13,7 @@ module.exports.schema = gql`
     verifyWithStripeToken(userId: ID!, token: String!): User
     verifyWithPhotos(userId: ID!, parentPhoto: Upload!, idPhoto: Upload!): User
     verifyConfirm(userId: ID!): User
+    unlockAccount(userId: ID!): User @auth(requires: [director, staff])
 
     # Administrator action to make sure the photos are correct and the credit
     # card information is accurate. Deletes all validation information when complete.
@@ -47,9 +48,9 @@ module.exports.resolver = {
 
       // If the birthdate or parent email don't match, don't return the user
       if (
-        user.parentEmail.toLowerCase() !== parentEmail.toLowerCase() ||
-        user.profile.birthDate
-          ? user.profile.birthDate.toDate().getTime()
+        user.parentEmail.toLowerCase().trim() !==
+          parentEmail.toLowerCase().trim() || user.profile.birthDate
+          ? user.profile.birthDate.toDate().getTime() !== birthDate.getTime()
           : user.birthDate.toDate().getTime() !== birthDate.getTime() ||
             user.locked === false // Also don't let them get a user unless it needs verification (prevents any getting the user if they know the birthDate, even after verification)
       )
@@ -96,6 +97,10 @@ module.exports.resolver = {
     verifyValidation: async (rootQuery, { userId, validated }, context) => {
       const user = new User(await User.getUserById(userId));
       return user.verifyValidation(validated);
+    },
+    unlockAccount: async (rootQuery, { userId }, context) => {
+      const user = new User(await User.getUserById(userId));
+      return user.unlock();
     }
   }
 };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, Words, Center, DatePicker } from "../../../components";
+import { Input, Words, Center, DatePicker, Link } from "../../components";
 import { Blockquote, Loading } from "@arwes/arwes";
 import GET_USER from "./getUser.graphql";
 import { Query } from "react-apollo";
@@ -52,6 +52,11 @@ const GetUser = ({ id, children }) => {
                 information to verify that you are the child's parent and that
                 you consent to your child using our website.
               </h2>
+              <p>
+                You can also verify your consent at any one of the{" "}
+                <Link to="/centers">Space EdVentures Centers</Link>.
+              </p>
+              <br />
               <p>
                 Enter the following information to begin the verification
                 process.

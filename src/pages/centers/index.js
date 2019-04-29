@@ -1,7 +1,8 @@
 import React from "react";
 import { graphql } from "gatsby";
 import { Content } from "../../components";
-const Ranks = ({ data }) => {
+import css from "@emotion/css";
+const Centers = ({ data }) => {
   const centers = data.centers.edges
     .map(r => ({
       ...r.node
@@ -12,16 +13,53 @@ const Ranks = ({ data }) => {
   return (
     <Content>
       <h1>Centers</h1>
-      {centers.map(c => (
-        <div key={c.id} id={c.name}>
-          <h2>{c.name}</h2>
-          <p>{c.description}</p>
+      {centers.map(center => (
+        <div
+          key={center.id}
+          id={center.name}
+          css={css`
+            clear: both;
+            img {
+              float: left;
+            }
+            img:nth-of-type(2n) {
+              float: right;
+            }
+          `}
+        >
+          {center.imageUrl && (
+            <img
+              src={center.imageUrl}
+              alt={center.name}
+              css={css`
+                width: 200px;
+                height: 200px;
+                object-fit: contain;
+                padding-right: 1em;
+                padding-bottom: 1em;
+              `}
+            />
+          )}
+          <h2>{center.name}</h2>
+          {center.website && (
+            <p>
+              <a
+                href={center.website}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {center.website}
+              </a>
+            </p>
+          )}
+          <p>{center.address && center.address.description}</p>
+          <p>{center.description}</p>
         </div>
       ))}
     </Content>
   );
 };
-export default Ranks;
+export default Centers;
 
 export const pageQuery = graphql`
   query FirebaseCenters {

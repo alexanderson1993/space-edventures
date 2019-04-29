@@ -1,0 +1,12 @@
+query GetRank($id: String!, $centerId: ID!) {
+  userGetRank(id: $id, centerId: $centerId) {
+    id
+    email
+    parentEmail
+    profile(centerId: $centerId) {
+      age
+      displayName
+      name
+    }
+  }
+}

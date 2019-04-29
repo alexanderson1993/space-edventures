@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import "./datepicker.css";
 import { Frame, withStyles } from "@arwes/arwes";
 import AnimateContext from "../helpers/animateContext";
@@ -19,8 +20,12 @@ const DatePickerComp = ({ theme, ...props }) => {
     }
     .react-date-picker__calendar {
       width: 100%;
+      position: relative;
     }
     .react-calendar {
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+      z-index: 100000000;
       top: -350px;
       position: absolute;
       border: solid 1px ${theme.color.primary.base};
@@ -62,4 +67,4 @@ const DatePickerComp = ({ theme, ...props }) => {
   );
 };
 
-export default React.memo(withStyles(() => {})(DatePickerComp));
+export default withStyles(() => {})(DatePickerComp);
