@@ -39,17 +39,31 @@ module.exports = class FlightRecord {
       .get()
       .then(res => res.size);
   }
-  static getFlightRecords(userId, centerId, simulatorId, limit, skip) {
+  static async getFlightRecords(
+    userId,
+    centerId,
+    simulatorId,
+    limit,
+    skip,
+    startAfter
+  ) {
     let matchingRecords = firestore().collection(collectionName);
 
     if (typeof centerId !== "undefined") {
       matchingRecords = matchingRecords.where("spaceCenterId", "==", centerId);
     }
-    if (limit || skip) {
-      matchingRecords = matchingRecords
-        .orderBy("date", "desc")
-        .limit(limit || 25)
-        .offset(skip || 0);
+    if (limit || startAfter) {
+      matchingRecords = matchingRecords.orderBy("date", "desc");
+    }
+    if (startAfter) {
+      const startAfterRef = await firestore()
+        .collection(collectionName)
+        .doc(startAfter)
+        .get();
+      matchingRecords = matchingRecords.startAfter(startAfterRef);
+    }
+    if (limit) {
+      matchingRecords = matchingRecords.limit(limit || 25);
     }
     // return Promise.all(
     return matchingRecords

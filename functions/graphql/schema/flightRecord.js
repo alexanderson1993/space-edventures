@@ -50,7 +50,7 @@ module.exports.schema = gql`
 
   extend type User {
     flightCount: Int @auth(requires: [self, director])
-    flights(limit: Int, skip: Int): [FlightUserRecord]
+    flights(limit: Int, skip: Int, startAfter: ID): [FlightUserRecord]
       @auth(requires: [authenticated, self, director])
   }
 
@@ -65,7 +65,7 @@ module.exports.schema = gql`
       simulatorId: ID
       limit: Int
       skip: Int
-      lastId: ID
+      startAfter: ID
     ): [FlightRecord] @auth(requires: [director])
 
     flightRecordCount(centerId: ID!): Int @auth(requires: [staff, director])
@@ -136,7 +136,7 @@ module.exports.resolver = {
     },
     flightRecords: async (
       rootQuery,
-      { userId, centerId, simulatorId, limit, skip, lastId },
+      { userId, centerId, simulatorId, limit, skip, startAfter },
       context
     ) => {
       const records = await FlightRecord.getFlightRecords(
@@ -145,7 +145,7 @@ module.exports.resolver = {
         simulatorId,
         limit,
         skip,
-        lastId
+        startAfter
       );
       return records;
     },
@@ -338,11 +338,11 @@ module.exports.resolver = {
       return (await FlightUserRecord.getFlightUserRecordsByUser(user.id))
         .length;
     },
-    flights: async (user, { limit, skip }, context) => {
+    flights: async (user, { limit, startAfter }, context) => {
       const flights = await FlightUserRecord.getFlightUserRecordsByUser(
         user.id,
         limit,
-        skip
+        startAfter
       );
       return flights;
     }

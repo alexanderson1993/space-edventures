@@ -258,7 +258,9 @@ module.exports.resolver = {
       const badges =
         badgeIds.length > 0
           ? (await badgeLoader.loadMany(badgeIds))
-              .filter((a, i, arr) => arr.findIndex(b => b.id === a.id) === i)
+              .filter(
+                (a, i, arr) => arr.findIndex(b => a && b && b.id === a.id) === i
+              )
               .filter(Boolean)
           : [];
 

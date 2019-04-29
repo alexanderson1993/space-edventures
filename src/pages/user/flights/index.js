@@ -29,21 +29,55 @@ const Flight = ({
   );
 };
 
-function reducer(state, action) {
-  if (action === "next") return state + 10;
-  if (action === "prev") return Math.max(0, state - 10);
+function reducer({ skip }, { type, flightRecords }) {
+  const newSkip = type === "next" ? skip + 10 : Math.max(0, skip - 10);
+  const newStartAfter =
+    newSkip - 1 < 0
+      ? null
+      : flightRecords[newSkip - 1] || flightRecords[flightRecords.length - 1];
+  return { skip: newSkip, startAfter: newStartAfter && newStartAfter.id };
 }
+const Paginator = ({ dispatch, skip, flightRecords, flightRecordCount }) => {
+  return (
+    <div
+      css={css`
+        display: flex;
+        justify-content: space-around;
+      `}
+    >
+      <Button rel="prev" onClick={() => dispatch("prev")} disabled={skip === 0}>
+        Previous
+      </Button>
+      <Button
+        rel="next"
+        onClick={() => dispatch({ type: "next", flightRecords })}
+        disabled={skip + 10 >= flightRecordCount}
+      >
+        Next
+      </Button>
+    </div>
+  );
+};
 
 const Flights = () => {
-  const [skip, dispatch] = useReducer(reducer, 0);
+  const [{ skip, startAfter }, dispatch] = useReducer(reducer, {
+    skip: 0,
+    startAfter: null
+  });
   const { user } = useContext(AuthContext);
   return (
-    <Query query={GET_FLIGHTS} variables={{ id: user && user.id, skip }}>
+    <Query query={GET_FLIGHTS} variables={{ id: user && user.id, startAfter }}>
       {graphQLHelper(({ me = {} }) => {
         const { flights = [], flightCount = 0 } = me;
         return (
           <Content>
             <h1>My Flights</h1>
+            <Paginator
+              dispatch={dispatch}
+              skip={skip}
+              flightRecords={flights}
+              flightRecordCount={flightCount}
+            />
             <Table>
               <table>
                 <thead>
@@ -64,27 +98,12 @@ const Flights = () => {
               </table>
             </Table>
 
-            <div
-              css={css`
-                display: flex;
-                justify-content: space-between;
-              `}
-            >
-              <Button
-                rel="prev"
-                onClick={() => dispatch("prev")}
-                disabled={skip === 0}
-              >
-                Previous
-              </Button>
-              <Button
-                rel="next"
-                onClick={() => dispatch("next")}
-                disabled={skip + 10 > flightCount}
-              >
-                Next
-              </Button>
-            </div>
+            <Paginator
+              dispatch={dispatch}
+              skip={skip}
+              flightRecords={flights}
+              flightRecordCount={flightCount}
+            />
           </Content>
         );
       })}

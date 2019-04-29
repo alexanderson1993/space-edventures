@@ -1,8 +1,8 @@
-query Flight($id: ID!, $skip: Int!) {
+query Flight($id: ID!, $skip: Int, $startAfter: ID) {
   me(id: $id) {
     id
     flightCount
-    flights(limit: 10, skip: $skip) {
+    flights(limit: 10, skip: $skip, startAfter: $startAfter) {
       id
       date
       badges {

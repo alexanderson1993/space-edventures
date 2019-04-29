@@ -6,11 +6,15 @@ import GET_FLIGHTS from "./getFlights.graphql";
 import { CenterContext } from "../../../pages/director";
 import css from "@emotion/css";
 
-function reducer(state, action) {
-  if (action === "next") return state + 10;
-  if (action === "prev") return Math.max(0, state - 10);
+function reducer({ skip }, { type, flightRecords }) {
+  const newSkip = type === "next" ? skip + 10 : Math.max(0, skip - 10);
+  const newStartAfter =
+    newSkip - 1 < 0
+      ? null
+      : flightRecords[newSkip - 1] || flightRecords[flightRecords.length - 1];
+  return { skip: newSkip, startAfter: newStartAfter && newStartAfter.id };
 }
-const Paginator = ({ dispatch, skip, flightRecordCount }) => {
+const Paginator = ({ dispatch, skip, flightRecords, flightRecordCount }) => {
   return (
     <div
       css={css`
@@ -23,7 +27,7 @@ const Paginator = ({ dispatch, skip, flightRecordCount }) => {
       </Button>
       <Button
         rel="next"
-        onClick={() => dispatch("next")}
+        onClick={() => dispatch({ type: "next", flightRecords })}
         disabled={skip + 10 > flightRecordCount}
       >
         Next
@@ -40,18 +44,25 @@ function hasUnclaimed(simulators) {
 }
 
 const Flights = () => {
-  const [skip, dispatch] = useReducer(reducer, 0);
+  const [{ skip, startAfter }, dispatch] = useReducer(reducer, {
+    skip: 0,
+    startAfter: null
+  });
   const center = useContext(CenterContext);
   return (
     <div>
       <h1>Flights</h1>
 
-      <Query query={GET_FLIGHTS} variables={{ centerId: center.id, skip }}>
+      <Query
+        query={GET_FLIGHTS}
+        variables={{ centerId: center.id, skip, startAfter }}
+      >
         {graphQLHelper(({ flightRecords, flightRecordCount }) => (
           <>
             <Paginator
               dispatch={dispatch}
               skip={skip}
+              flightRecords={flightRecords}
               flightRecordCount={flightRecordCount}
             />
             <Table>
@@ -96,6 +107,7 @@ const Flights = () => {
             <Paginator
               dispatch={dispatch}
               skip={skip}
+              flightRecords={flightRecords}
               flightRecordCount={flightRecordCount}
             />
           </>

@@ -174,14 +174,25 @@ module.exports = class FlightUserRecord {
     });
   }
 
-  static async getFlightUserRecordsByUser(userId, limit, skip) {
-    if (limit || skip) {
-      return firestore()
-        .collection("flightUserRecord")
-        .where("userId", "==", userId)
-        .orderBy("date", "desc")
-        .startAt(skip || 0)
-        .limit(limit || 25)
+  static async getFlightUserRecordsByUser(userId, limit, startAfter) {
+    let matchingRecords = firestore()
+      .collection(collectionName)
+      .where("userId", "==", userId);
+    if (limit || startAfter) {
+      matchingRecords = matchingRecords.orderBy("date", "desc");
+
+      if (startAfter) {
+        const startAfterRef = await firestore()
+          .collection(collectionName)
+          .doc(startAfter)
+          .get();
+        matchingRecords = matchingRecords.startAfter(startAfterRef);
+      }
+      if (limit) {
+        matchingRecords = matchingRecords.limit(limit || 25);
+      }
+
+      return matchingRecords
         .get()
         .then(ref => ref.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }
