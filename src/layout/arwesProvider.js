@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useMemo } from "react";
 import "./style.scss";
 import PropTypes from "prop-types";
 
@@ -44,6 +44,7 @@ const ArwesProvider = ({ children }) => {
     typeof window !== "undefined" &&
       window.location.pathname.indexOf("/director") === 0
   );
+  const value = useMemo(() => ({ isAdmin, setIsAdmin }), [isAdmin]);
   return (
     <>
       <link
@@ -52,7 +53,7 @@ const ArwesProvider = ({ children }) => {
       />
 
       <SoundsProvider sounds={createSounds(sounds)}>
-        <AdminContext.Provider value={{ isAdmin, setIsAdmin }}>
+        <AdminContext.Provider value={value}>
           <ThemeProvider theme={normalTheme}>
             <Layout isAdmin={isAdmin}>{children}</Layout>
           </ThemeProvider>

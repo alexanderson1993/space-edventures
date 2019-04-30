@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import ProfileContext from "./";
 import propTypes from "prop-types";
 import ME_QUERY from "../../queries/me.graphql";
@@ -12,18 +12,18 @@ const ProfileProvider = ({ children }) => {
     skip: !user || !user.id
   });
   const { me } = data;
+  const value = useMemo(
+    () => ({
+      user: {
+        ...me,
+        profile: me ? me.profile : {},
+        loading: loading || authLoading
+      }
+    }),
+    [authLoading, loading, me]
+  );
   return (
-    <ProfileContext.Provider
-      value={{
-        user: {
-          ...me,
-          profile: me ? me.profile : {},
-          loading: loading || authLoading
-        }
-      }}
-    >
-      {children}
-    </ProfileContext.Provider>
+    <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
   );
 };
 

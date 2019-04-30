@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useMemo } from "react";
 export const ErrorContext = React.createContext();
 
 const initialState = { error: false };
@@ -19,10 +19,8 @@ function reducer(state, action) {
 
 export const ErrorProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const value = useMemo(() => ({ state, dispatch }), [state]);
   return (
-    <ErrorContext.Provider value={{ state, dispatch }}>
-      {children}
-    </ErrorContext.Provider>
+    <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>
   );
 };

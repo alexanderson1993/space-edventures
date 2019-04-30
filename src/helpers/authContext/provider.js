@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useMemo } from "react";
 import AuthContext from "./";
 import propTypes from "prop-types";
 import { auth, baseAuth } from "../../helpers/firebase";
@@ -125,11 +125,12 @@ const AuthProvider = ({ children }) => {
         });
     }
   };
-  return (
-    <AuthContext.Provider value={{ ...actions, user, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = useMemo(() => ({ ...actions, user, loading }), [
+    actions,
+    loading,
+    user
+  ]);
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 AuthProvider.propTypes = {
