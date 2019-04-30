@@ -29,7 +29,7 @@ export const DirectorProvider = ({ children }) => {
           skip={!user || !user.id}
         >
           {graphQLHelper(({ me }) => (
-            <Provider />
+            <Provider me={me} children={children} />
           ))}
         </Query>
       )}

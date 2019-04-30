@@ -61,6 +61,7 @@ function configureServer() {
     engine: { apiKey: process.env.ENGINE_API_KEY },
     tracing: process.env.NODE_ENV !== "production",
     uploads: false,
+    introspection: true,
     context: async ({ req }) => {
       // PRODUCTION VERSION
       const token = (req.headers.authorization || "").replace("Bearer ", "");

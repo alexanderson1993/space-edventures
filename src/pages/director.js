@@ -97,9 +97,9 @@ const DirectorPage = () => {
   return user ? (
     <DirectorProvider>
       <Router>
-        <ChooseCenter path="/director" />
         <Register path="/director/register" />
         <Routes path="/director/:centerId/*" />
+        <ChooseCenter path="/director" />
       </Router>
     </DirectorProvider>
   ) : (
