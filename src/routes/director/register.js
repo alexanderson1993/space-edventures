@@ -42,7 +42,6 @@ const formReducer = (state, { name, value }) => {
 };
 
 const Register = () => {
-  console.log("Reg");
   const [state, dispatch] = useReducer(formReducer, {
     name: "",
     email: "",

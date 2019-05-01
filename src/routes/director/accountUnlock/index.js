@@ -109,7 +109,15 @@ const Checker = ({ client }) => {
             </p>
             <p>Age: {user.profile.age}</p>
             <p>Parent Email: {user.parentEmail}</p>
-            <Mutation mutation={UNLOCK_ACCOUNT} variables={{ userId: user.id }}>
+            <Mutation
+              mutation={UNLOCK_ACCOUNT}
+              variables={
+                console.log({ centerId: center.id, userId: user.id }) || {
+                  centerId: center.id,
+                  userId: user.id
+                }
+              }
+            >
               {(action, { loading, data }) => {
                 if (loading) return <Loading />;
                 if (data) return <h3>Account Unlocked.</h3>;

@@ -2,7 +2,7 @@ query GetRank($id: String!, $centerId: ID!) {
   userGetRank(id: $id, centerId: $centerId) {
     id
     email
-    parentEmail
+    parentEmail(centerId: $centerId)
     profile(centerId: $centerId) {
       age
       displayName

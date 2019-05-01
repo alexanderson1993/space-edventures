@@ -1,5 +1,5 @@
-mutation UnlockAccount($userId: ID!) {
-  unlockAccount(userId: $userId) {
+mutation UnlockAccount($centerId: ID!, $userId: ID!) {
+  unlockAccount(centerId: $centerId, userId: $userId) {
     id
   }
 }

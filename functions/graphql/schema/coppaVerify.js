@@ -13,7 +13,8 @@ module.exports.schema = gql`
     verifyWithStripeToken(userId: ID!, token: String!): User
     verifyWithPhotos(userId: ID!, parentPhoto: Upload!, idPhoto: Upload!): User
     verifyConfirm(userId: ID!): User
-    unlockAccount(userId: ID!): User @auth(requires: [director, staff])
+    unlockAccount(centerId: ID!, userId: ID!): User
+      @auth(requires: [director, staff])
 
     # Administrator action to make sure the photos are correct and the credit
     # card information is accurate. Deletes all validation information when complete.

@@ -50,7 +50,7 @@ module.exports.schema = gql`
     registeredDate: Date
     locked: Boolean
     token: String
-    parentEmail: String @auth(requires: [staff, director])
+    parentEmail(centerId: ID): String @auth(requires: [staff, director])
     # Badges, flight records, and flight and class hours will be added
     # as type extensions
     # flights
