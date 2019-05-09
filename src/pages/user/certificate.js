@@ -135,7 +135,7 @@ const Certificate = ({ theme, numberToWords }) => {
               )}
             </p>
             <p>
-              <small>Confirmation Code: {user.token}</small>
+              <small>Officer Code: {user.token}</small>
             </p>
             <img
               css={css`

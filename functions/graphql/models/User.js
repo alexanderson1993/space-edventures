@@ -102,10 +102,15 @@ module.exports = class User {
   }
 
   static async getUserByToken(token) {
-    const data = await firestore()
+    let data = await firestore()
       .collection("users")
       .where("token", "==", token)
       .get();
+    if (data.size === 0)
+      data = await firestore()
+        .collection("users")
+        .where("email", "==", token)
+        .get();
     if (data.size === 0)
       throw new UserInputError(`No user exists with token ${token}.`);
     return { ...data.docs[0].data(), id: data.docs[0].id };

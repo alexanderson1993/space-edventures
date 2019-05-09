@@ -116,19 +116,10 @@ const UserPage = () => {
           >
             <p>{user.profile.displayName || user.profile.name}</p>
             <p>{user.profile.rank && user.profile.rank.name}</p>
-            <p>Confirmation Code: {user.token}</p>
+            <p>Officer Code: {user.token}</p>
           </div>
         </ContentBox>
-        <ContentBox
-          title="Space Center Highlight"
-          css={css`
-            grid-column: span 2;
-          `}
-          callToAction="See All Centers"
-          action="/centers"
-        >
-          <SpaceCenter />
-        </ContentBox>
+
         <ContentBox
           title="My Flights"
           css={css`
@@ -169,6 +160,16 @@ const UserPage = () => {
           action="/user/officerLog"
         >
           <OfficerLog />
+        </ContentBox>
+        <ContentBox
+          title="Space Center Highlight"
+          css={css`
+            grid-column: span 2;
+          `}
+          callToAction="See All Centers"
+          action="/centers"
+        >
+          <SpaceCenter />
         </ContentBox>
       </ProfileBox>
     </Content>

@@ -7,6 +7,12 @@ query GetLogs($id: ID!) {
       log
       flight {
         id
+        date
+        simulator {
+          id
+          name
+        }
+        stationName
       }
     }
   }

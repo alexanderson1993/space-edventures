@@ -184,7 +184,7 @@ const FlightAssign = () => {
       >
         <div>
           <h1>Flight Assign</h1>
-          <p>Enter an email or confirmation code.</p>
+          <p>Enter an email or officer code.</p>
           {loading ? (
             <Loading animate />
           ) : (

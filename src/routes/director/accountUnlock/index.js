@@ -51,7 +51,7 @@ const Checker = ({ client }) => {
       >
         <div>
           <h1>Account Unlock</h1>
-          <p>Enter the participant's email address or confirmation code.</p>
+          <p>Enter the participant's email address or officer code.</p>
           {loading ? (
             <Loading animate />
           ) : (
