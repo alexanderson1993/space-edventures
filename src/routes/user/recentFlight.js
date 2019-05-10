@@ -8,12 +8,18 @@ import { Button, Link } from "../../components";
 import AuthContext from "../../helpers/authContext";
 
 const GridContainer = styled("div")`
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  @media only screen and (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+  gap: 1.2em;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
 `;
 const GridItem = styled("div")`
-  display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0 1em;

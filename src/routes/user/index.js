@@ -12,7 +12,6 @@ const RecentFlight = lazy(() => import("./recentFlight"));
 const SpaceCenter = lazy(() => import("./spaceCenter"));
 
 const ContentFrame = styled(Frame)`
-  height: 100%;
   width: 100%;
   & > div:last-child {
     height: 100%;
@@ -26,14 +25,13 @@ const ContentFrame = styled(Frame)`
 const ProfileBox = styled("div")`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-columns: 1fr;
   @media only screen and (max-width: 1200px) {
     grid-template-columns: 1fr 1fr;
   }
   @media only screen and (max-width: 600px) {
-    grid-template-columns: 1fr;
-    column-gap: 0;
+    display: block;
   }
-  grid-template-rows: 1fr 1fr;
   grid-auto-rows: auto;
   gap: 1em;
   width: 100%;
@@ -96,27 +94,39 @@ const UserPage = () => {
           title="My Profile"
           callToAction="Go To Profile"
           action={"/user/profile"}
+          css={css`
+            align-self: flex-start;
+          `}
         >
           <div
             css={css`
-              width: 33%;
-              float: left;
-              margin-right: 20px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
             `}
           >
-            <ProfilePicture />
-          </div>
-          <div
-            css={css`
-              flex: 2;
-              p {
-                margin-bottom: 0.5em;
-              }
-            `}
-          >
-            <p>{user.profile.displayName || user.profile.name}</p>
-            <p>{user.profile.rank && user.profile.rank.name}</p>
-            <p>Officer Code: {user.token}</p>
+            <div
+              css={css`
+                width: 60%;
+              `}
+            >
+              <ProfilePicture />
+            </div>
+            <div
+              css={css`
+                flex: 2;
+                h3,
+                h4,
+                h5 {
+                  margin-bottom: 0.5em;
+                }
+              `}
+            >
+              <h3>{user.profile.rank && user.profile.rank.name}</h3>
+              <h4>{user.profile.displayName || user.profile.name}</h4>
+              <h5>Officer Code: {user.token}</h5>
+            </div>
           </div>
         </ContentBox>
 
@@ -164,7 +174,7 @@ const UserPage = () => {
         <ContentBox
           title="Space Center Highlight"
           css={css`
-            grid-column: span 2;
+            grid-column: span 3;
           `}
           callToAction="See All Centers"
           action="/centers"
