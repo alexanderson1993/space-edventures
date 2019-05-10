@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Query } from "react-apollo";
 import styled from "@emotion/styled";
 import BADGES_QUERY from "./badges.graphql";
 import graphQLHelper from "../../../helpers/graphQLHelper";
-import { Link, Button } from "../../../components";
+import { Link, Button, Input } from "../../../components";
 import { CenterContext } from "../../../pages/director";
 const ButtonAlign = styled("div")`
   display: flex;
@@ -16,6 +16,7 @@ const ButtonAlign = styled("div")`
 `;
 const BadgeIndex = props => {
   const center = useContext(CenterContext);
+  const [filter, setFilter] = useState(null);
   return (
     <div>
       <ButtonAlign>
@@ -23,22 +24,36 @@ const BadgeIndex = props => {
         <Link to={`/director/${center.id}/badges/create`}>
           <Button>Create Badge</Button>
         </Link>
+        <Input
+          type="text"
+          placeholder="Search"
+          value={filter}
+          onChange={e => setFilter(e.target.value)}
+        />
       </ButtonAlign>
       <ul>
         <Query query={BADGES_QUERY} variables={{ centerId: center.id }}>
-          {graphQLHelper(({ badges }) =>
-            badges && badges.length ? (
-              badges.map(s => (
-                <li key={s.id}>
-                  <Link to={`/director/${center.id}/badges/${s.id}`}>
-                    {s.name}
-                  </Link>
-                </li>
-              ))
-            ) : (
-              <p>No Badges.</p>
-            )
-          )}
+          {graphQLHelper(({ badges }) => {
+            if (!badges || badges.length) return "No Badges";
+            if (filter) {
+              return badges
+                .filter(m => new RegExp(filter, "gi").test(m.name))
+                .map(s => (
+                  <li key={s.id}>
+                    <Link to={`/director/${center.id}/badges/${s.id}`}>
+                      {s.name}
+                    </Link>
+                  </li>
+                ));
+            }
+            return badges.map(s => (
+              <li key={s.id}>
+                <Link to={`/director/${center.id}/badges/${s.id}`}>
+                  {s.name}
+                </Link>
+              </li>
+            ));
+          })}
         </Query>
       </ul>
     </div>
