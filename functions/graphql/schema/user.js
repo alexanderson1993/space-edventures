@@ -5,6 +5,7 @@ const {
   UserInputError
 } = require("apollo-server-express");
 let User = require("../models/User");
+const randomName = require("random-ship-names");
 
 module.exports.schema = gql`
   extend type Query {
@@ -125,8 +126,8 @@ module.exports.resolver = {
         parentEmail
       };
     },
-    userByToken(_, { token }, context) {
-      return User.getUserByToken(token);
+    async userByToken(_, { token }, context) {
+      return new User(await User.getUserByToken(token));
     }
   },
   // Needs to pass in parent of profile so that value can be checked
@@ -150,13 +151,14 @@ module.exports.resolver = {
         throw new AuthenticationError("Must be logged in to create a user.");
       const userObj = await User.getUserById(user.id);
       if (userObj) return userObj;
+      const name = randomName.civilian;
       // No user - create it.
       return User.createUser({
         id: user.id,
         birthDate,
         email: user.email,
-        displayName: user.email,
-        name: user.email,
+        displayName: name,
+        name: name,
         parentEmail,
         locked: Boolean(parentEmail)
       });

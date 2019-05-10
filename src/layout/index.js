@@ -89,14 +89,20 @@ const Intro = props => {
           bottom: 0;
         `}
       >
-        <Logo
+        <div
           css={css`
             max-width: 30%;
             max-height: 30%;
             opacity: ${(opened && user.loading) || pageLoading ? 1 : 0};
             transition: opacity 0.2s ease;
           `}
-        />
+        >
+          <Logo
+            css={css`
+              width: 100%;
+            `}
+          />
+        </div>
         <h1>
           <Words show={(!authLoading && user.loading) || pageLoading}>
             Space EdVentures

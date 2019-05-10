@@ -108,7 +108,6 @@ module.exports.resolver = {
   },
   Badge: {
     async simulators(rec) {
-      console.log(rec);
       if (!rec.simulatorIds) return [];
       const sim = await Promise.all(
         rec.simulatorIds.map(s => Simulator.getSimulator(s))

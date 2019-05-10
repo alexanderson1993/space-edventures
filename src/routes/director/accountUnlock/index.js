@@ -111,12 +111,10 @@ const Checker = ({ client }) => {
             <p>Parent Email: {user.parentEmail}</p>
             <Mutation
               mutation={UNLOCK_ACCOUNT}
-              variables={
-                console.log({ centerId: center.id, userId: user.id }) || {
-                  centerId: center.id,
-                  userId: user.id
-                }
-              }
+              variables={{
+                centerId: center.id,
+                userId: user.id
+              }}
             >
               {(action, { loading, data }) => {
                 if (loading) return <Loading />;

@@ -9,7 +9,6 @@ module.exports = class Badge {
     { name, description, type, image, simulatorIds },
     centerId
   ) {
-    console.log(simulatorIds);
     const badgeData = await firestore()
       .collection("badges")
       .add({
