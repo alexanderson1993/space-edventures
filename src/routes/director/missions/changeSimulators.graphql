@@ -1,0 +1,13 @@
+mutation BadgeChangeSimulators($id: ID!, $simulators: [ID]!, $centerId: ID!) {
+  badgeChangeSimulators(
+    badgeId: $id
+    simulators: $simulators
+    centerId: $centerId
+  ) {
+    id
+    simulators {
+      id
+      name
+    }
+  }
+}

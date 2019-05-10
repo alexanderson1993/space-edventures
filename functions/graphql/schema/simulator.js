@@ -106,6 +106,16 @@ module.exports.resolver = {
       return sim;
     }
   },
+  Badge: {
+    async simulators(rec) {
+      console.log(rec);
+      if (!rec.simulatorIds) return [];
+      const sim = await Promise.all(
+        rec.simulatorIds.map(s => Simulator.getSimulator(s))
+      );
+      return sim;
+    }
+  },
   Center: {
     simulators: (center, args, context) => {
       return Simulator.getSimulators(center.id);

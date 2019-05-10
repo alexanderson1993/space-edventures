@@ -5,13 +5,18 @@ const uploadFile = require("../helpers/uploadFile");
 // =============================================================================
 
 module.exports = class Badge {
-  static async createBadge({ name, description, type, image }, centerId) {
+  static async createBadge(
+    { name, description, type, image, simulatorIds },
+    centerId
+  ) {
+    console.log(simulatorIds);
     const badgeData = await firestore()
       .collection("badges")
       .add({
         name,
         type,
         description,
+        simulatorIds: simulatorIds || [],
         centerId
       });
     let file = null;
@@ -63,13 +68,14 @@ module.exports = class Badge {
       .get();
     return docs.size;
   }
-  constructor({ id, name, type, description, image, centerId }) {
+  constructor({ id, name, type, description, image, centerId, simulatorIds }) {
     this.id = id;
     this.name = name;
     this.type = type;
     this.description = description;
     this.image = image;
     this.centerId = centerId;
+    this.simulatorIds = simulatorIds;
   }
   async rename(name) {
     this.name = name;
@@ -95,6 +101,14 @@ module.exports = class Badge {
       .doc(this.id)
       .update({ image: file.metadata.mediaLink });
     this.image = file.metadata.mediaLink;
+    return this;
+  }
+  async changeSimulators(simulatorIds) {
+    this.simulatorIds = simulatorIds;
+    await firestore()
+      .collection("badges")
+      .doc(this.id)
+      .update({ simulatorIds });
     return this;
   }
   async delete() {

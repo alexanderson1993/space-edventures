@@ -4,5 +4,9 @@ query Missions($centerId: ID!) {
     name
     description
     image
+    simulators {
+      id
+      name
+    }
   }
 }

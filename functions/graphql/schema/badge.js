@@ -21,6 +21,7 @@ module.exports.schema = gql`
     name: String
     type: BADGE_TYPE
     description: String
+    simulators: [Simulator]
     image: String
   }
 
@@ -31,6 +32,7 @@ module.exports.schema = gql`
     description: String
     image: Upload
     flightTypeId: ID
+    simulatorIds: [ID]
   }
 
   # Different types of badges, for categorization
@@ -64,6 +66,11 @@ module.exports.schema = gql`
 
     badgeChangeImage(badgeId: ID!, image: Upload!, centerId: ID!): Badge
       @auth(requires: [director])
+    badgeChangeSimulators(
+      badgeId: ID!
+      simulators: [ID]!
+      centerId: ID!
+    ): Badge @auth(requires: [director])
 
     badgeAssign(badges: [BadgeAssignInput!]!): [Badge]
       @auth(requires: [center, director, staff])
@@ -136,7 +143,6 @@ module.exports.resolver = {
           "Cannot create a badge for a space center you do not own."
         );
       }
-
       return Badge.createBadge(badge, centerId);
     },
     badgeRemove: async (rootQuery, { badgeId, centerId }, context) => {
@@ -170,6 +176,15 @@ module.exports.resolver = {
       if (badge.centerId !== centerId)
         throw new ForbiddenError("Cannot edit a badge you do not own.");
       return badge.changeImage(image);
+    },
+    badgeChangeSimulators: async (
+      rootQuery,
+      { badgeId, centerId, simulators }
+    ) => {
+      const badge = await Badge.getBadge(badgeId);
+      if (badge.centerId !== centerId)
+        throw new ForbiddenError("Cannot edit a badge you do not own.");
+      return badge.changeSimulators(simulators);
     },
     /**
      * Supports batch assignment of badges to users

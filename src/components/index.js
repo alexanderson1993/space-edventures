@@ -15,3 +15,4 @@ export { default as ImageUploader } from "./ImageUploader";
 export { default as DatePicker } from "./DatePicker";
 export { default as SEO } from "./Seo";
 export { default as Auth } from "./Auth";
+export { default as Select } from "./Select";

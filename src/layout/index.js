@@ -217,6 +217,9 @@ class ArwesContainer extends Component {
                 max-width: 100%;
                 max-height: 100%;
               }
+              input::placeholder {
+                color: rgba(255, 255, 255, 0.3) !important;
+              }
             `}
           />
           <SEO />

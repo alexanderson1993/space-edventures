@@ -6,12 +6,14 @@ import graphQLHelper from "../../../helpers/graphQLHelper";
 import MISSIONS_QUERY from "./missions.graphql";
 import CHANGE_IMAGE from "./changeImage.graphql";
 import CHANGE_DESCRIPTION from "./changeDescription.graphql";
+import CHANGE_SIMULATORS from "./changeSimulators.graphql";
 import CHANGE_NAME from "./changeName.graphql";
 import DELETE_MISSION from "./deleteMission.graphql";
 import { dataURItoBlob } from "../../../helpers/dataURIToBlob";
 import { Frame, Loading } from "@arwes/arwes";
 import { CenterContext } from "../../../pages/director";
 import { navigate } from "gatsby";
+import SimulatorInput from "./simulatorInput";
 
 const MissionsComp = ({ missionId, missions }) => {
   const center = useContext(CenterContext);
@@ -154,6 +156,42 @@ const MissionsComp = ({ missionId, missions }) => {
               />
             </Frame>
           )}
+        </Mutation>
+      </div>
+      <div>
+        <h2>Simulators:</h2>
+        <Mutation mutation={CHANGE_SIMULATORS}>
+          {(action, { loading }) => {
+            const sims = mission.simulators.map(s => s.id);
+            return loading ? (
+              <Loading animate />
+            ) : (
+              <SimulatorInput
+                value={sims}
+                onChange={e => {
+                  const value = e.target.value;
+                  if (sims.includes(value)) {
+                    action({
+                      variables: {
+                        id: mission.id,
+                        centerId: center.id,
+                        simulators: sims.filter(s => s !== value)
+                      }
+                    });
+                  } else {
+                    action({
+                      variables: {
+                        id: mission.id,
+                        centerId: center.id,
+                        simulators: [...sims, value]
+                      }
+                    });
+                  }
+                }}
+                multiple
+              />
+            );
+          }}
         </Mutation>
       </div>
     </div>

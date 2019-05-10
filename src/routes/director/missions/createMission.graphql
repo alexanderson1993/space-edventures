@@ -2,6 +2,7 @@ mutation BadgeCreate(
   $name: String!
   $image: Upload
   $description: String
+  $simulatorIds: [ID]
   $centerId: ID!
 ) {
   missionCreate: badgeCreate(
@@ -9,6 +10,7 @@ mutation BadgeCreate(
       name: $name
       image: $image
       description: $description
+      simulatorIds: $simulatorIds
       type: mission
     }
     centerId: $centerId

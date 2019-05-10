@@ -8,11 +8,13 @@ import MISSIONS_QUERY from "./missions.graphql";
 
 import { Loading } from "@arwes/arwes";
 import { CenterContext } from "../../../pages/director";
+import SimulatorInput from "./simulatorInput";
 
 const EditMission = ({ create }) => {
   const center = useContext(CenterContext);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [simulator, setSimulator] = useState([]);
   const [image, setImage] = useState("");
   return (
     <Navigator>
@@ -24,7 +26,8 @@ const EditMission = ({ create }) => {
             description,
             image,
             type: "mission",
-            centerId: center.id
+            centerId: center.id,
+            simulatorIds: simulator
           }}
           update={(cache, { data: { missionCreate } }) => {
             const { missions } = cache.readQuery({
@@ -67,6 +70,21 @@ const EditMission = ({ create }) => {
                       onChange={e => setDescription(e.target.value)}
                     />
                   </div>
+                  <div>
+                    <SimulatorInput
+                      value={simulator}
+                      onChange={e => {
+                        const value = e.target.value;
+                        setSimulator(s => {
+                          if (s.includes(value)) {
+                            return s.filter(v => v !== value);
+                          }
+                          return [...s, value];
+                        });
+                      }}
+                      multiple
+                    />
+                  </div>
                   <div
                     css={css`
                       width: 200px;
@@ -85,9 +103,7 @@ const EditMission = ({ create }) => {
                     disabled={!name}
                     onClick={() =>
                       create().then(({ data: { missionCreate } }) =>
-                        navigate(
-                          `/director/${center.id}/missions/${missionCreate.id}`
-                        )
+                        navigate(`/director/${center.id}/missions`)
                       )
                     }
                   >
