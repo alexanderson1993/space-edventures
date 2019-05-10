@@ -5,7 +5,7 @@ module.exports = function parentVerify({ id, email }) {
 
 </p><p>Space EdVentures allows your child to track their flight hours and rank at the many Space EdVentures centers. Participants can receive discounts or awards for reaching certain ranks.
 
-</p><p>If you would like to verify your permission for SpaceEdventures.org, use the following personalized link:
+</p><p>If you would like to verify your permission for SpaceEdVentures.org, use the following personalized link:
 
 </p><p><a href="https://spaceedventures.org/parentVerify?id=${id}">https://spaceedventures.org/parentVerify?id=${id}</a>
 

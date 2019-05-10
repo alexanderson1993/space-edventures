@@ -154,7 +154,7 @@ module.exports = class FlightUserRecord {
         emailTransport.sendMail({
           from: `"Space EdVentures" hello@spaceedventures.org`,
           to: data.email,
-          subject: "Redeem your SpaceEdventures Flight",
+          subject: "Redeem your Space EdVentures Flight",
           html: redeem({ ...data, simulator, badges: badgeRecords, flightType })
         });
       }

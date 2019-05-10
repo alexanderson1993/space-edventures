@@ -47,7 +47,8 @@ const Login = ({
     magicLink,
     checkMagicLink = () => {
       return Promise.resolve();
-    }
+    },
+    forgotPassword
   } = useContext(AuthContext);
   const { hide, reveal } = useContext(AnimateContext);
 
@@ -126,6 +127,21 @@ const Login = ({
         window.sessionStorage.setItem("postLoginPath", to);
       magicLink({ email })
         .then(() => navigate(`/accounts/sentMagicLink?email=${email}`))
+        .catch(error => {
+          setError({
+            field: "none",
+            message: error.message || error
+          });
+          setLoading(false);
+        });
+    }
+  };
+  const doForgotPassword = (e, navigate) => {
+    e.preventDefault();
+    if (checkError("magic")) {
+      setLoading(true);
+      forgotPassword(email)
+        .then(() => navigate(`/accounts/forgotPassword?email=${email}`))
         .catch(error => {
           setError({
             field: "none",
@@ -278,6 +294,15 @@ const Login = ({
                 <Button type="submit" block>
                   {signUp ? "Create Account" : "Login"}
                 </Button>
+                {!signUp && (
+                  <Button
+                    type="button"
+                    block
+                    onClick={e => doForgotPassword(e, navigate)}
+                  >
+                    Forgot Password
+                  </Button>
+                )}
                 <Center>
                   <small>‒ OR ‒</small>
                 </Center>

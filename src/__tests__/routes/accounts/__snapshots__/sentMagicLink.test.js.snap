@@ -28,7 +28,7 @@ exports[`sentMagicLink 1`] = `
       data-testid="magic-link-text"
     >
       Check your inbox! We sent an email to 
-      . Click the link in that email to sign in to Space Edventures.
+      . Click the link in that email to sign in to Space EdVentures.
     </p>
   </div>
 </div>

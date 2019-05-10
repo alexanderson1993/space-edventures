@@ -123,6 +123,9 @@ const AuthProvider = ({ children }) => {
           }
           return false;
         });
+    },
+    forgotPassword: email => {
+      return auth.sendPasswordResetEmail(email);
     }
   };
   const value = useMemo(() => ({ ...actions, user, loading }), [
