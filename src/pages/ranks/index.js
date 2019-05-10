@@ -24,20 +24,26 @@ const Ranks = ({ data }) => {
             key={r.id}
             id={r.name}
             css={css`
+              display: flex;
+              flex-wrap: wrap;
               img {
-                clear: both;
-                max-width: 150px;
-                max-height: 150px;
-                float: left;
+                width: 150px;
+                height: 150px;
               }
             `}
           >
             <img src={rankSrc} alt={r.name} />
-            <h2>{r.name}</h2>
-            <p>
-              Flight Hours: {r.flightHours} · Class Hours: {r.classHours}
-            </p>
-            <p>{r.description}</p>
+            <div
+              css={css`
+                flex: 1;
+              `}
+            >
+              <h2>{r.name}</h2>
+              <p>
+                Flight Hours: {r.flightHours} · Class Hours: {r.classHours}
+              </p>
+              <p>{r.description}</p>
+            </div>
           </div>
         );
       })}
