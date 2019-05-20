@@ -30,6 +30,7 @@
     "@emotion/core": "^10.0.7",
     "@emotion/styled": "^10.0.7",
     "@reach/router": "1.2.1",
+    "@sentry/browser": "^5.2.1",
     "@svgr/core": "^4.1.0",
     "apollo-cache-inmemory": "^1.4.3",
     "apollo-client": "^2.4.13",

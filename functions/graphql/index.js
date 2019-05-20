@@ -8,10 +8,16 @@ const fileMiddleware = require("express-multipart-file-parser");
 const { merge } = require("lodash");
 // cors allows our server to accept requests from different origins
 const cors = require("cors");
+const Sentry = require("@sentry/node");
+
+Sentry.init({
+  dsn: "https://1b8a0bb621ae486a96c6d26ea5a4ce20@sentry.io/1463538"
+});
 
 function configureServer() {
   // invoke express to create our server
   const app = express();
+  app.use(Sentry.Handlers.requestHandler());
 
   //use the cors middleware
   app.use(cors());
@@ -98,6 +104,7 @@ function configureServer() {
   // now we take our newly instantiated ApolloServer and apply the
   // previously configured express application
   server.applyMiddleware({ app });
+  app.use(Sentry.Handlers.errorHandler());
 
   // finally return the application
   return app;
