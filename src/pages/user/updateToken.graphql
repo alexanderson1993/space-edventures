@@ -1,0 +1,6 @@
+mutation UpdateToken($token: String!) {
+  userUpdateToken(token: $token) {
+    id
+    token
+  }
+}

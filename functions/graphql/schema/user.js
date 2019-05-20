@@ -31,6 +31,7 @@ module.exports.schema = gql`
       @auth(requires: [director])
     profileEdit(name: String, displayName: String): User
     userChangeProfilePicture(id: ID, picture: Upload!): User
+    userUpdateToken(token: String!): User
   }
 
   type Profile @auth(requires: [self, staff, director, admin]) {
@@ -202,6 +203,14 @@ module.exports.resolver = {
         );
       }
       return user.changeProfilePicture(args.picture);
+    },
+    userUpdateToken(rootQuery, { token }, context) {
+      const { user } = context;
+      if (!user)
+        throw new AuthenticationError(
+          "Must be logged in to change officer token."
+        );
+      return user.changeToken(token);
     },
     async userSetStaff(rootQuery, { email, centerId }) {
       const user = new User(await User.getUserByEmail(email));

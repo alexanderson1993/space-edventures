@@ -17,6 +17,7 @@ import css from "@emotion/css";
 import { Mutation } from "react-apollo";
 import SET_PROFILE_PICTURE from "./setProfilePicture.graphql";
 import UPDATE_PROFILE from "./updateProfile.graphql";
+import UPDATE_TOKEN from "./updateToken.graphql";
 import { dataURItoBlob } from "../../helpers/dataURIToBlob";
 import { titleCase } from "change-case";
 import randomName from "random-ship-names";
@@ -52,13 +53,14 @@ const Updater = ({ title, value, editMode }) => {
       {titleCase(title)}: {newValue}
     </h3>
   ) : (
-    <Mutation mutation={UPDATE_PROFILE}>
+    <Mutation mutation={title === "token" ? UPDATE_TOKEN : UPDATE_PROFILE}>
       {action => (
         <FormGroup>
           <Label>
             {titleCase(title)}
             <Input
               block
+              maxLength={title === "token" ? 12 : null}
               type="text"
               value={newValue}
               onChange={e => setNewValue(e.target.value)}
@@ -134,6 +136,7 @@ const Profile = () => {
               value={user.profile.displayName}
               editMode={editMode}
             />
+            <Updater title={"token"} value={user.token} editMode={editMode} />
             <FormGroup>
               <Label>Rank</Label>
               <h3>{user.profile.rank && user.profile.rank.name}</h3>

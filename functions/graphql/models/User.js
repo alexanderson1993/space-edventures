@@ -184,7 +184,30 @@ module.exports = class User {
     this.profile.profilePicture = file.metadata.mediaLink;
     return this;
   }
+  async changeToken(token) {
+    // See if there are other users with that token
+    try {
+      await User.getUserByToken(token);
+    } catch (err) {
+      // If it errors, then there is not a user with that token.
+      const userRef = firestore()
+        .collection("users")
+        .doc(this.id);
 
+      if (token.length > 12) {
+        throw new ValidationError(
+          "Token is too long. Please use less than 12 characters."
+        );
+      }
+
+      await userRef.update({
+        token
+      });
+      this.profile.token = token;
+      return this;
+    }
+    throw new ValidationError("Token is already in use.");
+  }
   async updateVerification(verification = {}) {
     const userRef = await firestore()
       .collection("users")
