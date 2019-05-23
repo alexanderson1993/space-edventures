@@ -135,19 +135,23 @@ module.exports = class FlightUserRecord {
     if (!silent) {
       if (data.userId) {
         // Send a congratulatory email
-        const user = await User.getUserById(data.userId);
-        if (user) {
-          emailTransport.sendMail({
-            from: `"Space EdVentures" hello@spaceedventures.org`,
-            to: user.email,
-            subject: "Your flight has been recorded",
-            html: congrats({
-              ...data,
-              simulator,
-              badges: badgeRecords,
-              flightType
-            })
-          });
+        try {
+          const user = await User.getUserById(data.userId);
+          if (user) {
+            emailTransport.sendMail({
+              from: `"Space EdVentures" hello@spaceedventures.org`,
+              to: user.email,
+              subject: "Your flight has been recorded",
+              html: congrats({
+                ...data,
+                simulator,
+                badges: badgeRecords,
+                flightType
+              })
+            });
+          }
+        } catch (err) {
+          // Swallow it - no need to send the email.
         }
       } else if (data.email && data.token) {
         // Send an email with the token

@@ -378,16 +378,17 @@ async function fillSimsWithTokens(simulators) {
             });
             if (user) return station;
           } else if (station.email) {
-            const user = await User.getUserByEmail(station.email).then(user => {
-              if (!user) {
+            try {
+              const user = await User.getUserByEmail(station.email);
+              if (user) {
                 // Send the email later
-                station.userId = null;
-                return false;
+                station.userId = user.id;
+                return station;
               }
-              station.userId = user.id;
-              return true;
-            });
-            if (user) return station;
+              station.userId = null;
+            } catch (err) {
+              // Swallow it
+            }
           } else {
             // Unless the token was provided, generate a token and add it to the station
             station.token = station.token || tokenGenerator();

@@ -26,7 +26,13 @@ const pickerReducer = (state, action) => {
     return {};
   }
 };
-const Picker = ({ userId, data, values, dispatch }) => {
+
+function nameSort(a, b) {
+  if (a.name > b.name) return 1;
+  if (a.name < b.name) return -1;
+  return 0;
+}
+const Picker = ({ userId, email, data, values, dispatch }) => {
   const { user } = useContext(AuthContext);
   const { simulators, missions, /*badges,*/ flightTypes } = data;
   const { simulator, mission, flightType } = values;
@@ -43,6 +49,7 @@ const Picker = ({ userId, data, values, dispatch }) => {
           stations: [
             {
               userId,
+              email,
               token: "assigned",
               name: "Crew",
               logs: [],
@@ -70,7 +77,7 @@ const Picker = ({ userId, data, values, dispatch }) => {
     >
       <div>
         <h2>Flight Type</h2>
-        {flightTypes.map(f => (
+        {flightTypes.sort(nameSort).map(f => (
           <Button
             block
             key={f.id}
@@ -83,7 +90,7 @@ const Picker = ({ userId, data, values, dispatch }) => {
       </div>
       <div>
         <h2>Simulator</h2>
-        {simulators.map(f => (
+        {simulators.sort(nameSort).map(f => (
           <Button
             block
             key={f.id}
@@ -96,7 +103,7 @@ const Picker = ({ userId, data, values, dispatch }) => {
       </div>
       <div>
         <h2>Mission</h2>
-        {missions.map(f => (
+        {missions.sort(nameSort).map(f => (
           <Button
             block
             key={f.id}
@@ -134,6 +141,12 @@ const Picker = ({ userId, data, values, dispatch }) => {
     </div>
   );
 };
+
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
 const FlightAssign = () => {
   const [user, setUser] = useState(null);
   const [id, setId] = useState("");
@@ -164,6 +177,12 @@ const FlightAssign = () => {
       })
       .catch(err => {
         setLoading(false);
+        if (
+          err.message.indexOf("No user exists with") > -1 &&
+          validateEmail(token)
+        ) {
+          return setUser({ id: null, email: token });
+        }
         return setError(err);
       });
   };
@@ -235,6 +254,7 @@ const FlightAssign = () => {
           <h2>Email: {user.email}</h2>
           <Picker
             userId={user.id}
+            email={user.email}
             data={data}
             values={values}
             dispatch={dispatch}

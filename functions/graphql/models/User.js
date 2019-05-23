@@ -521,6 +521,22 @@ module.exports = class User {
         roles: []
       });
 
+    // Assign any flightUserRecords which might belong to this user
+    console.log("Getting flight user records");
+    const flightUserRecords = await firestore()
+      .collection("flightUserRecord")
+      .where("email", "==", email)
+      .get();
+
+    console.log(flightUserRecords.size);
+
+    await Promise.all(
+      flightUserRecords.docs.map(record => {
+        return record.ref.update({ userId: id });
+      })
+    );
+    console.log("updated with id", id);
+
     return firestore()
       .collection("users")
       .doc(id)
