@@ -18,6 +18,7 @@ const MapLoaderWrapped = withScriptjs(MapLoader);
 
 const UserLock = ({ children }) => {
   const { user } = useContext(ProfileContext);
+  console.log(user);
   if (user.locked)
     return (
       <div
@@ -27,16 +28,24 @@ const UserLock = ({ children }) => {
           align-items: center;
         `}
       >
-        <h1>Account Locked</h1>
-        <p
+        <div
           css={css`
             max-width: 500px;
           `}
         >
-          To use Space EdVentures, we need to collect parental approval
-          verification. Once you are approved by your parent, your account will
-          be unlocked.
-        </p>
+          <h1>Account Locked</h1>
+          <p>
+            To use Space EdVentures, we need to collect parental approval
+            verification. Once you are approved by your parent, your account
+            will be unlocked.
+          </p>
+          <p>
+            Your parent can also unlock your account at any Space EdVentures
+            center. Have your parent ask a Space EdVentures center staff member
+            for assistance.
+          </p>
+          <p>Officer Code: {user.token}</p>
+        </div>
       </div>
     );
   return children;

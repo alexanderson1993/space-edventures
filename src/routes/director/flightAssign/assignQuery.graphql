@@ -7,6 +7,9 @@ query AssignQuery($centerId: ID!) {
     id
     type
     name
+    simulators {
+      id
+    }
   }
   badges(centerId: $centerId, type: badge) {
     id

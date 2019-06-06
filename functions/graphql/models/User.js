@@ -480,26 +480,25 @@ module.exports = class User {
     displayName = randomName.civilian,
     name,
     birthDate,
-    parentEmail,
-    locked
+    parentEmail
   }) {
     function diffYears(dt2, dt1) {
       var diff = (dt2.getTime() - dt1.getTime()) / 1000;
       diff /= 60 * 60 * 24;
       return Math.abs(Math.round(diff / 365.25));
     }
-    if (diffYears(new Date(), new Date(birthDate)) < 13) {
+    const locked = diffYears(new Date(), new Date(birthDate)) < 13;
+    if (locked) {
       // TODO: Add a process to delete locked users after 30 days
-      if (!parentEmail || !validateEmail(parentEmail)) {
-        throw new Error("Invalid parent email.");
+      if (parentEmail && validateEmail(parentEmail)) {
+        // Handle sending emails for parental permission.
+        const message = await emailTransport.sendMail({
+          from: `"Space EdVentures" hello@spaceedventures.org`,
+          to: parentEmail,
+          subject: "Your Child Registered at SpaceEdVentures.org",
+          html: parentVerify({ id, email })
+        });
       }
-      // Handle sending emails for parental permission.
-      const message = await emailTransport.sendMail({
-        from: `"Space EdVentures" hello@spaceedventures.org`,
-        to: parentEmail,
-        subject: "Your Child Registered at SpaceEdVentures.org",
-        html: parentVerify({ id, email })
-      });
     }
     const user = await firestore()
       .collection("users")

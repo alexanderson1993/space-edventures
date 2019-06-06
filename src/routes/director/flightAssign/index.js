@@ -1,6 +1,7 @@
 import React, { lazy, useState, useContext, Suspense, useReducer } from "react";
 import { Input, Button, Words } from "../../../components";
 import { Blockquote, Loading } from "@arwes/arwes";
+import { FaBan } from "react-icons/fa";
 import { CenterContext } from "../../../pages/director";
 import { useApolloClient, useQuery, useMutation } from "react-apollo-hooks";
 import CREATE_FLIGHT from "./createFlight.graphql";
@@ -23,7 +24,28 @@ const pickerReducer = (state, action) => {
     return { ...state, flightType: action.value };
   }
   if (action.type === "clear") {
-    return {};
+    return { flights: state.flights };
+  }
+  if (action.type === "clearAll") {
+    return { flights: [] };
+  }
+  if (action.type === "remove") {
+    return { ...state, flights: state.flights.filter(i => i.id !== action.id) };
+  }
+  if (action.type === "add") {
+    const output = {
+      flights: [
+        ...(state.flights || []),
+        {
+          id: uuid.v4(),
+          simulator: state.simulator,
+          mission: state.mission,
+          flightType: state.flightType
+        }
+      ]
+    };
+    console.log(output);
+    return output;
   }
 };
 
@@ -35,29 +57,31 @@ function nameSort(a, b) {
 const Picker = ({ userId, email, data, values, dispatch }) => {
   const { user } = useContext(AuthContext);
   const { simulators, missions, /*badges,*/ flightTypes } = data;
-  const { simulator, mission, flightType } = values;
+  const { simulator, mission, flightType, flights } = values;
   const [loading, setLoading] = useState(false);
   const center = useContext(CenterContext);
   const createFlight = useMutation(CREATE_FLIGHT, {
     variables: {
       centerId: center.id,
-      flightId: uuid.v4(),
-      flightType,
-      simulators: [
-        {
-          id: simulator,
-          stations: [
-            {
-              userId,
-              email,
-              token: "assigned",
-              name: "Crew",
-              logs: [],
-              badges: [mission]
-            }
-          ]
-        }
-      ]
+      flightRecords: flights.map(f => ({
+        flightId: uuid.v4(),
+        flightTypeId: f.flightType,
+        simulators: [
+          {
+            id: f.simulator,
+            stations: [
+              {
+                userId,
+                email,
+                token: "assigned",
+                name: "Crew",
+                logs: [],
+                badges: [f.mission]
+              }
+            ]
+          }
+        ]
+      }))
     },
     refetchQueries: [
       {
@@ -103,32 +127,73 @@ const Picker = ({ userId, email, data, values, dispatch }) => {
       </div>
       <div>
         <h2>Mission</h2>
-        {missions.sort(nameSort).map(f => (
-          <Button
-            block
-            key={f.id}
-            disabled={f.id === mission}
-            onClick={() => dispatch({ type: "setMission", value: f.id })}
-          >
-            {f.name}
-          </Button>
-        ))}
+        {missions
+          .filter(
+            m =>
+              m.simulators.length === 0 ||
+              m.simulators.find(s => s.id === simulator)
+          )
+          .sort(nameSort)
+          .map(f => (
+            <Button
+              block
+              key={f.id}
+              disabled={f.id === mission}
+              onClick={() => dispatch({ type: "setMission", value: f.id })}
+            >
+              {f.name}
+            </Button>
+          ))}
       </div>
       {loading ? (
         <Loading />
       ) : (
-        <Button
-          disabled={!simulator || !flightType}
-          onClick={() => {
-            setLoading(true);
-            createFlight().then(() => {
-              dispatch({ type: "clear" });
-              setLoading(false);
-            });
-          }}
-        >
-          Submit Flight
-        </Button>
+        <div>
+          <Button
+            block
+            disabled={!simulator || !flightType}
+            onClick={() => dispatch({ type: "add" })}
+          >
+            Add Flight
+          </Button>
+          <div
+            css={css`
+              max-height: 50vh;
+              overflow-y: auto;
+            `}
+          >
+            {flights.map(f => (
+              <div key={f.id}>
+                <strong>
+                  {flightTypes.find(t => t.id === f.flightType).name}
+                </strong>
+                <FaBan
+                  css={css`
+                    color: red;
+                  `}
+                  onClick={() => dispatch({ type: "remove", id: f.id })}
+                />
+                <div>
+                  {simulators.find(t => t.id === f.simulator).name}:{" "}
+                  {missions.find(t => t.id === f.mission).name}
+                </div>
+              </div>
+            ))}
+          </div>
+          <Button
+            block
+            disabled={flights.length === 0}
+            onClick={() => {
+              setLoading(true);
+              createFlight().then(() => {
+                dispatch({ type: "clearAll" });
+                setLoading(false);
+              });
+            }}
+          >
+            Submit Flights
+          </Button>
+        </div>
       )}
       {/* <div>
           <h2>Badges</h2>
@@ -155,7 +220,7 @@ const FlightAssign = () => {
   const [error, setError] = useState(null);
   const [qr, setQr] = useState(false);
 
-  const [values, dispatch] = useReducer(pickerReducer, {});
+  const [values, dispatch] = useReducer(pickerReducer, { flights: [] });
   const center = useContext(CenterContext);
   const client = useApolloClient();
 

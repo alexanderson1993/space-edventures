@@ -86,6 +86,11 @@ module.exports.schema = gql`
     flightRecord: FlightRecord
   }
 
+  input FlightRecordInput {
+    flightId: ID!
+    flightTypeId: ID!
+    simulators: [FlightSimulatorInput!]!
+  }
   extend type Mutation {
     # Creates the record of the flight
     # Uses the ID of the flight from Thorium so a flight cannot be recorded twice
@@ -99,6 +104,11 @@ module.exports.schema = gql`
       """
       silent: Boolean
     ): FlightRecord @auth(requires: [center, director])
+
+    flightRecordBatchCreate(
+      centerId: ID!
+      flightRecords: [FlightRecordInput!]!
+    ): [FlightRecord] @auth(requires: [director])
 
     flightClaim(token: String!): FlightUserRecord
       @auth(requires: [authenticated])
@@ -117,6 +127,76 @@ module.exports.schema = gql`
   # We can extend other graphQL types using the "extend" keyword.
 `;
 
+async function createFlightRecord({
+  flightId,
+  flightTypeId,
+  simulators,
+  silent,
+  center
+}) {
+  // Make sure this center has this flight type ID
+  let flightType = await FlightType.getFlightType(flightTypeId);
+  if (!flightType && flightType.spaceCenterId !== centerId) {
+    throw new UserInputError("Invalid flight type id provided.");
+  }
+  // Make sure this flight record doesn't already exist
+  let flightRecord = await FlightRecord.getFlightRecordByThoriumId(flightId);
+
+  if (flightRecord) {
+    throw new UserInputError(
+      "This Thorium flight already exists in the system."
+    );
+  }
+
+  // Make sure this center has these simulators
+  const simChecks = simulators.map(sim =>
+    Simulator.getSimulator(sim.id).then(sim => {
+      if (!sim || sim.centerId !== center.id) {
+        throw new UserInputError("Invalid simulator id provided");
+      }
+      return;
+    })
+  );
+
+  const stations = simulators.reduce(
+    (prev, sim) => prev.concat(sim.stations),
+    []
+  );
+
+  const badgesCheck = stations.map(station =>
+    station.badges.map(badgeId =>
+      Badge.getBadge(badgeId).then(badge => {
+        if (!badge) {
+          throw new UserInputError("Invalid badge id provided");
+        }
+        return;
+      })
+    )
+  );
+
+  // Do all of the checks at once.
+  // It will error if there is a problem
+  await Promise.all([].concat(simChecks).concat(badgesCheck));
+
+  // Get the simulator object with the tokens inside.
+  const processedSimulators = await fillSimsWithTokens(simulators);
+
+  // Create the flight record object and include the simulator/station information
+  const record = await FlightRecord.createFlightRecord(
+    center.id,
+    flightId,
+    flightTypeId,
+    processedSimulators
+  );
+
+  // Also create the flight user record (to help when querying based on user/token)
+  await FlightUserRecord.createFlightUserRecordsFromFlightRecord(
+    record,
+    silent
+  );
+
+  return record;
+}
 // We define all of the resolvers necessary for
 // the functionality in this file. These will be
 // deep merged with the other resolvers.
@@ -201,76 +281,33 @@ module.exports.resolver = {
      */
     flightRecordCreate: async (
       rootQuery,
-      { thoriumFlightId, flightTypeId, simulators, centerId, silent },
+      { thoriumFlightId: flightId, flightTypeId, simulators, centerId, silent },
       context
     ) => {
       centerId = centerId || context.center.id;
-      // Make sure this center has this flight type ID
-      let flightType = await FlightType.getFlightType(flightTypeId);
-      if (!flightType && flightType.spaceCenterId !== centerId) {
-        throw new UserInputError("Invalid flight type id provided.");
-      }
-      // Make sure this flight record doesn't already exist
-      let flightRecord = await FlightRecord.getFlightRecordByThoriumId(
-        thoriumFlightId
-      );
+      const center = await Center.getCenter(centerId);
 
-      if (flightRecord) {
-        throw new UserInputError(
-          "This Thorium flight already exists in the system."
-        );
-      }
-
-      const center = await Center.getCenter(centerId || context.center.id);
-
-      // Make sure this center has these simulators
-      const simChecks = simulators.map(sim =>
-        Simulator.getSimulator(sim.id).then(sim => {
-          if (!sim || sim.centerId !== center.id) {
-            throw new UserInputError("Invalid simulator id provided");
-          }
-          return;
+      return await createFlightRecord({
+        flightId,
+        flightTypeId,
+        simulators,
+        silent,
+        center
+      });
+    },
+    flightRecordBatchCreate: async (
+      rootObj,
+      { centerId, flightRecords },
+      context
+    ) => {
+      const center = await Center.getCenter(centerId);
+      const records = await Promise.all(
+        flightRecords.map(record => {
+          return createFlightRecord({ ...record, silent: true, center });
         })
       );
-
-      const stations = simulators.reduce(
-        (prev, sim) => prev.concat(sim.stations),
-        []
-      );
-
-      const badgesCheck = stations.map(station =>
-        station.badges.map(badgeId =>
-          Badge.getBadge(badgeId).then(badge => {
-            if (!badge) {
-              throw new UserInputError("Invalid badge id provided");
-            }
-            return;
-          })
-        )
-      );
-
-      // Do all of the checks at once.
-      // It will error if there is a problem
-      await Promise.all([].concat(simChecks).concat(badgesCheck));
-
-      // Get the simulator object with the tokens inside.
-      const processedSimulators = await fillSimsWithTokens(simulators);
-
-      // Create the flight record object and include the simulator/station information
-      const record = await FlightRecord.createFlightRecord(
-        center.id,
-        thoriumFlightId,
-        flightTypeId,
-        processedSimulators
-      );
-
-      // Also create the flight user record (to help when querying based on user/token)
-      await FlightUserRecord.createFlightUserRecordsFromFlightRecord(
-        record,
-        silent
-      );
-
-      return record;
+      console.log(records);
+      return records;
     },
     // End flight record create
     flightDelete: async (rootObj, { id, centerId }, context) => {

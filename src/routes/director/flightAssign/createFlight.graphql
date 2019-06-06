@@ -1,16 +1,8 @@
 mutation FlightRecordCreate(
   $centerId: ID!
-  $flightId: ID!
-  $flightType: ID!
-  $simulators: [FlightSimulatorInput!]!
+  $flightRecords: [FlightRecordInput!]!
 ) {
-  flightRecordCreate(
-    centerId: $centerId
-    thoriumFlightId: $flightId
-    flightTypeId: $flightType
-    simulators: $simulators
-    silent: true
-  ) {
+  flightRecordBatchCreate(centerId: $centerId, flightRecords: $flightRecords) {
     id
   }
 }

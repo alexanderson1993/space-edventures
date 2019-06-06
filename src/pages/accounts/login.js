@@ -106,11 +106,11 @@ const Login = ({
       }, 250);
       return false;
     }
-    if (needsVerification && !parentEmail) {
-      setError({ field: "parentEmail", message: "Email is a required field." });
-      return false;
-    }
-    if (needsVerification && !validateEmail(parentEmail)) {
+    // if (needsVerification && !parentEmail) {
+    //   setError({ field: "parentEmail", message: "Email is a required field." });
+    //   return false;
+    // }
+    if (needsVerification && parentEmail && !validateEmail(parentEmail)) {
       setError({
         field: "parentEmail",
         message: "Please enter a valid email address."
@@ -216,6 +216,9 @@ const Login = ({
                   <Words>{error.message}</Words>
                 </Blockquote>
               )}
+              <Button type="submit" block>
+                Skip
+              </Button>
             </Form>
           ) : (
             <Form onSubmit={e => doLogin(e, navigate)}>
