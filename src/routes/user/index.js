@@ -7,6 +7,8 @@ import styled from "@emotion/styled";
 import { Frame } from "@arwes/arwes";
 import Rank from "./rank";
 import OfficerLog from "./logs";
+import ErrorBoundary from "../../helpers/errorBoundary";
+
 const MapComponent = lazy(() => import("./map"));
 const RecentFlight = lazy(() => import("./recentFlight"));
 const SpaceCenter = lazy(() => import("./spaceCenter"));
@@ -41,39 +43,41 @@ const ProfileBox = styled("div")`
 const ContentBox = ({ title, className, action, callToAction, children }) => {
   return (
     <ContentFrame animate={true} level={3} corners={4} className={className}>
-      <section
-        css={css`
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        `}
-      >
-        <h2
+      <ErrorBoundary render={<p>Error loading dashboard entry.</p>}>
+        <section
           css={css`
-            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
           `}
         >
-          <Words>{title}</Words>
-        </h2>
-        <div
-          css={css`
-            flex: 1;
-          `}
-        >
-          {children}
-        </div>
-        {action &&
-          callToAction &&
-          (typeof action === "string" ? (
-            <Link to={action}>
-              <Button block>{callToAction}</Button>
-            </Link>
-          ) : (
-            <Button action={action} block>
-              {callToAction}
-            </Button>
-          ))}
-      </section>
+          <h2
+            css={css`
+              text-align: center;
+            `}
+          >
+            <Words>{title}</Words>
+          </h2>
+          <div
+            css={css`
+              flex: 1;
+            `}
+          >
+            {children}
+          </div>
+          {action &&
+            callToAction &&
+            (typeof action === "string" ? (
+              <Link to={action}>
+                <Button block>{callToAction}</Button>
+              </Link>
+            ) : (
+              <Button action={action} block>
+                {callToAction}
+              </Button>
+            ))}
+        </section>
+      </ErrorBoundary>
     </ContentFrame>
   );
 };

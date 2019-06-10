@@ -10,6 +10,7 @@ import ASSIGN_QUERY from "./assignQuery.graphql";
 import ME_QUERY from "../../../queries/me.graphql";
 import css from "@emotion/css";
 import uuid from "uuid";
+
 import AuthContext from "../../../helpers/authContext";
 const QRScanner = lazy(() => import("../../../components/QrScanner"));
 
@@ -127,23 +128,46 @@ const Picker = ({ userId, email, data, values, dispatch }) => {
       </div>
       <div>
         <h2>Mission</h2>
-        {missions
-          .filter(
-            m =>
-              m.simulators.length === 0 ||
-              m.simulators.find(s => s.id === simulator)
-          )
-          .sort(nameSort)
-          .map(f => (
-            <Button
-              block
-              key={f.id}
-              disabled={f.id === mission}
-              onClick={() => dispatch({ type: "setMission", value: f.id })}
-            >
-              {f.name}
-            </Button>
-          ))}
+        <select
+          css={css`
+            color: #a1ecfb;
+            margin: 0;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            outline: none;
+            font-size: 16.8px;
+            box-shadow: none;
+            font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console",
+              Terminal, monospace;
+            line-height: 40px;
+            padding-right: 10px;
+            border-bottom: 1px solid #a1ecfb;
+            vertical-align: top;
+            background-color: transparent;
+          `}
+          onChange={e =>
+            dispatch({ type: "setMission", value: e.target.value })
+          }
+          value={mission || ""}
+        >
+          <option value={""} disabled>
+            Choose a mission
+          </option>
+          {missions
+            .filter(
+              m =>
+                m.simulators.length === 0 ||
+                m.simulators.find(s => s.id === simulator)
+            )
+            .sort(nameSort)
+            .map(f => (
+              <option block key={f.id} value={f.id}>
+                {f.name}
+              </option>
+            ))}
+        </select>
       </div>
       {loading ? (
         <Loading />

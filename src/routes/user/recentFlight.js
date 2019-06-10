@@ -36,42 +36,49 @@ const RecentFlight = () => {
     <Query query={RECENT_FLIGHT} variables={{ id: user.id }}>
       {graphQLHelper(({ flightUser: { flights: [flight] } }) =>
         flight ? (
-          <GridContainer>
-            <GridItem>
-              <p>Date</p>
-              <h3>{new Date(flight.date).toDateString()}</h3>
-            </GridItem>
-            <GridItem>
-              <p>Flight Type</p>
-              <h3>{flight.flightRecord.flightType.name}</h3>
-            </GridItem>
-            <GridItem>
-              <p>Hours</p>
-              <h4>Flight: {flight.flightRecord.flightType.flightHours}</h4>
-              <h4>Class: {flight.flightRecord.flightType.classHours}</h4>
-            </GridItem>
-            <GridItem>
-              <p>Simulator</p>
-              <h3>{flight.simulator.name}</h3>
-            </GridItem>
-            <GridItem>
-              <p>Station</p>
-              <h3>{flight.stationName}</h3>
-            </GridItem>
-
-            {flight.badges.filter(Boolean).find(b => b.type === "mission") && (
+          <>
+            <GridContainer>
               <GridItem>
-                <p>Mission</p>
-                <h3>
-                  {
-                    flight.badges
-                      .filter(Boolean)
-                      .find(b => b.type === "mission").name
-                  }
-                </h3>
+                <p>Date</p>
+                <h3>{new Date(flight.date).toDateString()}</h3>
               </GridItem>
-            )}
-          </GridContainer>
+              <GridItem>
+                <p>Flight Type</p>
+                <h3>{flight.flightRecord.flightType.name}</h3>
+              </GridItem>
+              <GridItem>
+                <p>Hours</p>
+                <h4>Flight: {flight.flightRecord.flightType.flightHours}</h4>
+                <h4>Class: {flight.flightRecord.flightType.classHours}</h4>
+              </GridItem>
+              <GridItem>
+                <p>Simulator</p>
+                <h3>{flight.simulator.name}</h3>
+              </GridItem>
+              <GridItem>
+                <p>Station</p>
+                <h3>{flight.stationName}</h3>
+              </GridItem>
+
+              {flight.badges
+                .filter(Boolean)
+                .find(b => b.type === "mission") && (
+                <GridItem>
+                  <p>Mission</p>
+                  <h3>
+                    {
+                      flight.badges
+                        .filter(Boolean)
+                        .find(b => b.type === "mission").name
+                    }
+                  </h3>
+                </GridItem>
+              )}
+            </GridContainer>
+            <Link to="/redeem">
+              <Button block>Redeem a Flight</Button>
+            </Link>
+          </>
         ) : (
           <div
             css={css`

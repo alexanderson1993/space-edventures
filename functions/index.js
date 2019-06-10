@@ -5,7 +5,7 @@ const functions = require("firebase-functions");
 const configureServer = require("./graphql");
 
 // Code to manage the database
-const manageDatabase = require("./database");
+// const manageDatabase = require("./database");
 
 //initialize the server
 const server = configureServer();

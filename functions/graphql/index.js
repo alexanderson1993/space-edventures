@@ -95,7 +95,8 @@ function configureServer() {
         const user = new User(userData);
         // add the user to the context
         return { user };
-      } catch (_) {
+      } catch (error) {
+        console.error(error);
         return {};
       }
     }
@@ -105,6 +106,18 @@ function configureServer() {
   // previously configured express application
   server.applyMiddleware({ app });
   app.use(Sentry.Handlers.errorHandler());
+
+  // Optional fallthrough error handler
+  app.use((err, req, res, next) => {
+    // The error id is attached to `res.sentry` to be returned
+    // and optionally displayed to the user for support.
+    console.error("There was an error");
+    console.error(err);
+    console.error(res.sentry);
+
+    res.statusCode = 500;
+    res.end(res.sentry + "\n");
+  });
 
   // finally return the application
   return app;

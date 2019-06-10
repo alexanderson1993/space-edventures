@@ -15,19 +15,20 @@ const Rank = () => {
   return (
     <Query query={RANKS}>
       {graphQLHelper(({ ranks }) => {
-        const nextRank = ranks
-          .sort((a, b) => {
-            if (a.flightHours + a.classHours > b.flightHours + b.classHours)
-              return 1;
-            if (a.flightHours + a.classHours < b.flightHours + b.classHours)
-              return -1;
-            return 0;
-          })
-          .filter(
-            r =>
-              r.flightHours > user.profile.flightHours ||
-              r.classHours > user.profile.classHours
-          )[0];
+        const nextRank =
+          ranks
+            .sort((a, b) => {
+              if (a.flightHours + a.classHours > b.flightHours + b.classHours)
+                return 1;
+              if (a.flightHours + a.classHours < b.flightHours + b.classHours)
+                return -1;
+              return 0;
+            })
+            .filter(
+              r =>
+                r.flightHours > user.profile.flightHours ||
+                r.classHours > user.profile.classHours
+            )[0] || {};
         const needsFlightHours =
           nextRank.flightHours - user.profile.flightHours > 0;
         const needsClassHours =
@@ -50,7 +51,7 @@ const Rank = () => {
                 {user.profile.rank.name}
               </Link>
             </h1>
-            {nextRank ? (
+            {nextRank.flightHours ? (
               <p>
                 To reach the next rank of{" "}
                 <Link to={`/ranks#${nextRank.name}`}>{nextRank.name}</Link>, you

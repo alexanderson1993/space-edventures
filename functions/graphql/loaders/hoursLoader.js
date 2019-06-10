@@ -10,7 +10,8 @@ const DataLoader = require("dataloader");
 const hoursLoader = new DataLoader(async docs => {
   return Promise.all(
     docs.map(async ({ userId, hourType }) => {
-      const flightUserRecords = await flightRecordUserLoader.load(userId);
+      const flightUserRecords =
+        (await flightRecordUserLoader.load(userId)) || [];
       const flightRecords = await flightRecordLoader.loadMany(
         flightUserRecords.map(f => f.flightRecordId)
       );

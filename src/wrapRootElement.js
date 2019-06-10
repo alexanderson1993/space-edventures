@@ -18,7 +18,6 @@ const MapLoaderWrapped = withScriptjs(MapLoader);
 
 const UserLock = ({ children }) => {
   const { user } = useContext(ProfileContext);
-  console.log(user);
   if (user.locked)
     return (
       <div
