@@ -103,12 +103,12 @@ module.exports.schema = gql`
       Don't send emails when creating this flight
       """
       silent: Boolean
-    ): FlightRecord @auth(requires: [center, director])
+    ): FlightRecord @auth(requires: [center, director, staff])
 
     flightRecordBatchCreate(
       centerId: ID!
       flightRecords: [FlightRecordInput!]!
-    ): [FlightRecord] @auth(requires: [director])
+    ): [FlightRecord] @auth(requires: [director, staff])
 
     flightClaim(token: String!): FlightUserRecord
       @auth(requires: [authenticated])
