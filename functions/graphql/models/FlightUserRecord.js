@@ -111,7 +111,7 @@ module.exports = class FlightUserRecord {
       logs,
       date: new Date()
     };
-    if (email) data.email = email;
+    if (email) data.email = email.toLowerCase();
     if (typeof userId !== "undefined") {
       data.userId = userId;
     }

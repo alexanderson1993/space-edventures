@@ -504,7 +504,7 @@ module.exports = class User {
       .collection("users")
       .doc(id)
       .set({
-        email,
+        email: email.toLowerCase(),
         parentEmail,
         locked,
         profile: {

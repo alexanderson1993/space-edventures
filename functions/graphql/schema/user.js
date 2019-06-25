@@ -108,7 +108,7 @@ module.exports.resolver = {
       // so it is only relevant information. id could be an
       // email address
       const user = validateEmail(id)
-        ? new User(await User.getUserByEmail(id))
+        ? new User(await User.getUserByEmail(id.toLowerCase()))
         : new User(await User.getUserByToken(id));
       const {
         id: userId,
@@ -157,7 +157,7 @@ module.exports.resolver = {
       return User.createUser({
         id: user.id,
         birthDate,
-        email: user.email,
+        email: user.email && user.email.toLowerCase(),
         displayName: name,
         name: name,
         parentEmail,
@@ -213,7 +213,7 @@ module.exports.resolver = {
       return user.changeToken(token);
     },
     async userSetStaff(rootQuery, { email, centerId }) {
-      const user = new User(await User.getUserByEmail(email));
+      const user = new User(await User.getUserByEmail(email.toLowerCase()));
       user && (await user.setRole({ centerId, role: "staff" }));
     },
     async userRevokeStaff(rootQuery, { userId, centerId }) {

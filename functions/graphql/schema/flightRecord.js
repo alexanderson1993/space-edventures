@@ -416,7 +416,9 @@ async function fillSimsWithTokens(simulators) {
             if (user) return station;
           } else if (station.email) {
             try {
-              const user = await User.getUserByEmail(station.email);
+              const user = await User.getUserByEmail(
+                station.email.toLowerCase()
+              );
               if (user) {
                 // Send the email later
                 station.userId = user.id;
