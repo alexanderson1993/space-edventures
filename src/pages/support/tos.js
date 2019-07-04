@@ -8,7 +8,7 @@ export default function TermsOfService() {
       <h3>1. Terms</h3>
       <p>
         By accessing the website at{" "}
-        <a href="https://spaceedventures.com">https://spaceedventures.com</a>{" "}
+        <a href="https://spaceedventures.org">https://spaceedventures.org</a>{" "}
         (Space EdVentures), operated by Fyreworks LLC., you are agreeing to be
         bound by these terms of service, all applicable laws and regulations,
         and agree that you are responsible for compliance with any applicable

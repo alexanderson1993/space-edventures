@@ -356,15 +356,19 @@ module.exports = class User {
       const parentPhotoFileRef = storage()
         .bucket()
         .file(`${this.id}/parentPhoto`)
-        .delete();
+        .delete()
+        .catch(() => {});
       const idPhotoFileRef = storage()
         .bucket()
         .file(`${this.id}/idPhoto`)
-        .delete();
+        .delete()
+        .catch(() => {});
       // Run these operations concurrently
       await parentPhotoFileRef;
       await idPhotoFileRef;
-      await Stripe.deleteCustomer(this.verification.stripeCustomerId);
+      await Stripe.deleteCustomer(this.verification.stripeCustomerId).catch(
+        () => {}
+      );
     } catch (_) {
       // Swallow the error - it probably is because the objects don't exist
     }
